@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useSettings, THEME_ORDER, ROMANTIC_COLORS, type ThemeKey } from "./useSettings";
+import { useSettings, THEME_ORDER, ROMANTIC_COLORS, type ThemeKey, type Lighting, type BgMode, type TextColorMode } from "./useSettings";
 
 type ViewMode = "shelf" | "simple";
 type Theme = "light" | "dark";
