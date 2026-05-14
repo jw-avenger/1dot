@@ -144,6 +144,42 @@ function load() {
   } catch {
     // ignore
   }
+  // Backfill: if a pet was dismissed before trash existed (or trash was emptied),
+  // restore a placeholder trash entry so the user can bring it back.
+  const BACKFILL_KEY = "shelf:trash:backfill:v1";
+  try {
+    if (!localStorage.getItem(BACKFILL_KEY)) {
+      const hasPetTrash = state.trash.some((t) => t.kind === "pet");
+      if (state.petDismissed && !hasPetTrash) {
+        const cat = PETS.find((p) => p.id === "cat");
+        state = {
+          ...state,
+          trash: [
+            {
+              id: `pet-shelf-backfill-${Date.now()}`,
+              kind: "pet",
+              label: cat ? `${cat.emoji} ${cat.label} pet` : "Pet",
+              data: {
+                slot: "shelf",
+                config: {
+                  pet: "cat",
+                  animations: true,
+                  todoEnabled: false,
+                  todoItems: [],
+                },
+              },
+              deletedAt: Date.now(),
+            },
+            ...state.trash,
+          ],
+        };
+        save();
+      }
+      localStorage.setItem(BACKFILL_KEY, "1");
+    }
+  } catch {
+    // ignore
+  }
 }
 function save() {
   try {
