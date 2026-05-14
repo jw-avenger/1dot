@@ -39,13 +39,10 @@ export function ShelfPet({ onClick }: Props) {
           </div>
         ) : (
           <span
-            className="flex flex-col items-center gap-0.5 pb-2 text-center"
-            style={{ color: "var(--ink)" }}
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ color: "var(--ink)", fontSize: 28, lineHeight: 1 }}
           >
-            <span style={{ fontSize: 26, lineHeight: 1 }}>🪴</span>
-            <span className="text-[9px] font-semibold uppercase tracking-[0.12em] opacity-70">
-              add pet
-            </span>
+            🐈
           </span>
         )}
       </button>
