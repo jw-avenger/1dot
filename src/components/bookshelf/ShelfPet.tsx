@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSettings, PETS } from "./useSettings";
+import { PetFigurine } from "./PetFigurine";
 
 type Props = {
   onClick: () => void;
@@ -14,23 +15,39 @@ export function ShelfPet({ onClick }: Props) {
   return (
     <div
       className="relative ml-1 flex flex-col items-center justify-end self-end"
-      style={{ width: 44, height: 100 }}
+      style={{ width: 64, height: 110 }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
       <button
         onClick={onClick}
-        aria-label={pet ? `Change ${pet.label} pet` : "Add a pet"}
-        className="flex h-full w-full items-center justify-center rounded-md border border-dashed transition hover:border-wood/60"
+        aria-label={pet ? `Change ${pet.label} pet` : "Add a pet — currently empty"}
+        className="group relative flex h-full w-full items-end justify-center overflow-hidden rounded-lg transition"
         style={{
-          borderColor: pet ? "transparent" : "rgba(0,0,0,0.18)",
-          backgroundColor: pet ? "transparent" : "rgba(255,255,255,0.04)",
-          fontSize: pet ? 30 : 14,
-          color: "var(--ink)",
-          opacity: pet ? 1 : 0.55,
+          background: pet
+            ? "transparent"
+            : "repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0 6px, rgba(255,255,255,0.05) 6px 12px)",
+          border: pet ? "1px solid transparent" : "2px dashed rgba(0,0,0,0.32)",
+          boxShadow: pet
+            ? "none"
+            : "inset 0 0 0 1px rgba(255,255,255,0.25), 0 0 0 3px rgba(255,255,255,0.08)",
         }}
       >
-        {pet ? pet.emoji : "·"}
+        {pet ? (
+          <div className="pb-1">
+            <PetFigurine petId={pet.id} size={56} />
+          </div>
+        ) : (
+          <span
+            className="flex flex-col items-center gap-0.5 pb-2 text-center"
+            style={{ color: "var(--ink)" }}
+          >
+            <span style={{ fontSize: 26, lineHeight: 1 }}>🪴</span>
+            <span className="text-[9px] font-semibold uppercase tracking-[0.12em] opacity-70">
+              add pet
+            </span>
+          </span>
+        )}
       </button>
       {pet && hover && (
         <button

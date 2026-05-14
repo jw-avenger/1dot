@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ConfirmSheet, SheetButton, SHEET_FG } from "./ConfirmSheet";
 import { PETS, useSettings, type PetConfig } from "./useSettings";
+import { PetFigurine } from "./PetFigurine";
 
 type Props = {
   open: boolean;
@@ -29,7 +30,6 @@ export function PetPopup({ open, onClose }: Props) {
     todoEnabled: false,
     todoItems: [],
   });
-  const [newTodo, setNewTodo] = useState("");
 
   useEffect(() => {
     if (!open) return;
@@ -40,14 +40,19 @@ export function PetPopup({ open, onClose }: Props) {
       setDraft({ pet: null, animations: true, todoEnabled: false, todoItems: [] });
       setPhase("ask");
     }
-    setNewTodo("");
   }, [open, existing]);
 
   if (!open) return null;
 
   const save = () => {
     if (!draft.pet) return;
-    setPetConfig(SHELF_KEY, draft);
+    // Auto-generate the gentle starter list on save (only when enabled and empty)
+    const next: PetConfig = {
+      ...draft,
+      todoItems:
+        draft.todoEnabled && draft.todoItems.length === 0 ? [...SUGGESTED] : draft.todoItems,
+    };
+    setPetConfig(SHELF_KEY, next);
     onClose();
   };
   const remove = () => {
@@ -72,21 +77,21 @@ export function PetPopup({ open, onClose }: Props) {
         <div className="space-y-4">
           <p className="text-center text-sm opacity-80">Choose a friend</p>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
             {PETS.map((p) => {
               const active = draft.pet === p.id;
               return (
                 <button
                   key={p.id}
                   onClick={() => setDraft({ ...draft, pet: p.id })}
-                  className="flex items-center gap-2 rounded-xl px-3 py-2 text-left text-sm transition"
+                  className="flex flex-col items-center gap-1 rounded-xl px-2 py-2 text-center text-[11px] transition"
                   style={{
                     backgroundColor: active ? SHEET_FG : "rgba(255,255,255,0.05)",
                     color: active ? "#2b2b30" : SHEET_FG,
                     border: `1px solid ${active ? SHEET_FG : "rgba(255,255,255,0.12)"}`,
                   }}
                 >
-                  <span className="text-lg">{p.emoji}</span>
+                  <PetFigurine petId={p.id} size={44} />
                   <span className="leading-tight">{p.label}</span>
                 </button>
               );
@@ -101,62 +106,8 @@ export function PetPopup({ open, onClose }: Props) {
           <Row
             checked={draft.todoEnabled}
             onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
-            label="Simple editable pet to-do list"
+            label="Simple pet to-do list (added after you save)"
           />
-
-          {draft.todoEnabled && (
-            <div className="rounded-xl p-3" style={{ backgroundColor: "rgba(255,255,255,0.04)" }}>
-              <p className="mb-2 text-xs opacity-70">Gentle suggestions — keep what helps:</p>
-              <div className="mb-2 flex flex-wrap gap-1.5">
-                {SUGGESTED.filter((s) => !draft.todoItems.includes(s)).map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setDraft({ ...draft, todoItems: [...draft.todoItems, s] })}
-                    className="rounded-full border px-2 py-0.5 text-[11px] opacity-80 transition hover:opacity-100"
-                    style={{ borderColor: "rgba(255,255,255,0.2)" }}
-                  >
-                    + {s}
-                  </button>
-                ))}
-              </div>
-              <ul className="mb-2 space-y-1">
-                {draft.todoItems.map((t, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm">
-                    <span className="flex-1">• {t}</span>
-                    <button
-                      onClick={() =>
-                        setDraft({ ...draft, todoItems: draft.todoItems.filter((_, j) => j !== i) })
-                      }
-                      className="text-xs opacity-50 hover:opacity-90"
-                    >
-                      remove
-                    </button>
-                  </li>
-                ))}
-              </ul>
-              <div className="flex gap-2">
-                <input
-                  value={newTodo}
-                  onChange={(e) => setNewTodo(e.target.value)}
-                  placeholder="Add your own"
-                  className="flex-1 rounded-md border bg-transparent px-2 py-1 text-sm"
-                  style={{ borderColor: "rgba(255,255,255,0.2)", color: SHEET_FG }}
-                />
-                <button
-                  onClick={() => {
-                    const v = newTodo.trim();
-                    if (!v) return;
-                    setDraft({ ...draft, todoItems: [...draft.todoItems, v] });
-                    setNewTodo("");
-                  }}
-                  className="rounded-md px-3 text-sm"
-                  style={{ backgroundColor: SHEET_FG, color: "#2b2b30" }}
-                >
-                  Add
-                </button>
-              </div>
-            </div>
-          )}
 
           <div className="space-y-2 pt-1">
             <SheetButton full variant="primary" onClick={save}>
