@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { Book } from "./books";
 import { useSettings, SPINE_FONTS, bionicize } from "./useSettings";
 
@@ -9,6 +9,7 @@ type Props = {
 
 export function BookOpen({ book, onClose }: Props) {
   const { spineFont, cycleSpineFont, bionic, toggleBionic, trash, restoreTrash, clearTrash } = useSettings();
+  const [trashOpen, setTrashOpen] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -126,42 +127,51 @@ export function BookOpen({ book, onClose }: Props) {
             )}
             {isDashboard && (
               <div className="mt-8">
-                <div className="flex items-baseline justify-between">
-                  <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
-                    Trash
-                  </p>
-                  {trash.length > 0 && (
-                    <button
-                      onClick={clearTrash}
-                      className="font-sans text-[10px] uppercase tracking-wider text-ink/50 hover:text-ink"
-                    >
-                      empty
-                    </button>
-                  )}
-                </div>
-                {trash.length === 0 ? (
-                  <p className="mt-3 font-serif text-sm italic text-ink/50">
-                    Nothing here.
-                  </p>
-                ) : (
-                  <ul className="mt-3 space-y-2">
-                    {trash.map((t) => (
-                      <li
-                        key={t.id}
-                        className="flex items-center justify-between gap-2 rounded-md border border-ink/10 px-3 py-2"
-                      >
-                        <span className="truncate font-serif text-sm text-ink">{t.label}</span>
+                <button
+                  onClick={() => setTrashOpen((v) => !v)}
+                  className="flex w-full items-center justify-between rounded-md border border-ink/15 px-3 py-2 font-sans text-xs uppercase tracking-[0.25em] text-ink/70 transition hover:border-ink/40 hover:text-ink"
+                  aria-expanded={trashOpen}
+                >
+                  <span>Trash{trash.length > 0 ? ` · ${trash.length}` : ""}</span>
+                  <span className="text-ink/50">{trashOpen ? "−" : "+"}</span>
+                </button>
+                {trashOpen && (
+                  <div className="mt-3 animate-fade-in">
+                    {trash.length > 0 && (
+                      <div className="mb-2 flex justify-end">
                         <button
-                          onClick={() => restoreTrash(t.id)}
-                          aria-label={`Restore ${t.label}`}
-                          title="Bring it back"
-                          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-paper transition hover:opacity-80"
+                          onClick={clearTrash}
+                          className="font-sans text-[10px] uppercase tracking-wider text-ink/50 hover:text-ink"
                         >
-                          +
+                          empty
                         </button>
-                      </li>
-                    ))}
-                  </ul>
+                      </div>
+                    )}
+                    {trash.length === 0 ? (
+                      <p className="font-serif text-sm italic text-ink/50">
+                        Nothing here.
+                      </p>
+                    ) : (
+                      <ul className="space-y-2">
+                        {trash.map((t) => (
+                          <li
+                            key={t.id}
+                            className="flex items-center justify-between gap-2 rounded-md border border-ink/10 px-3 py-2"
+                          >
+                            <span className="truncate font-serif text-sm text-ink">{t.label}</span>
+                            <button
+                              onClick={() => restoreTrash(t.id)}
+                              aria-label={`Restore ${t.label}`}
+                              title="Bring it back"
+                              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-paper transition hover:opacity-80"
+                            >
+                              +
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 )}
               </div>
             )}
