@@ -143,7 +143,7 @@ export function Bookshelf() {
             className="relative flex flex-nowrap items-end justify-center gap-x-0.5 gap-y-3 px-2 pb-2 sm:gap-x-1 sm:px-3"
             style={{ minHeight: 180 }}
           >
-            {showShelfPet && (
+            {showShelfPlant && (
               <div className="hidden sm:flex shrink-0 self-end">
                 <ShelfPlant />
               </div>
@@ -187,10 +187,10 @@ export function Bookshelf() {
           <div className="absolute -bottom-12 right-6 h-12 w-4 rounded-b-sm" style={{ background: "var(--wood-dark)" }} />
         </div>
 
-        {showShelfPet && (
+        {(showShelfPet || showShelfPlant) && (
           <div className="mt-6 flex items-end justify-around gap-6 sm:hidden">
-            <ShelfPlant size={36} />
-            <ShelfPet onClick={() => setPetOpen(true)} height={110} />
+            {showShelfPlant && <ShelfPlant size={36} />}
+            {showShelfPet && <ShelfPet onClick={() => setPetOpen(true)} height={110} />}
           </div>
         )}
 
