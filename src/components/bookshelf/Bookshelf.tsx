@@ -180,6 +180,13 @@ export function Bookshelf() {
           <div className="absolute -bottom-12 right-6 h-12 w-4 rounded-b-sm" style={{ background: "var(--wood-dark)" }} />
         </div>
 
+        {showShelfPet && (
+          <div className="mt-6 flex items-end justify-around gap-6 sm:hidden">
+            <ShelfPlant size={36} />
+            <ShelfPet onClick={() => setPetOpen(true)} />
+          </div>
+        )}
+
         {editMode && (
           <div className="mt-20 rounded-lg border border-wood/30 bg-paper/60 p-5 backdrop-blur-sm animate-fade-in">
             <div className="flex flex-wrap items-center justify-between gap-3">
