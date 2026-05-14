@@ -3,121 +3,116 @@ type Props = {
 };
 
 /**
- * Full-body cat figurine rendered as SVG — a sitting side-profile tabby
- * with a curled tail, ear tufts, whiskers, and soft 3D shading.
+ * Cat figurine modeled after the 🐈 emoji — side profile, four legs on the
+ * ground, body horizontal, tail held high with a slight curl, head facing
+ * forward (left).
  */
 export function CatFigurine({ size = 64 }: Props) {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 100 100"
+      viewBox="0 0 120 100"
       aria-hidden
       style={{ display: "block", overflow: "visible" }}
     >
       <defs>
-        <radialGradient id="cat-fur" cx="40%" cy="35%" r="75%">
-          <stop offset="0%" stopColor="#f6cf9a" />
-          <stop offset="55%" stopColor="#d29156" />
-          <stop offset="100%" stopColor="#7a4318" />
-        </radialGradient>
-        <linearGradient id="cat-belly" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#fbe3c2" stopOpacity="0.0" />
-          <stop offset="60%" stopColor="#fbe3c2" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="#f1c896" stopOpacity="0.9" />
+        <linearGradient id="cat-fur" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f1c187" />
+          <stop offset="55%" stopColor="#cf8a4a" />
+          <stop offset="100%" stopColor="#7d4318" />
         </linearGradient>
-        <radialGradient id="cat-ear-inner" cx="50%" cy="60%" r="60%">
-          <stop offset="0%" stopColor="#f4a8b4" />
-          <stop offset="100%" stopColor="#a35a55" />
+        <linearGradient id="cat-belly" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f7d4a6" stopOpacity="0" />
+          <stop offset="100%" stopColor="#fbe3c2" stopOpacity="0.85" />
+        </linearGradient>
+        <radialGradient id="cat-ear" cx="50%" cy="70%" r="60%">
+          <stop offset="0%" stopColor="#e89aa6" />
+          <stop offset="100%" stopColor="#8a4a48" />
         </radialGradient>
-        <radialGradient id="cat-eye" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#a8e063" />
-          <stop offset="100%" stopColor="#3a6b1f" />
-        </radialGradient>
-        <filter id="cat-shadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="0.8" />
-        </filter>
       </defs>
 
-      {/* shelf shadow */}
-      <ellipse cx="52" cy="93" rx="32" ry="3" fill="rgba(0,0,0,0.28)" filter="url(#cat-shadow)" />
+      {/* ground shadow */}
+      <ellipse cx="60" cy="92" rx="44" ry="3" fill="rgba(0,0,0,0.3)" />
 
-      {/* tail — curled up behind body */}
+      {/* TAIL — held high with gentle curl, originating from rear (right) */}
       <path
-        d="M78,72 C92,62 92,42 78,38 C70,36 66,46 72,52 C76,56 80,60 76,66"
+        d="M96,68 C108,58 110,38 100,28 C94,22 88,28 92,34 C96,40 96,48 90,52"
         fill="none"
         stroke="url(#cat-fur)"
-        strokeWidth="9"
-        strokeLinecap="round"
-      />
-      {/* tail tip highlight */}
-      <path
-        d="M78,72 C90,63 90,44 79,40"
-        fill="none"
-        stroke="rgba(255,255,255,0.18)"
-        strokeWidth="3"
+        strokeWidth="8"
         strokeLinecap="round"
       />
 
-      {/* hind/body — sitting silhouette */}
+      {/* BODY — long horizontal oval, slight arch over the back */}
       <path
-        d="M30,88 C20,86 18,72 24,60 C28,50 38,44 52,44 C68,44 78,52 80,66 C82,78 76,88 70,90 Z"
+        d="M28,72
+           C24,58 38,50 60,50
+           C82,50 98,58 96,72
+           C96,80 88,82 60,82
+           C32,82 28,80 28,72 Z"
         fill="url(#cat-fur)"
       />
-      {/* belly */}
-      <ellipse cx="50" cy="76" rx="20" ry="14" fill="url(#cat-belly)" />
+      {/* belly shading */}
+      <path
+        d="M34,74 C42,82 80,82 92,74 C90,82 80,84 60,84 C40,84 36,82 34,74 Z"
+        fill="url(#cat-belly)"
+      />
 
+      {/* LEGS — four standing legs, front pair (left) and back pair (right). */}
+      {/* back legs */}
+      <rect x="80" y="74" width="7" height="16" rx="3" fill="url(#cat-fur)" />
+      <rect x="89" y="76" width="7" height="14" rx="3" fill="#a86a32" />
       {/* front legs */}
-      <path d="M40,90 C39,82 39,76 43,74 C47,73 49,80 48,90 Z" fill="url(#cat-fur)" />
-      <path d="M56,90 C55,82 55,76 59,74 C63,73 65,80 64,90 Z" fill="url(#cat-fur)" />
-      {/* paw shading */}
-      <ellipse cx="44" cy="89" rx="4.5" ry="1.6" fill="rgba(0,0,0,0.25)" />
-      <ellipse cx="60" cy="89" rx="4.5" ry="1.6" fill="rgba(0,0,0,0.25)" />
+      <rect x="32" y="74" width="7" height="16" rx="3" fill="url(#cat-fur)" />
+      <rect x="41" y="76" width="7" height="14" rx="3" fill="#a86a32" />
+      {/* paws */}
+      <ellipse cx="35.5" cy="90" rx="4.5" ry="1.6" fill="#5a2f10" />
+      <ellipse cx="44.5" cy="90" rx="4.5" ry="1.6" fill="#5a2f10" />
+      <ellipse cx="83.5" cy="90" rx="4.5" ry="1.6" fill="#5a2f10" />
+      <ellipse cx="92.5" cy="90" rx="4.5" ry="1.6" fill="#5a2f10" />
 
-      {/* head */}
+      {/* HEAD — round, facing forward (left side of body) */}
       <g>
-        {/* ears */}
-        <path d="M28,30 L34,12 L42,28 Z" fill="url(#cat-fur)" />
-        <path d="M30,28 L34,18 L40,28 Z" fill="url(#cat-ear-inner)" />
-        <path d="M70,30 L66,12 L58,28 Z" fill="url(#cat-fur)" />
-        <path d="M68,28 L64,18 L60,28 Z" fill="url(#cat-ear-inner)" />
+        {/* ears (triangular, on top of head) */}
+        <path d="M14,38 L16,22 L26,34 Z" fill="url(#cat-fur)" />
+        <path d="M17,34 L18,26 L24,33 Z" fill="url(#cat-ear)" />
+        <path d="M40,38 L38,22 L28,34 Z" fill="url(#cat-fur)" />
+        <path d="M37,34 L36,26 L30,33 Z" fill="url(#cat-ear)" />
 
-        {/* head shape — slightly wider than tall */}
-        <ellipse cx="50" cy="38" rx="22" ry="20" fill="url(#cat-fur)" />
+        {/* head circle */}
+        <circle cx="27" cy="46" r="17" fill="url(#cat-fur)" />
 
-        {/* cheek/muzzle highlight */}
-        <ellipse cx="50" cy="46" rx="11" ry="7" fill="#fbe3c2" opacity="0.55" />
+        {/* muzzle highlight */}
+        <ellipse cx="22" cy="52" rx="9" ry="6" fill="#fbe3c2" opacity="0.7" />
 
-        {/* eyes */}
-        <ellipse cx="42" cy="36" rx="3" ry="4" fill="url(#cat-eye)" />
-        <ellipse cx="58" cy="36" rx="3" ry="4" fill="url(#cat-eye)" />
-        {/* pupils */}
-        <ellipse cx="42" cy="36" rx="0.9" ry="3.4" fill="#1a1a1a" />
-        <ellipse cx="58" cy="36" rx="0.9" ry="3.4" fill="#1a1a1a" />
-        {/* eye glints */}
-        <circle cx="43" cy="34.5" r="0.7" fill="#ffffff" />
-        <circle cx="59" cy="34.5" r="0.7" fill="#ffffff" />
+        {/* eyes — slightly almond, looking forward */}
+        <ellipse cx="20" cy="44" rx="2" ry="2.6" fill="#2a4a16" />
+        <ellipse cx="30" cy="44" rx="2" ry="2.6" fill="#2a4a16" />
+        <ellipse cx="20" cy="44" rx="0.6" ry="2.2" fill="#0a0a0a" />
+        <ellipse cx="30" cy="44" rx="0.6" ry="2.2" fill="#0a0a0a" />
 
         {/* nose */}
-        <path d="M48,44 L52,44 L50,47 Z" fill="#7a3a2a" />
+        <path d="M23.5,52 L26.5,52 L25,54 Z" fill="#5a2418" />
         {/* mouth */}
-        <path d="M50,47 C49,49 47,49 46,48" fill="none" stroke="#3a1d0a" strokeWidth="0.7" strokeLinecap="round" />
-        <path d="M50,47 C51,49 53,49 54,48" fill="none" stroke="#3a1d0a" strokeWidth="0.7" strokeLinecap="round" />
+        <path d="M25,54 C24,55.5 22.5,55.5 21.8,54.7" fill="none" stroke="#3a1d0a" strokeWidth="0.6" strokeLinecap="round" />
+        <path d="M25,54 C26,55.5 27.5,55.5 28.2,54.7" fill="none" stroke="#3a1d0a" strokeWidth="0.6" strokeLinecap="round" />
 
         {/* whiskers */}
-        <g stroke="#3a1d0a" strokeWidth="0.5" strokeLinecap="round" opacity="0.7">
-          <line x1="42" y1="46" x2="32" y2="44" />
-          <line x1="42" y1="47" x2="32" y2="48" />
-          <line x1="58" y1="46" x2="68" y2="44" />
-          <line x1="58" y1="47" x2="68" y2="48" />
+        <g stroke="#3a1d0a" strokeWidth="0.5" strokeLinecap="round" opacity="0.75">
+          <line x1="20" y1="52" x2="8" y2="50" />
+          <line x1="20" y1="53" x2="8" y2="54" />
+          <line x1="30" y1="52" x2="42" y2="50" />
+          <line x1="30" y1="53" x2="42" y2="54" />
         </g>
+      </g>
 
-        {/* forehead tabby stripes */}
-        <g stroke="#5a2f10" strokeWidth="0.9" strokeLinecap="round" opacity="0.6" fill="none">
-          <path d="M46,22 C47,25 47,27 46,29" />
-          <path d="M50,21 C51,24 51,27 50,29" />
-          <path d="M54,22 C53,25 53,27 54,29" />
-        </g>
+      {/* subtle tabby stripes on body */}
+      <g stroke="#6b3a16" strokeWidth="1.2" strokeLinecap="round" opacity="0.45" fill="none">
+        <path d="M55,52 C56,58 56,62 55,66" />
+        <path d="M65,52 C66,58 66,62 65,66" />
+        <path d="M75,52 C76,58 76,62 75,66" />
+        <path d="M85,54 C86,60 86,64 85,68" />
       </g>
     </svg>
   );
