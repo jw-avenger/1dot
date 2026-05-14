@@ -19,7 +19,7 @@ const SUGGESTED = [
   "Send a kind message",
 ];
 
-const ASSURANCE = "You can change absolutely everything easily at any time.";
+const ASSURANCE = "You can change anything anytime.";
 
 export function PetPopup({ open, onClose }: Props) {
   const { petsConfig, setPetConfig, deletePet } = useSettings();
@@ -98,23 +98,37 @@ export function PetPopup({ open, onClose }: Props) {
             })}
           </div>
 
-          <Row
-            checked={draft.animations}
-            onChange={(v) => setDraft({ ...draft, animations: v })}
-            label="Enable light animations"
-          />
-          <Row
-            checked={draft.todoEnabled}
-            onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
-            label="Enable simple starter pet list."
-          />
+          {draft.pet && (
+            <>
+              <Row
+                checked={draft.animations}
+                onChange={(v) => setDraft({ ...draft, animations: v })}
+                label="Enable light animations."
+              />
+              <Row
+                checked={draft.todoEnabled}
+                onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
+                label="Enable simple starter pet list."
+              />
 
-          <div className="space-y-2 pt-1">
-            <SheetButton full variant="primary" onClick={save}>
-              Save for now?
-            </SheetButton>
+              <div className="space-y-2 pt-1">
+                <SheetButton full variant="primary" onClick={save}>
+                  Save for now?
+                </SheetButton>
+              </div>
+            </>
+          )}
+          <p className="text-center text-[11px] opacity-60 whitespace-nowrap">{ASSURANCE}</p>
+          <div className="flex justify-center pt-1">
+            <button
+              onClick={() => setPhase("ask")}
+              aria-label="Back"
+              className="text-lg opacity-70 transition hover:-translate-x-0.5 hover:opacity-100"
+              style={{ fontFamily: '"Fraunces", Georgia, serif' }}
+            >
+              ←
+            </button>
           </div>
-          <p className="text-center text-[11px] opacity-60">{ASSURANCE}</p>
         </div>
       )}
     </ConfirmSheet>
