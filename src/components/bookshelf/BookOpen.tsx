@@ -124,6 +124,17 @@ export function BookOpen({ book, onClose }: Props) {
               </p>
             )}
           </div>
+
+          <div className="col-span-1 flex justify-center border-t border-ink/10 px-6 py-4 md:col-span-2">
+            <button
+              onClick={onClose}
+              aria-label="Back to library"
+              className="group flex items-center gap-2 font-serif text-sm text-ink/70 transition hover:text-ink"
+            >
+              <span className="transition group-hover:-translate-x-0.5">←</span>
+              <span>Back to library</span>
+            </button>
+          </div>
         </div>
 
         <button
