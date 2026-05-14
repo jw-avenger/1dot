@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSettings, PETS } from "./useSettings";
 import { PetFigurine } from "./PetFigurine";
+import { CatFigurine } from "./CatFigurine";
 
 type Props = {
   onClick: () => void;
