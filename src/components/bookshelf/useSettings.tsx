@@ -219,6 +219,8 @@ export function useSettings() {
     slapToBasic: () =>
       patch({ atmosphere: "basic", tone: "basic", mice: "basic", sfxEnabled: false }),
     shutIt: () => patch({ sfxEnabled: false, mice: state.mice }), // sound off only
+    undo,
+    canUndo: history.length > 0,
   };
 }
 
