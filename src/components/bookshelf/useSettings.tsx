@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 
-export type SpineFont = "serif" | "sans" | "mono";
+export type SpineFont = "fantasy" | "serif" | "sans" | "mono";
 
 const FONT_KEY = "shelf:spineFont";
 const BIONIC_KEY = "shelf:bionic";
+const COLORS_KEY = "shelf:bookColors";
 
 export const SPINE_FONTS: { id: SpineFont; label: string; css: string }[] = [
+  { id: "fantasy", label: "Fantasy (Cinzel)", css: '"Cinzel", "Fraunces", Georgia, serif' },
   { id: "serif", label: "Serif (Fraunces)", css: '"Fraunces", Georgia, serif' },
   { id: "sans", label: "Sans (Inter)", css: '"Inter", system-ui, sans-serif' },
   { id: "mono", label: "Mono", css: 'ui-monospace, "SF Mono", Menlo, monospace' },
@@ -15,16 +17,19 @@ type Listener = () => void;
 const listeners = new Set<Listener>();
 
 let state = {
-  spineFont: "serif" as SpineFont,
+  spineFont: "fantasy" as SpineFont,
   bionic: false,
+  colors: {} as Record<string, string>, // bookId -> color override
 };
 
 function load() {
   try {
     const f = localStorage.getItem(FONT_KEY);
     const b = localStorage.getItem(BIONIC_KEY);
-    if (f === "serif" || f === "sans" || f === "mono") state.spineFont = f;
+    const c = localStorage.getItem(COLORS_KEY);
+    if (f === "fantasy" || f === "serif" || f === "sans" || f === "mono") state.spineFont = f;
     if (b === "true") state.bionic = true;
+    if (c) state.colors = JSON.parse(c);
   } catch {
     // ignore
   }
@@ -52,6 +57,7 @@ export function useSettings() {
   return {
     spineFont: state.spineFont,
     bionic: state.bionic,
+    colors: state.colors,
     setSpineFont(f: SpineFont) {
       state = { ...state, spineFont: f };
       try {
@@ -70,6 +76,18 @@ export function useSettings() {
       state = { ...state, bionic: !state.bionic };
       try {
         localStorage.setItem(BIONIC_KEY, String(state.bionic));
+      } catch {
+        // ignore
+      }
+      emit();
+    },
+    setBookColor(id: string, color: string | null) {
+      const next = { ...state.colors };
+      if (color) next[id] = color;
+      else delete next[id];
+      state = { ...state, colors: next };
+      try {
+        localStorage.setItem(COLORS_KEY, JSON.stringify(next));
       } catch {
         // ignore
       }

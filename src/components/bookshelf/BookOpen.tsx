@@ -66,7 +66,7 @@ export function BookOpen({ book, onClose }: Props) {
                 {bionicize("A small chapter of your home, opened with care.", bionic)}
               </p>
             </div>
-            <p className="font-sans text-xs text-ink/50">— Stress-Free Home Help</p>
+            <p className="font-sans text-xs text-ink/50">— Library</p>
           </div>
 
           <div

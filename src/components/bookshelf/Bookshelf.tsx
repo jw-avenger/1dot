@@ -3,6 +3,7 @@ import { BOOKS } from "./books";
 import { BookSpine } from "./BookSpine";
 import { BookOpen } from "./BookOpen";
 import { SimpleMenu } from "./SimpleMenu";
+import { SidePanel } from "./SidePanel";
 import { useShelfState } from "./useShelfState";
 
 type ViewMode = "shelf" | "simple";
@@ -112,6 +113,7 @@ export function Bookshelf() {
           {Controls}
         </header>
         <SimpleMenu onSelect={(id) => setOpenId(id)} />
+        <SidePanel />
         {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} />}
       </div>
     );
@@ -129,11 +131,8 @@ export function Bookshelf() {
       {/* header */}
       <header className="relative z-10 flex flex-wrap items-center justify-between gap-3 px-6 pt-8 md:px-12">
         <div>
-          <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
-            Stress-Free Home Help
-          </p>
-          <h1 className="mt-1 font-serif text-2xl font-semibold text-ink">
-            Your Library
+          <h1 className="font-serif text-2xl font-semibold text-ink">
+            Library
           </h1>
         </div>
         {Controls}
@@ -241,11 +240,9 @@ export function Bookshelf() {
           </div>
         )}
 
-        <p className="mt-16 pb-12 text-center font-serif text-sm italic text-ink/50">
-          Pick up a book to begin. Everything in its place, nothing in a hurry.
-        </p>
       </main>
 
+      <SidePanel />
       {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} />}
     </div>
   );
