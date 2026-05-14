@@ -36,7 +36,7 @@ export function ShelfPet({ onClick }: Props) {
       >
         {pet ? (
           <div className="pb-1">
-            <PetFigurine petId={pet.id} size={56} />
+            {pet.id === "cat" ? <CatFigurine size={60} /> : <PetFigurine petId={pet.id} size={56} />}
           </div>
         ) : (
           <span
