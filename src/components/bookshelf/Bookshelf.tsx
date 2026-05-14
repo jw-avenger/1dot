@@ -144,11 +144,6 @@ export function Bookshelf() {
             className="relative flex flex-nowrap items-end justify-center gap-x-0.5 gap-y-3 px-2 pb-2 sm:gap-x-1 sm:px-3"
             style={{ minHeight: 180 }}
           >
-            {showShelfPlant && (
-              <div className="hidden sm:flex shrink-0 self-end">
-                <ShelfPlant blank={settings.plantDismissed} />
-              </div>
-            )}
             <div className="flex flex-1 flex-wrap items-end justify-center gap-x-0.5 gap-y-3 sm:gap-x-1">
               {shelved.map((book) => (
                 <BookSpine
@@ -161,11 +156,6 @@ export function Bookshelf() {
                 />
               ))}
             </div>
-            {showShelfPet && (
-              <div className="hidden sm:flex shrink-0 self-end">
-                <ShelfPet onClick={() => setPetOpen(true)} blank={settings.petDismissed} />
-              </div>
-            )}
             {shelved.length === 0 && (
               <p className="py-16 font-serif italic" style={{ color: "var(--ink)", opacity: 0.5 }}>
                 The shelf is bare. Open the menu to reshelve.
@@ -189,10 +179,10 @@ export function Bookshelf() {
         </div>
 
         {(showShelfPet || showShelfPlant) && (
-          <div className="mt-6 flex items-end justify-around gap-6 sm:hidden">
-            {showShelfPlant && <ShelfPlant size={36} blank={settings.plantDismissed} />}
+          <div className="mt-6 flex items-end justify-center gap-8 px-6 sm:gap-16">
+            {showShelfPlant && <ShelfPlant blank={settings.plantDismissed} />}
             {showShelfPet && (
-              <ShelfPet onClick={() => setPetOpen(true)} height={110} blank={settings.petDismissed} />
+              <ShelfPet onClick={() => setPetOpen(true)} blank={settings.petDismissed} />
             )}
           </div>
         )}
