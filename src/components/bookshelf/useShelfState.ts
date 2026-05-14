@@ -33,5 +33,7 @@ export function useShelfState(allIds: string[]) {
     persist(next);
   };
 
-  return { onShelf, toggle };
+  const reshelveAll = () => persist(new Set(allIds));
+
+  return { onShelf, toggle, reshelveAll };
 }
