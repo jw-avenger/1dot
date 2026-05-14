@@ -332,6 +332,47 @@ export function SidePanel(props: Props) {
           </button>
         </Row>
 
+        <Row>
+          <div className="mb-1.5 flex items-center justify-between">
+            <Label>Trash</Label>
+            {s.trash.length > 0 && (
+              <button
+                onClick={() => s.clearTrash()}
+                className="text-[10px] uppercase tracking-wider"
+                style={{ color: DIM }}
+              >
+                empty
+              </button>
+            )}
+          </div>
+          {s.trash.length === 0 ? (
+            <div className="text-[12px] italic" style={{ color: DIM }}>Nothing here.</div>
+          ) : (
+            <ul className="space-y-1">
+              {s.trash.map((t) => (
+                <li
+                  key={t.id}
+                  className="flex items-center justify-between gap-2 rounded-md px-2 py-1.5"
+                  style={{ backgroundColor: "rgba(255,255,255,0.04)" }}
+                >
+                  <span className="truncate text-[12px]">{t.label}</span>
+                  <button
+                    onClick={() => s.restoreTrash(t.id)}
+                    aria-label={`Restore ${t.label}`}
+                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[14px]"
+                    style={{
+                      backgroundColor: PANEL_FG,
+                      color: PANEL_BG,
+                    }}
+                  >
+                    +
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Row>
+
         <div className="flex-1" />
 
         <button
