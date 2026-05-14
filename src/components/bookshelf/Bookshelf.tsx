@@ -239,11 +239,9 @@ export function Bookshelf() {
           </div>
         )}
 
-        <p className="mt-16 pb-12 text-center font-serif text-sm italic text-ink/50">
-          Pick up a book to begin. Everything in its place, nothing in a hurry.
-        </p>
       </main>
 
+      <SidePanel />
       {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} />}
     </div>
   );
