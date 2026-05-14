@@ -118,6 +118,7 @@ const defaults: State = {
   romanticColor: "#c42b2b",
   arrowHidden: false,
   hideSettingsBook: false,
+  trash: [],
 };
 
 let state: State = { ...defaults };
