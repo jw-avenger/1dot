@@ -111,11 +111,14 @@ export function PetPopup({ open, onClose }: Props) {
 
           <div className="space-y-2 pt-1">
             <SheetButton full variant="primary" onClick={save}>
-              Save for now? You can change anything at any time.
+              <span className="flex flex-col leading-tight">
+                <span>Save for now?</span>
+                <span>You can change anything at any time.</span>
+              </span>
             </SheetButton>
             {existing && (
               <SheetButton full variant="danger" onClick={remove}>
-                Remove pet
+                Gently delete pet
               </SheetButton>
             )}
             <SheetButton full onClick={onClose}>Cancel</SheetButton>
