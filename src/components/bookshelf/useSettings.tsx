@@ -119,6 +119,7 @@ const defaults: State = {
   romanticColor: "#c42b2b",
   arrowHidden: false,
   hideSettingsBook: false,
+  petDismissed: false,
   trash: [],
 };
 
