@@ -113,9 +113,16 @@ const defaults: State = {
 
 let state: State = { ...defaults };
 let loaded = false;
+let history: State[] = [];
+const HISTORY_MAX = 30;
 
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
+
+function snapshot() {
+  history.push(state);
+  if (history.length > HISTORY_MAX) history.shift();
+}
 
 function load() {
   if (typeof window === "undefined") return;
@@ -135,13 +142,23 @@ function save() {
 }
 
 function set<K extends keyof State>(key: K, value: State[K]) {
+  snapshot();
   state = { ...state, [key]: value };
   save();
   emit();
 }
 
 function patch(p: Partial<State>) {
+  snapshot();
   state = { ...state, ...p };
+  save();
+  emit();
+}
+
+function undo() {
+  const prev = history.pop();
+  if (!prev) return;
+  state = prev;
   save();
   emit();
 }
@@ -202,6 +219,8 @@ export function useSettings() {
     slapToBasic: () =>
       patch({ atmosphere: "basic", tone: "basic", mice: "basic", sfxEnabled: false }),
     shutIt: () => patch({ sfxEnabled: false, mice: state.mice }), // sound off only
+    undo,
+    canUndo: history.length > 0,
   };
 }
 
