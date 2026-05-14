@@ -22,7 +22,7 @@ const SUGGESTED = [
 const ASSURANCE = "You can change absolutely everything easily at any time.";
 
 export function PetPopup({ open, onClose }: Props) {
-  const { petsConfig, setPetConfig } = useSettings();
+  const { petsConfig, setPetConfig, deletePet } = useSettings();
   const existing = petsConfig[SHELF_KEY];
   const [phase, setPhase] = useState<"ask" | "configure">("ask");
   const [draft, setDraft] = useState<PetConfig>({
@@ -47,7 +47,6 @@ export function PetPopup({ open, onClose }: Props) {
 
   const save = () => {
     if (!draft.pet) return;
-    // Auto-generate the gentle starter list on save (only when enabled and empty)
     const next: PetConfig = {
       ...draft,
       todoItems:
@@ -57,7 +56,7 @@ export function PetPopup({ open, onClose }: Props) {
     onClose();
   };
   const remove = () => {
-    setPetConfig(SHELF_KEY, null);
+    deletePet(SHELF_KEY);
     onClose();
   };
 
@@ -112,11 +111,14 @@ export function PetPopup({ open, onClose }: Props) {
 
           <div className="space-y-2 pt-1">
             <SheetButton full variant="primary" onClick={save}>
-              Save for now? You can change anything at any time.
+              <span className="flex flex-col leading-tight">
+                <span>Save for now?</span>
+                <span>You can change anything at any time.</span>
+              </span>
             </SheetButton>
             {existing && (
               <SheetButton full variant="danger" onClick={remove}>
-                Remove pet
+                Gently delete pet
               </SheetButton>
             )}
             <SheetButton full onClick={onClose}>Cancel</SheetButton>

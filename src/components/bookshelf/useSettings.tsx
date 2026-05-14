@@ -63,6 +63,14 @@ export const PETS: { id: string; label: string; emoji: string }[] = [
   { id: "hamster", label: "Paper Planner", emoji: "🐹" },
 ];
 
+export type TrashItem = {
+  id: string;
+  kind: "pet";
+  label: string;
+  data: any;
+  deletedAt: number;
+};
+
 type State = {
   spineFont: SpineFont;
   customFont: string;
@@ -85,6 +93,7 @@ type State = {
   romanticColor: string; // hex used for romantic accents
   arrowHidden: boolean; // user clicked the arrow twice to hide it
   hideSettingsBook: boolean; // remove Settings book from library
+  trash: TrashItem[];
 };
 
 const defaults: State = {
@@ -109,6 +118,7 @@ const defaults: State = {
   romanticColor: "#c42b2b",
   arrowHidden: false,
   hideSettingsBook: false,
+  trash: [],
 };
 
 let state: State = { ...defaults };
@@ -198,6 +208,36 @@ export function useSettings() {
       else delete next[id];
       set("petsConfig", next);
     },
+    deletePet: (id: string) => {
+      const existing = state.petsConfig[id];
+      if (!existing) return;
+      const petMeta = PETS.find((p) => p.id === existing.pet);
+      const trashItem: TrashItem = {
+        id: `pet-${id}-${Date.now()}`,
+        kind: "pet",
+        label: petMeta ? `${petMeta.emoji} ${petMeta.label} pet` : "Pet",
+        data: { slot: id, config: existing },
+        deletedAt: Date.now(),
+      };
+      const nextPets = { ...state.petsConfig };
+      delete nextPets[id];
+      patch({ petsConfig: nextPets, trash: [trashItem, ...state.trash] });
+    },
+    restoreTrash: (trashId: string) => {
+      const item = state.trash.find((t) => t.id === trashId);
+      if (!item) return;
+      const nextTrash = state.trash.filter((t) => t.id !== trashId);
+      if (item.kind === "pet") {
+        const { slot, config } = item.data;
+        patch({
+          petsConfig: { ...state.petsConfig, [slot]: config },
+          trash: nextTrash,
+        });
+      } else {
+        patch({ trash: nextTrash });
+      }
+    },
+    clearTrash: () => set("trash", []),
     setTalkToMe: (v: boolean) => set("talkToMe", v),
     setLighting: (v: Lighting) => set("lighting", v),
     setLightingCustom: (v: string) => set("lightingCustom", v),
