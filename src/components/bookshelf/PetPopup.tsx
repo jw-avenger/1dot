@@ -47,7 +47,6 @@ export function PetPopup({ open, onClose }: Props) {
 
   const save = () => {
     if (!draft.pet) return;
-    // Auto-generate the gentle starter list on save (only when enabled and empty)
     const next: PetConfig = {
       ...draft,
       todoItems:
@@ -57,7 +56,7 @@ export function PetPopup({ open, onClose }: Props) {
     onClose();
   };
   const remove = () => {
-    setPetConfig(SHELF_KEY, null);
+    deletePet(SHELF_KEY);
     onClose();
   };
 
