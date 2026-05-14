@@ -93,6 +93,7 @@ type State = {
   romanticColor: string; // hex used for romantic accents
   arrowHidden: boolean; // user clicked the arrow twice to hide it
   hideSettingsBook: boolean; // remove Settings book from library
+  petDismissed: boolean; // user said No / deleted pet — hide slot until restored
   trash: TrashItem[];
 };
 
@@ -118,6 +119,7 @@ const defaults: State = {
   romanticColor: "#c42b2b",
   arrowHidden: false,
   hideSettingsBook: false,
+  petDismissed: false,
   trash: [],
 };
 
@@ -206,22 +208,26 @@ export function useSettings() {
       const next = { ...state.petsConfig };
       if (cfg) next[id] = cfg;
       else delete next[id];
-      set("petsConfig", next);
+      patch({ petsConfig: next, petDismissed: cfg ? false : state.petDismissed });
     },
+    dismissPet: () => patch({ petDismissed: true }),
     deletePet: (id: string) => {
       const existing = state.petsConfig[id];
-      if (!existing) return;
-      const petMeta = PETS.find((p) => p.id === existing.pet);
-      const trashItem: TrashItem = {
-        id: `pet-${id}-${Date.now()}`,
-        kind: "pet",
-        label: petMeta ? `${petMeta.emoji} ${petMeta.label} pet` : "Pet",
-        data: { slot: id, config: existing },
-        deletedAt: Date.now(),
-      };
       const nextPets = { ...state.petsConfig };
-      delete nextPets[id];
-      patch({ petsConfig: nextPets, trash: [trashItem, ...state.trash] });
+      let nextTrash = state.trash;
+      if (existing) {
+        const petMeta = PETS.find((p) => p.id === existing.pet);
+        const trashItem: TrashItem = {
+          id: `pet-${id}-${Date.now()}`,
+          kind: "pet",
+          label: petMeta ? `${petMeta.emoji} ${petMeta.label} pet` : "Pet",
+          data: { slot: id, config: existing },
+          deletedAt: Date.now(),
+        };
+        delete nextPets[id];
+        nextTrash = [trashItem, ...state.trash];
+      }
+      patch({ petsConfig: nextPets, trash: nextTrash, petDismissed: true });
     },
     restoreTrash: (trashId: string) => {
       const item = state.trash.find((t) => t.id === trashId);
@@ -232,6 +238,7 @@ export function useSettings() {
         patch({
           petsConfig: { ...state.petsConfig, [slot]: config },
           trash: nextTrash,
+          petDismissed: false,
         });
       } else {
         patch({ trash: nextTrash });

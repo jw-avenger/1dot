@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useSettings } from "./useSettings";
 
 type Props = {
   open: boolean;
@@ -6,12 +7,14 @@ type Props = {
   title?: string;
   children: React.ReactNode;
   maxWidth?: number;
+  showSimplify?: boolean;
 };
 
 export const SHEET_BG = "#2b2b30";
 export const SHEET_FG = "#e6e3da";
 
-export function ConfirmSheet({ open, onClose, title, children, maxWidth = 360 }: Props) {
+export function ConfirmSheet({ open, onClose, title, children, maxWidth = 360, showSimplify = true }: Props) {
+  const { slapToBasic } = useSettings();
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -37,6 +40,21 @@ export function ConfirmSheet({ open, onClose, title, children, maxWidth = 360 }:
           </p>
         )}
         {children}
+        {showSimplify && (
+          <button
+            onClick={() => { slapToBasic(); onClose(); }}
+            className="mt-4 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
+            style={{
+              color: SHEET_FG,
+              opacity: 0.55,
+              border: "1px solid rgba(255,255,255,0.12)",
+              backgroundColor: "transparent",
+            }}
+            title="Take everything to basic mode"
+          >
+            [ Simplify ]
+          </button>
+        )}
       </div>
     </div>
   );

@@ -55,7 +55,7 @@ export function PetPopup({ open, onClose }: Props) {
     setPetConfig(SHELF_KEY, next);
     onClose();
   };
-  const remove = () => {
+  const declineOrRemove = () => {
     deletePet(SHELF_KEY);
     onClose();
   };
@@ -69,7 +69,7 @@ export function PetPopup({ open, onClose }: Props) {
           </p>
           <div className="flex gap-3">
             <SheetButton full onClick={() => setPhase("configure")} variant="primary">Yes</SheetButton>
-            <SheetButton full onClick={onClose}>No</SheetButton>
+            <SheetButton full onClick={declineOrRemove}>No</SheetButton>
           </div>
           <p className="mt-3 text-center text-[11px] opacity-60">{ASSURANCE}</p>
         </>
@@ -106,22 +106,13 @@ export function PetPopup({ open, onClose }: Props) {
           <Row
             checked={draft.todoEnabled}
             onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
-            label="Simple pet to-do list (added after you save)"
+            label="Enable simple starter pet list."
           />
 
           <div className="space-y-2 pt-1">
             <SheetButton full variant="primary" onClick={save}>
-              <span className="flex flex-col leading-tight">
-                <span>Save for now?</span>
-                <span>You can change anything at any time.</span>
-              </span>
+              Save for now?
             </SheetButton>
-            {existing && (
-              <SheetButton full variant="danger" onClick={remove}>
-                Gently delete pet
-              </SheetButton>
-            )}
-            <SheetButton full onClick={onClose}>Cancel</SheetButton>
           </div>
           <p className="text-center text-[11px] opacity-60">{ASSURANCE}</p>
         </div>
