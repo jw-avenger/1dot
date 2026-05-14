@@ -63,6 +63,14 @@ export const PETS: { id: string; label: string; emoji: string }[] = [
   { id: "hamster", label: "Paper Planner", emoji: "🐹" },
 ];
 
+export type TrashItem = {
+  id: string;
+  kind: "pet";
+  label: string;
+  data: any;
+  deletedAt: number;
+};
+
 type State = {
   spineFont: SpineFont;
   customFont: string;
