@@ -8,7 +8,7 @@ type Props = {
 };
 
 export function BookOpen({ book, onClose }: Props) {
-  const { spineFont, cycleSpineFont, bionic, toggleBionic } = useSettings();
+  const { spineFont, cycleSpineFont, bionic, toggleBionic, trash, restoreTrash, clearTrash } = useSettings();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -17,6 +17,7 @@ export function BookOpen({ book, onClose }: Props) {
   }, [onClose]);
 
   const isSettings = book.id === "settings";
+  const isDashboard = book.id === "dashboard";
   const currentFontLabel = SPINE_FONTS.find((f) => f.id === spineFont)?.label ?? spineFont;
 
   return (
@@ -122,6 +123,47 @@ export function BookOpen({ book, onClose }: Props) {
               <p className="mt-6 font-sans text-xs italic text-ink/50">
                 Tap “Spine font” or “Bionic reading” to change.
               </p>
+            )}
+            {isDashboard && (
+              <div className="mt-8">
+                <div className="flex items-baseline justify-between">
+                  <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
+                    Trash
+                  </p>
+                  {trash.length > 0 && (
+                    <button
+                      onClick={clearTrash}
+                      className="font-sans text-[10px] uppercase tracking-wider text-ink/50 hover:text-ink"
+                    >
+                      empty
+                    </button>
+                  )}
+                </div>
+                {trash.length === 0 ? (
+                  <p className="mt-3 font-serif text-sm italic text-ink/50">
+                    Nothing here.
+                  </p>
+                ) : (
+                  <ul className="mt-3 space-y-2">
+                    {trash.map((t) => (
+                      <li
+                        key={t.id}
+                        className="flex items-center justify-between gap-2 rounded-md border border-ink/10 px-3 py-2"
+                      >
+                        <span className="truncate font-serif text-sm text-ink">{t.label}</span>
+                        <button
+                          onClick={() => restoreTrash(t.id)}
+                          aria-label={`Restore ${t.label}`}
+                          title="Bring it back"
+                          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-paper transition hover:opacity-80"
+                        >
+                          +
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             )}
           </div>
 
