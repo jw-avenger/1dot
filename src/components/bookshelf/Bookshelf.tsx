@@ -142,9 +142,9 @@ export function Bookshelf() {
                 editMode={editMode}
                 onClick={() => handleOpenBook(book.id)}
                 onToggle={() => toggle(book.id)}
-                onPetClick={() => setPetBookId(book.id)}
               />
             ))}
+            {showShelfPet && <ShelfPet onClick={() => setPetOpen(true)} />}
             {shelved.length === 0 && (
               <p className="py-16 font-serif italic" style={{ color: "var(--ink)", opacity: 0.5 }}>
                 The shelf is bare. Open the menu to reshelve.
