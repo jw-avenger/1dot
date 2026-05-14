@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ConfirmSheet, SheetButton, SHEET_FG } from "./ConfirmSheet";
 import { PETS, useSettings, type PetConfig } from "./useSettings";
 import { PetFigurine } from "./PetFigurine";
+import { CatFigurine } from "./CatFigurine";
 
 type Props = {
   open: boolean;
