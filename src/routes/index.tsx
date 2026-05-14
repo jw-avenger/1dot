@@ -1,26 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Bookshelf } from "@/components/bookshelf/Bookshelf";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Stress-Free Home Help — Your Library" },
+      {
+        name: "description",
+        content:
+          "A cozy, calm home for everything you manage — pick a book from the shelf to begin.",
+      },
+      { property: "og:title", content: "Stress-Free Home Help" },
+      {
+        property: "og:description",
+        content: "A cozy bookshelf menu for managing your home, your way.",
+      },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
 function Index() {
-  return <PlaceholderIndex />;
+  return <Bookshelf />;
 }
