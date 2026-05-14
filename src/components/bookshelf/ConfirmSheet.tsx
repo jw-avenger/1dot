@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useSettings } from "./useSettings";
 
 type Props = {
   open: boolean;
@@ -6,6 +7,7 @@ type Props = {
   title?: string;
   children: React.ReactNode;
   maxWidth?: number;
+  showSimplify?: boolean;
 };
 
 export const SHEET_BG = "#2b2b30";
