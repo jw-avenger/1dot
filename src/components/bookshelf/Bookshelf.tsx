@@ -84,7 +84,7 @@ export function Bookshelf() {
   const openBook = visibleBooks.find((b) => b.id === openId) ?? null;
   const offShelf = visibleBooks.filter((b) => !onShelf.has(b.id));
   const shelved = visibleBooks.filter((b) => onShelf.has(b.id));
-  const showShelfPet = settings.atmosphere !== "basic";
+  const showShelfPet = settings.atmosphere !== "basic" && !settings.petDismissed;
 
   const panelProps = {
     open: panelOpen,
