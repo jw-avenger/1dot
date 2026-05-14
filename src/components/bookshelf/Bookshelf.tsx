@@ -90,8 +90,9 @@ export function Bookshelf() {
   const openBook = visibleBooks.find((b) => b.id === openId) ?? null;
   const offShelf = visibleBooks.filter((b) => !onShelf.has(b.id));
   const shelved = visibleBooks.filter((b) => onShelf.has(b.id));
-  const showShelfPet = settings.atmosphere !== "basic" && !settings.petDismissed;
-  const showShelfPlant = settings.atmosphere !== "basic" && !settings.plantDismissed;
+  const showWidgets = settings.atmosphere !== "basic";
+  const showShelfPet = showWidgets;
+  const showShelfPlant = showWidgets;
 
   const panelProps = {
     open: panelOpen,
@@ -145,7 +146,7 @@ export function Bookshelf() {
           >
             {showShelfPlant && (
               <div className="hidden sm:flex shrink-0 self-end">
-                <ShelfPlant />
+                <ShelfPlant blank={settings.plantDismissed} />
               </div>
             )}
             <div className="flex flex-1 flex-wrap items-end justify-center gap-x-0.5 gap-y-3 sm:gap-x-1">
@@ -162,7 +163,7 @@ export function Bookshelf() {
             </div>
             {showShelfPet && (
               <div className="hidden sm:flex shrink-0 self-end">
-                <ShelfPet onClick={() => setPetOpen(true)} />
+                <ShelfPet onClick={() => setPetOpen(true)} blank={settings.petDismissed} />
               </div>
             )}
             {shelved.length === 0 && (
@@ -189,8 +190,10 @@ export function Bookshelf() {
 
         {(showShelfPet || showShelfPlant) && (
           <div className="mt-6 flex items-end justify-around gap-6 sm:hidden">
-            {showShelfPlant && <ShelfPlant size={36} />}
-            {showShelfPet && <ShelfPet onClick={() => setPetOpen(true)} height={110} />}
+            {showShelfPlant && <ShelfPlant size={36} blank={settings.plantDismissed} />}
+            {showShelfPet && (
+              <ShelfPet onClick={() => setPetOpen(true)} height={110} blank={settings.petDismissed} />
+            )}
           </div>
         )}
 
