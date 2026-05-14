@@ -1,17 +1,121 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BOOKS } from "./books";
 import { BookSpine } from "./BookSpine";
 import { BookOpen } from "./BookOpen";
+import { SimpleMenu } from "./SimpleMenu";
 import { useShelfState } from "./useShelfState";
+
+type ViewMode = "shelf" | "simple";
+type Theme = "light" | "dark";
+
+function useLocalState<T extends string>(key: string, initial: T): [T, (v: T) => void] {
+  const [value, setValue] = useState<T>(initial);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw) setValue(raw as T);
+    } catch {
+      // ignore
+    }
+  }, [key]);
+  const set = (v: T) => {
+    setValue(v);
+    try {
+      localStorage.setItem(key, v);
+    } catch {
+      // ignore
+    }
+  };
+  return [value, set];
+}
 
 export function Bookshelf() {
   const [openId, setOpenId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
+  const [viewMode, setViewMode] = useLocalState<ViewMode>("shelf:viewMode", "shelf");
+  const [theme, setTheme] = useLocalState<Theme>("shelf:theme", "light");
   const allIds = BOOKS.map((b) => b.id);
-  const { onShelf, toggle } = useShelfState(allIds);
+  const { onShelf, toggle, reshelveAll } = useShelfState(allIds);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "dark") root.classList.add("dark");
+    else root.classList.remove("dark");
+  }, [theme]);
 
   const openBook = BOOKS.find((b) => b.id === openId) ?? null;
   const offShelf = BOOKS.filter((b) => !onShelf.has(b.id));
+
+  const Controls = (
+    <div className="flex flex-wrap items-center gap-2">
+      <div
+        className="flex overflow-hidden rounded-full border text-sm"
+        style={{ borderColor: "var(--border)", backgroundColor: "var(--paper)" }}
+      >
+        <button
+          onClick={() => setViewMode("shelf")}
+          className="px-3 py-1.5 transition"
+          style={{
+            backgroundColor: viewMode === "shelf" ? "var(--wood-dark)" : "transparent",
+            color: viewMode === "shelf" ? "var(--paper)" : "var(--ink)",
+          }}
+        >
+          Shelf
+        </button>
+        <button
+          onClick={() => setViewMode("simple")}
+          className="px-3 py-1.5 transition"
+          style={{
+            backgroundColor: viewMode === "simple" ? "var(--wood-dark)" : "transparent",
+            color: viewMode === "simple" ? "var(--paper)" : "var(--ink)",
+          }}
+        >
+          Simple
+        </button>
+      </div>
+      <button
+        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+        className="rounded-full border px-3 py-1.5 text-sm transition"
+        style={{
+          borderColor: "var(--border)",
+          backgroundColor: "var(--paper)",
+          color: "var(--ink)",
+        }}
+        aria-label="Toggle theme"
+      >
+        {theme === "light" ? "🌙 Dark" : "☀️ Light"}
+      </button>
+      {viewMode === "shelf" && (
+        <button
+          onClick={() => setEditMode((v) => !v)}
+          className="rounded-full border px-4 py-1.5 text-sm shadow-sm transition"
+          style={{
+            borderColor: "var(--border)",
+            backgroundColor: "var(--paper)",
+            color: "var(--ink)",
+          }}
+        >
+          {editMode ? "Done arranging" : "Arrange shelf"}
+        </button>
+      )}
+    </div>
+  );
+
+  if (viewMode === "simple") {
+    return (
+      <div style={{ backgroundColor: "var(--background)" }}>
+        <header
+          className="flex flex-wrap items-center justify-between gap-3 px-6 pt-8 md:px-12"
+          style={{ backgroundColor: "var(--background)", color: "var(--foreground)" }}
+        >
+          <p className="font-serif text-lg font-semibold">Library</p>
+          {Controls}
+        </header>
+        <SimpleMenu onSelect={(id) => setOpenId(id)} />
+        {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} />}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -23,7 +127,7 @@ export function Bookshelf() {
       }}
     >
       {/* header */}
-      <header className="relative z-10 flex items-center justify-between px-6 pt-8 md:px-12">
+      <header className="relative z-10 flex flex-wrap items-center justify-between gap-3 px-6 pt-8 md:px-12">
         <div>
           <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
             Stress-Free Home Help
@@ -32,12 +136,7 @@ export function Bookshelf() {
             Your Library
           </h1>
         </div>
-        <button
-          onClick={() => setEditMode((v) => !v)}
-          className="rounded-full border border-wood/40 bg-paper/70 px-4 py-2 font-sans text-sm text-ink shadow-sm backdrop-blur-sm transition hover:bg-paper"
-        >
-          {editMode ? "Done arranging" : "Arrange shelf"}
-        </button>
+        {Controls}
       </header>
 
       {/* lamp glow */}
@@ -117,9 +216,18 @@ export function Bookshelf() {
         {/* off-shelf tray */}
         {editMode && (
           <div className="mt-20 rounded-lg border border-wood/30 bg-paper/60 p-5 backdrop-blur-sm animate-fade-in">
-            <p className="font-sans text-xs uppercase tracking-[0.25em] text-ink/60">
-              Off the shelf
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="font-sans text-xs uppercase tracking-[0.25em] text-ink/60">
+                Off the shelf
+              </p>
+              <button
+                onClick={reshelveAll}
+                disabled={offShelf.length === 0}
+                className="rounded-full bg-wood-dark px-4 py-1.5 font-sans text-xs text-paper shadow-sm transition hover:bg-wood disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Reshelve all books
+              </button>
+            </div>
             {offShelf.length === 0 ? (
               <p className="mt-3 font-serif italic text-ink/50">
                 Every book is on the shelf.

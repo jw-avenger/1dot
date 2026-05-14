@@ -172,6 +172,20 @@
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+
+  /* Cozy bookshelf — dark */
+  --background: oklch(0.18 0.02 50);
+  --foreground: oklch(0.92 0.02 80);
+  --wall: oklch(0.2 0.02 50);
+  --wood-dark: oklch(0.18 0.03 40);
+  --wood: oklch(0.28 0.04 45);
+  --wood-light: oklch(0.4 0.05 50);
+  --lamp-glow: oklch(0.5 0.1 75);
+  --paper: oklch(0.24 0.02 60);
+  --paper-edge: oklch(0.32 0.03 60);
+  --ink: oklch(0.92 0.02 80);
+  --muted-foreground: oklch(0.7 0.02 70);
+  --border: oklch(0.35 0.03 50);
 }
 
 @layer base {
