@@ -59,6 +59,8 @@ export function ConfirmSheet({ open, onClose, title, children, maxWidth = 360, s
     </div>
   );
 }
+
+export function SheetButton({
   children,
   onClick,
   variant = "ghost",
