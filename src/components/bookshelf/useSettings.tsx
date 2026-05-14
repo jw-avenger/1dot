@@ -55,12 +55,12 @@ export type PetConfig = {
 };
 
 export const PETS: { id: string; label: string; emoji: string }[] = [
-  { id: "cat", label: "Cozy Cat", emoji: "🐈" },
-  { id: "dog", label: "Romance Movie Dog", emoji: "🐕" },
-  { id: "dragon", label: "Whimsical Dragon", emoji: "🐉" },
-  { id: "phoenix", label: "Spa Phoenix", emoji: "🦩" },
-  { id: "bird", label: "Nature Bird", emoji: "🐦" },
-  { id: "hamster", label: "Planner Hamster", emoji: "🐹" },
+  { id: "cat", label: "Cozy", emoji: "🐈" },
+  { id: "dog", label: "Romance", emoji: "🐕" },
+  { id: "dragon", label: "Whimsical", emoji: "🐉" },
+  { id: "phoenix", label: "Spa", emoji: "🦩" },
+  { id: "bird", label: "Nature", emoji: "🐦" },
+  { id: "hamster", label: "Paper Planner", emoji: "🐹" },
 ];
 
 type State = {
