@@ -17,7 +17,7 @@ export type ThemeKey =
   | "custom";
 
 export const THEME_ORDER: { id: ThemeKey; label: string }[] = [
-  { id: "basic", label: "Basic" },
+  { id: "basic", label: "Simple" },
   { id: "cozy", label: "Cozy" },
   { id: "whimsical", label: "Whimsical" },
   { id: "romantic", label: "Romantic" },
@@ -263,7 +263,7 @@ export function useSettings() {
     setHideSettingsBook: (v: boolean) => set("hideSettingsBook", v),
 
     // High-level resets
-    slapToBasic: () =>
+    slapToBasic: () => {
       patch({
         atmosphere: "basic",
         tone: "basic",
@@ -275,7 +275,14 @@ export function useSettings() {
         textColorMode: "black",
         bionic: false,
         talkToMe: false,
-      }),
+      });
+      try {
+        localStorage.setItem("shelf:viewMode", "simple");
+        window.dispatchEvent(new CustomEvent("shelf:viewMode", { detail: "simple" }));
+      } catch {
+        // ignore
+      }
+    },
     shutIt: () => patch({ sfxEnabled: false, mice: state.mice }), // sound off only
     undo,
     canUndo: history.length > 0,

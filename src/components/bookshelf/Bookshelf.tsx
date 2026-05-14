@@ -24,6 +24,12 @@ function useLocalState<T extends string>(key: string, initial: T): [T, (v: T) =>
     } catch {
       // ignore
     }
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (typeof detail === "string") setValue(detail as T);
+    };
+    window.addEventListener(key, handler as EventListener);
+    return () => window.removeEventListener(key, handler as EventListener);
   }, [key]);
   const set = (v: T) => {
     setValue(v);
