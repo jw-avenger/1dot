@@ -163,10 +163,16 @@ export function SidePanel(props: Props) {
         {/* Top three priority buttons */}
         <button
           onClick={() => s.slapToBasic()}
-          className="mb-1.5 w-full rounded-lg py-2.5 text-[13px] font-semibold tracking-wide"
-          style={{ backgroundColor: "#3a3a40", color: PANEL_FG, border: "1px solid rgba(255,255,255,0.1)" }}
+          className="mb-1.5 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
+          style={{
+            color: PANEL_FG,
+            opacity: 0.7,
+            border: "1px solid rgba(255,255,255,0.18)",
+            backgroundColor: "transparent",
+          }}
+          title="Take everything to simple mode"
         >
-          SLAP TO SIMPLE
+          [ SIMPLE MODE NOW ]
         </button>
         <button
           onClick={() => s.shutIt()}
