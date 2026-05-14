@@ -258,17 +258,23 @@ export function useSettings() {
       const existing = state.petsConfig[id];
       const nextPets = { ...state.petsConfig };
       let nextTrash = state.trash;
+      // Rule: only one item of each kind may exist across the app + trash.
+      // If a pet is already in the trash, don't add another — just remove the
+      // active one and mark dismissed.
+      const alreadyInTrash = state.trash.some((t) => t.kind === "pet");
       if (existing) {
-        const petMeta = PETS.find((p) => p.id === existing.pet);
-        const trashItem: TrashItem = {
-          id: `pet-${id}-${Date.now()}`,
-          kind: "pet",
-          label: petMeta ? `${petMeta.emoji} ${petMeta.label} pet` : "Pet",
-          data: { slot: id, config: existing },
-          deletedAt: Date.now(),
-        };
         delete nextPets[id];
-        nextTrash = [trashItem, ...state.trash];
+        if (!alreadyInTrash) {
+          const petMeta = PETS.find((p) => p.id === existing.pet);
+          const trashItem: TrashItem = {
+            id: `pet-${id}-${Date.now()}`,
+            kind: "pet",
+            label: petMeta ? `${petMeta.emoji} ${petMeta.label} pet` : "Pet",
+            data: { slot: id, config: existing },
+            deletedAt: Date.now(),
+          };
+          nextTrash = [trashItem, ...state.trash];
+        }
       }
       patch({ petsConfig: nextPets, trash: nextTrash, petDismissed: true });
     },
