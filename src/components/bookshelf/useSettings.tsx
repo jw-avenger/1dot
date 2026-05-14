@@ -264,7 +264,18 @@ export function useSettings() {
 
     // High-level resets
     slapToBasic: () =>
-      patch({ atmosphere: "basic", tone: "basic", mice: "basic", sfxEnabled: false }),
+      patch({
+        atmosphere: "basic",
+        tone: "basic",
+        mice: "basic",
+        sfxEnabled: false,
+        spineFont: "serif",
+        lighting: "light",
+        bgMode: "white",
+        textColorMode: "black",
+        bionic: false,
+        talkToMe: false,
+      }),
     shutIt: () => patch({ sfxEnabled: false, mice: state.mice }), // sound off only
     undo,
     canUndo: history.length > 0,
