@@ -216,9 +216,18 @@ export function Bookshelf() {
         {/* off-shelf tray */}
         {editMode && (
           <div className="mt-20 rounded-lg border border-wood/30 bg-paper/60 p-5 backdrop-blur-sm animate-fade-in">
-            <p className="font-sans text-xs uppercase tracking-[0.25em] text-ink/60">
-              Off the shelf
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="font-sans text-xs uppercase tracking-[0.25em] text-ink/60">
+                Off the shelf
+              </p>
+              <button
+                onClick={reshelveAll}
+                disabled={offShelf.length === 0}
+                className="rounded-full bg-wood-dark px-4 py-1.5 font-sans text-xs text-paper shadow-sm transition hover:bg-wood disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Reshelve all books
+              </button>
+            </div>
             {offShelf.length === 0 ? (
               <p className="mt-3 font-serif italic text-ink/50">
                 Every book is on the shelf.
