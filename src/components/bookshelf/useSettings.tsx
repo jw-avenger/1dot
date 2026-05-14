@@ -142,13 +142,23 @@ function save() {
 }
 
 function set<K extends keyof State>(key: K, value: State[K]) {
+  snapshot();
   state = { ...state, [key]: value };
   save();
   emit();
 }
 
 function patch(p: Partial<State>) {
+  snapshot();
   state = { ...state, ...p };
+  save();
+  emit();
+}
+
+function undo() {
+  const prev = history.pop();
+  if (!prev) return;
+  state = prev;
   save();
   emit();
 }
