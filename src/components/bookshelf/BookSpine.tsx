@@ -10,8 +10,10 @@ type Props = {
 };
 
 export function BookSpine({ book, onShelf, editMode, onClick, onToggle }: Props) {
-  const { spineFont, bionic } = useSettings();
+  const { spineFont, bionic, colors } = useSettings();
   const fontFamily = SPINE_FONTS.find((f) => f.id === spineFont)?.css;
+  const spineColor = colors[book.id] ?? book.spine;
+
   if (!onShelf) {
     return (
       <button
@@ -20,7 +22,7 @@ export function BookSpine({ book, onShelf, editMode, onClick, onToggle }: Props)
       >
         <span
           className="h-6 w-2 rounded-sm"
-          style={{ backgroundColor: book.spine }}
+          style={{ backgroundColor: spineColor }}
           aria-hidden
         />
         <span style={{ fontFamily }}>{bionicize(book.title, bionic)}</span>
@@ -30,34 +32,48 @@ export function BookSpine({ book, onShelf, editMode, onClick, onToggle }: Props)
   }
 
   return (
-    <div
-      className="relative flex items-end"
-      style={{ height: 280 }}
-    >
+    <div className="relative flex items-end" style={{ height: 280 }}>
       <button
         onClick={editMode ? onToggle : onClick}
         aria-label={book.title}
         className="group relative origin-bottom cursor-pointer transition-transform duration-300 ease-out hover:-translate-y-1 hover:-rotate-1"
-        style={{
-          height: book.height,
-          width: book.width,
-        }}
+        style={{ height: book.height, width: book.width }}
       >
         {/* spine */}
         <div
           className="relative h-full w-full overflow-hidden rounded-t-[3px] rounded-b-[2px]"
           style={{
-            backgroundColor: book.spine,
-            boxShadow: "var(--shadow-book)",
+            backgroundColor: spineColor,
+            boxShadow: "var(--shadow-book), inset 0 0 24px rgba(0,0,0,0.35)",
             backgroundImage:
-              "linear-gradient(90deg, rgba(0,0,0,0.25) 0%, rgba(255,255,255,0.08) 12%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.18) 92%, rgba(0,0,0,0.35) 100%)",
+              "linear-gradient(90deg, rgba(0,0,0,0.35) 0%, rgba(255,255,255,0.10) 14%, rgba(255,255,255,0) 50%, rgba(0,0,0,0.22) 90%, rgba(0,0,0,0.45) 100%)",
           }}
         >
-          {/* top/bottom bands */}
-          <div className="absolute inset-x-0 top-0 h-2 bg-black/20" />
-          <div className="absolute inset-x-0 top-3 h-px bg-white/15" />
-          <div className="absolute inset-x-0 bottom-0 h-2 bg-black/25" />
-          <div className="absolute inset-x-0 bottom-3 h-px bg-white/15" />
+          {/* gilt bands top */}
+          <div className="absolute inset-x-0 top-0 h-2" style={{ background: "rgba(0,0,0,0.35)" }} />
+          <div className="absolute inset-x-1 top-3 h-px" style={{ background: "var(--spine-gold)", opacity: 0.55 }} />
+          <div className="absolute inset-x-2 top-5 h-px" style={{ background: "var(--spine-gold)", opacity: 0.35 }} />
+
+          {/* gilt bands bottom */}
+          <div className="absolute inset-x-2 bottom-5 h-px" style={{ background: "var(--spine-gold)", opacity: 0.35 }} />
+          <div className="absolute inset-x-1 bottom-3 h-px" style={{ background: "var(--spine-gold)", opacity: 0.55 }} />
+          <div className="absolute inset-x-0 bottom-0 h-2" style={{ background: "rgba(0,0,0,0.4)" }} />
+
+          {/* ornament fleurons */}
+          <div
+            className="absolute inset-x-0 top-8 text-center text-[10px] leading-none"
+            style={{ color: "var(--spine-gold)", opacity: 0.7 }}
+            aria-hidden
+          >
+            ❦
+          </div>
+          <div
+            className="absolute inset-x-0 bottom-8 text-center text-[10px] leading-none"
+            style={{ color: "var(--spine-gold)", opacity: 0.7 }}
+            aria-hidden
+          >
+            ❦
+          </div>
 
           {/* title */}
           <div
@@ -69,12 +85,13 @@ export function BookSpine({ book, onShelf, editMode, onClick, onToggle }: Props)
               style={{
                 writingMode: "vertical-rl",
                 transform: "rotate(180deg)",
-                fontSize: Math.min(book.width * 0.32, 16),
-                letterSpacing: "0.08em",
+                fontSize: Math.min(book.width * 0.3, 15),
+                letterSpacing: "0.14em",
                 fontFamily,
+                textShadow: "0 1px 0 rgba(0,0,0,0.5), 0 0 6px rgba(0,0,0,0.25)",
               }}
             >
-              {bionicize(book.title, bionic)}
+              {bionicize(book.title.toUpperCase(), bionic)}
             </span>
           </div>
         </div>
