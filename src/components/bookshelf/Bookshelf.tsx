@@ -3,6 +3,7 @@ import { BOOKS } from "./books";
 import { BookSpine } from "./BookSpine";
 import { BookOpen } from "./BookOpen";
 import { SimpleMenu } from "./SimpleMenu";
+import { SidePanel } from "./SidePanel";
 import { useShelfState } from "./useShelfState";
 
 type ViewMode = "shelf" | "simple";
