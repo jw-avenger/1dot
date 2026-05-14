@@ -92,7 +92,7 @@ export function PetPopup({ open, onClose }: Props) {
                     border: `1px solid ${active ? SHEET_FG : "rgba(255,255,255,0.12)"}`,
                   }}
                 >
-                  <PetFigurine petId={p.id} size={44} />
+                  {p.id === "cat" ? <CatFigurine size={48} /> : <PetFigurine petId={p.id} size={44} />}
                   <span className="leading-tight">{p.label}</span>
                 </button>
               );
