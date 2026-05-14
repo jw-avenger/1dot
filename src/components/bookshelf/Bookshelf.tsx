@@ -183,7 +183,7 @@ export function Bookshelf() {
         {showShelfPet && (
           <div className="mt-6 flex items-end justify-around gap-6 sm:hidden">
             <ShelfPlant size={36} />
-            <ShelfPet onClick={() => setPetOpen(true)} />
+            <ShelfPet onClick={() => setPetOpen(true)} height={110} />
           </div>
         )}
 
