@@ -5,6 +5,7 @@ import { BookOpen } from "./BookOpen";
 import { SimpleMenu } from "./SimpleMenu";
 import { SidePanel } from "./SidePanel";
 import { PetPopup } from "./PetPopup";
+import { ShelfPet } from "./ShelfPet";
 import { MiceTrails } from "./MiceTrails";
 import { TalkToMe } from "./TalkToMe";
 import { useShelfState } from "./useShelfState";
