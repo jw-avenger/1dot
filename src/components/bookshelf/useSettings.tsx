@@ -282,10 +282,14 @@ export function useSettings() {
       const item = state.trash.find((t) => t.id === trashId);
       if (!item) return;
       const nextTrash = state.trash.filter((t) => t.id !== trashId);
+      // Restored items return to their original "first encounter" state —
+      // any saved configuration is discarded so the user meets them fresh.
       if (item.kind === "pet") {
-        const { slot, config } = item.data;
+        const nextPets = { ...state.petsConfig };
+        const slot = item.data?.slot;
+        if (slot) delete nextPets[slot];
         patch({
-          petsConfig: { ...state.petsConfig, [slot]: config },
+          petsConfig: nextPets,
           trash: nextTrash,
           petDismissed: false,
         });
