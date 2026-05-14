@@ -4,6 +4,9 @@ import { BookSpine } from "./BookSpine";
 import { BookOpen } from "./BookOpen";
 import { SimpleMenu } from "./SimpleMenu";
 import { SidePanel } from "./SidePanel";
+import { PetPopup } from "./PetPopup";
+import { MiceTrails } from "./MiceTrails";
+import { TalkToMe } from "./TalkToMe";
 import { useShelfState } from "./useShelfState";
 import { useSettings, BG_VALUES, TEXT_VALUES, LIGHTING_VALUES } from "./useSettings";
 
@@ -33,6 +36,7 @@ function useLocalState<T extends string>(key: string, initial: T): [T, (v: T) =>
 
 export function Bookshelf() {
   const [openId, setOpenId] = useState<string | null>(null);
+  const [petBookId, setPetBookId] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
   const [viewMode, setViewMode] = useLocalState<ViewMode>("shelf:viewMode", "shelf");
@@ -41,14 +45,12 @@ export function Bookshelf() {
   const { onShelf, toggle, reshelveAll } = useShelfState(allIds);
   const settings = useSettings();
 
-  // Apply theme class
   useEffect(() => {
     const root = document.documentElement;
     if (theme === "dark") root.classList.add("dark");
     else root.classList.remove("dark");
   }, [theme]);
 
-  // Apply settings to root: background, text color, text size, lighting
   useEffect(() => {
     const root = document.documentElement;
     const bg = settings.bgMode === "custom" ? settings.bgCustom : BG_VALUES[settings.bgMode];
@@ -65,9 +67,22 @@ export function Bookshelf() {
     };
   }, [settings.bgMode, settings.bgCustom, settings.textColorMode, settings.textCustom, settings.lighting, settings.lightingCustom, settings.textSize]);
 
-  const openBook = BOOKS.find((b) => b.id === openId) ?? null;
-  const offShelf = BOOKS.filter((b) => !onShelf.has(b.id));
-  const shelved = BOOKS.filter((b) => onShelf.has(b.id));
+  // Filter out hidden books (e.g. Settings removed from library)
+  const visibleBooks = BOOKS.filter((b) => !(settings.hideSettingsBook && b.id === "settings"));
+
+  const handleOpenBook = (id: string) => {
+    if (id === "settings") {
+      // Settings goes straight to the slide-out menu
+      setPanelOpen(true);
+      return;
+    }
+    setOpenId(id);
+  };
+
+  const openBook = visibleBooks.find((b) => b.id === openId) ?? null;
+  const petBook = visibleBooks.find((b) => b.id === petBookId) ?? null;
+  const offShelf = visibleBooks.filter((b) => !onShelf.has(b.id));
+  const shelved = visibleBooks.filter((b) => onShelf.has(b.id));
 
   const panelProps = {
     open: panelOpen,
@@ -78,7 +93,6 @@ export function Bookshelf() {
     setTheme,
     editMode,
     setEditMode,
-    onOpenBook: (id: string) => setOpenId(id),
   };
 
   if (viewMode === "simple") {
@@ -87,8 +101,10 @@ export function Bookshelf() {
         <header className="px-6 pt-8 md:px-12">
           <p className="font-serif text-lg font-semibold" style={{ color: "var(--foreground)" }}>Library</p>
         </header>
-        <SimpleMenu onSelect={(id) => setOpenId(id)} />
+        <SimpleMenu onSelect={handleOpenBook} />
         <SidePanel {...panelProps} />
+        <MiceTrails />
+        <TalkToMe />
         {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} />}
       </div>
     );
@@ -112,12 +128,11 @@ export function Bookshelf() {
         style={{ background: "radial-gradient(ellipse at top, var(--lamp-glow) 0%, transparent 70%)" }}
       />
 
-      <main className="relative z-10 mx-auto mt-10 w-full max-w-5xl px-3 md:mt-16 md:px-12">
+      <main className="relative z-10 mx-auto mt-10 w-full max-w-5xl px-2 md:mt-16 md:px-12">
         <div className="relative">
-          {/* Books — wrap to fit, cannot extend past shelf */}
           <div
-            className="relative flex flex-wrap items-end justify-center gap-x-1 gap-y-3 px-3 pb-2"
-            style={{ minHeight: 220 }}
+            className="relative flex flex-wrap items-end justify-center gap-x-0.5 gap-y-3 px-2 pb-2 sm:gap-x-1 sm:px-3"
+            style={{ minHeight: 180 }}
           >
             {shelved.map((book) => (
               <BookSpine
@@ -125,8 +140,9 @@ export function Bookshelf() {
                 book={book}
                 onShelf
                 editMode={editMode}
-                onClick={() => setOpenId(book.id)}
+                onClick={() => handleOpenBook(book.id)}
                 onToggle={() => toggle(book.id)}
+                onPetClick={() => setPetBookId(book.id)}
               />
             ))}
             {shelved.length === 0 && (
@@ -136,7 +152,6 @@ export function Bookshelf() {
             )}
           </div>
 
-          {/* Big shelf plank */}
           <div
             className="relative h-9 rounded-sm"
             style={{
@@ -176,6 +191,7 @@ export function Bookshelf() {
                     editMode
                     onClick={() => {}}
                     onToggle={() => toggle(book.id)}
+                    onPetClick={() => {}}
                   />
                 ))}
               </div>
@@ -185,6 +201,9 @@ export function Bookshelf() {
       </main>
 
       <SidePanel {...panelProps} />
+      <MiceTrails />
+      <TalkToMe />
+      <PetPopup book={petBook} onClose={() => setPetBookId(null)} />
       {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} />}
     </div>
   );
