@@ -147,13 +147,15 @@ function load() {
     // ignore
   }
   // One-time restore: bring pet + plant back to their original library spots
-  // and wipe any prior trash entries / configuration for them.
-  const RESTORE_KEY = "shelf:trash:restore:v1";
+  // with their original first-encounter programming (cat figurine populated).
+  const RESTORE_KEY = "shelf:trash:restore:v2";
   try {
     if (!localStorage.getItem(RESTORE_KEY)) {
       state = {
         ...state,
-        petsConfig: {},
+        petsConfig: {
+          shelf: { pet: "cat", animations: true, todoEnabled: false, todoItems: [] },
+        },
         petDismissed: false,
         plantDismissed: false,
         trash: state.trash.filter((t) => t.kind !== "pet" && t.kind !== "plant"),
