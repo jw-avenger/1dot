@@ -129,10 +129,9 @@ export function BookOpen({ book, onClose }: Props) {
             <button
               onClick={onClose}
               aria-label="Back to library"
-              className="group flex items-center gap-2 font-serif text-sm text-ink/70 transition hover:text-ink"
+              className="font-serif text-lg text-ink/70 transition hover:-translate-x-0.5 hover:text-ink"
             >
-              <span className="transition group-hover:-translate-x-0.5">←</span>
-              <span>Back to library</span>
+              ←
             </button>
           </div>
         </div>
