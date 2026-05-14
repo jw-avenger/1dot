@@ -173,6 +173,15 @@ export function BookOpen({ book, onClose }: Props) {
                     )}
                   </div>
                 )}
+                <div className="mt-6 flex justify-start">
+                  <button
+                    onClick={onClose}
+                    aria-label="Back to library"
+                    className="font-serif text-lg text-ink/70 transition hover:-translate-x-0.5 hover:text-ink"
+                  >
+                    ←
+                  </button>
+                </div>
               </div>
             )}
           </div>
