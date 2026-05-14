@@ -56,7 +56,7 @@ function Toggle({
   );
 }
 
-function Chips({
+function Dropdown({
   options,
   current,
   onPick,
@@ -66,25 +66,22 @@ function Chips({
   onPick: (id: any) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-1">
-      {options.map((o) => {
-        const active = o.id === current;
-        return (
-          <button
-            key={o.id}
-            onClick={() => onPick(o.id)}
-            className="rounded-full px-2.5 py-1 text-[12px] transition"
-            style={{
-              backgroundColor: active ? PANEL_FG : "transparent",
-              color: active ? PANEL_BG : PANEL_FG,
-              border: active ? "1px solid transparent" : "1px solid rgba(255,255,255,0.14)",
-            }}
-          >
-            {o.label}
-          </button>
-        );
-      })}
-    </div>
+    <select
+      value={current}
+      onChange={(e) => onPick(e.target.value)}
+      className="w-full rounded-md px-2 py-1.5 text-[13px]"
+      style={{
+        backgroundColor: "#1f1f24",
+        color: PANEL_FG,
+        border: "1px solid rgba(255,255,255,0.14)",
+      }}
+    >
+      {options.map((o) => (
+        <option key={o.id} value={o.id} style={{ backgroundColor: "#1f1f24", color: PANEL_FG }}>
+          {o.label}
+        </option>
+      ))}
+    </select>
   );
 }
 
