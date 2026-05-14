@@ -1,0 +1,95 @@
+import { useEffect, useState } from "react";
+
+export type SpineFont = "serif" | "sans" | "mono";
+
+const FONT_KEY = "shelf:spineFont";
+const BIONIC_KEY = "shelf:bionic";
+
+export const SPINE_FONTS: { id: SpineFont; label: string; css: string }[] = [
+  { id: "serif", label: "Serif (Fraunces)", css: '"Fraunces", Georgia, serif' },
+  { id: "sans", label: "Sans (Inter)", css: '"Inter", system-ui, sans-serif' },
+  { id: "mono", label: "Mono", css: 'ui-monospace, "SF Mono", Menlo, monospace' },
+];
+
+type Listener = () => void;
+const listeners = new Set<Listener>();
+
+let state = {
+  spineFont: "serif" as SpineFont,
+  bionic: false,
+};
+
+function load() {
+  try {
+    const f = localStorage.getItem(FONT_KEY);
+    const b = localStorage.getItem(BIONIC_KEY);
+    if (f === "serif" || f === "sans" || f === "mono") state.spineFont = f;
+    if (b === "true") state.bionic = true;
+  } catch {
+    // ignore
+  }
+}
+let loaded = false;
+
+function emit() {
+  listeners.forEach((l) => l());
+}
+
+export function useSettings() {
+  if (!loaded && typeof window !== "undefined") {
+    load();
+    loaded = true;
+  }
+  const [, force] = useState(0);
+  useEffect(() => {
+    const l = () => force((n) => n + 1);
+    listeners.add(l);
+    return () => {
+      listeners.delete(l);
+    };
+  }, []);
+
+  return {
+    spineFont: state.spineFont,
+    bionic: state.bionic,
+    setSpineFont(f: SpineFont) {
+      state = { ...state, spineFont: f };
+      try {
+        localStorage.setItem(FONT_KEY, f);
+      } catch {
+        // ignore
+      }
+      emit();
+    },
+    cycleSpineFont() {
+      const idx = SPINE_FONTS.findIndex((x) => x.id === state.spineFont);
+      const next = SPINE_FONTS[(idx + 1) % SPINE_FONTS.length].id;
+      this.setSpineFont(next);
+    },
+    toggleBionic() {
+      state = { ...state, bionic: !state.bionic };
+      try {
+        localStorage.setItem(BIONIC_KEY, String(state.bionic));
+      } catch {
+        // ignore
+      }
+      emit();
+    },
+  };
+}
+
+export function bionicize(text: string, on: boolean): React.ReactNode {
+  if (!on) return text;
+  const parts = text.split(/(\s+)/);
+  return parts.map((part, i) => {
+    if (/^\s+$/.test(part) || part.length === 0) return part;
+    const head = part.slice(0, 2).toUpperCase();
+    const tail = part.slice(2);
+    return (
+      <span key={i}>
+        <strong>{head}</strong>
+        {tail}
+      </span>
+    );
+  });
+}
