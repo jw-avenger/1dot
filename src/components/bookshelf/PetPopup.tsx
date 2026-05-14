@@ -67,11 +67,18 @@ export function PetPopup({ open, onClose }: Props) {
           <p className="mb-5 text-center text-base leading-snug" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>
             Would you like pet support?
           </p>
-          <div className="flex gap-3">
-            <SheetButton full onClick={() => setPhase("configure")} variant="primary">Yes</SheetButton>
-            <SheetButton full onClick={declineOrRemove}>No</SheetButton>
-          </div>
+          <SheetButton full onClick={() => setPhase("configure")} variant="primary">Yes</SheetButton>
           <p className="mt-3 text-center text-[11px] opacity-60">{ASSURANCE}</p>
+          <div className="flex justify-center pt-3">
+            <button
+              onClick={onClose}
+              aria-label="Back"
+              className="text-lg opacity-70 transition hover:-translate-x-0.5 hover:opacity-100"
+              style={{ fontFamily: '"Fraunces", Georgia, serif' }}
+            >
+              ←
+            </button>
+          </div>
         </>
       ) : (
         <div className="space-y-4">
