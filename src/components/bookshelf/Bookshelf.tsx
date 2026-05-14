@@ -113,6 +113,7 @@ export function Bookshelf() {
           {Controls}
         </header>
         <SimpleMenu onSelect={(id) => setOpenId(id)} />
+        <SidePanel />
         {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} />}
       </div>
     );
