@@ -1,10 +1,12 @@
 import { BOOKS } from "./books";
+import { useSettings, bionicize } from "./useSettings";
 
 type Props = {
   onSelect: (id: string) => void;
 };
 
 export function SimpleMenu({ onSelect }: Props) {
+  const { bionic } = useSettings();
   return (
     <div
       className="min-h-screen px-6 py-12 font-sans"
