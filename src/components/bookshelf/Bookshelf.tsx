@@ -133,20 +133,31 @@ export function Bookshelf() {
       <main className="relative z-10 mx-auto mt-10 w-full max-w-5xl px-2 md:mt-16 md:px-12">
         <div className="relative">
           <div
-            className="relative flex flex-wrap items-end justify-center gap-x-0.5 gap-y-3 px-2 pb-2 sm:gap-x-1 sm:px-3"
+            className="relative flex flex-nowrap items-end justify-center gap-x-0.5 gap-y-3 px-2 pb-2 sm:gap-x-1 sm:px-3"
             style={{ minHeight: 180 }}
           >
-            {shelved.map((book) => (
-              <BookSpine
-                key={book.id}
-                book={book}
-                onShelf
-                editMode={editMode}
-                onClick={() => handleOpenBook(book.id)}
-                onToggle={() => toggle(book.id)}
-              />
-            ))}
-            {showShelfPet && <ShelfPet onClick={() => setPetOpen(true)} />}
+            {showShelfPet && (
+              <div className="hidden sm:flex shrink-0 self-end">
+                <ShelfPlant />
+              </div>
+            )}
+            <div className="flex flex-1 flex-wrap items-end justify-center gap-x-0.5 gap-y-3 sm:gap-x-1">
+              {shelved.map((book) => (
+                <BookSpine
+                  key={book.id}
+                  book={book}
+                  onShelf
+                  editMode={editMode}
+                  onClick={() => handleOpenBook(book.id)}
+                  onToggle={() => toggle(book.id)}
+                />
+              ))}
+            </div>
+            {showShelfPet && (
+              <div className="hidden sm:flex shrink-0 self-end">
+                <ShelfPet onClick={() => setPetOpen(true)} />
+              </div>
+            )}
             {shelved.length === 0 && (
               <p className="py-16 font-serif italic" style={{ color: "var(--ink)", opacity: 0.5 }}>
                 The shelf is bare. Open the menu to reshelve.
