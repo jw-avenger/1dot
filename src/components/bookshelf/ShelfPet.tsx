@@ -7,12 +7,14 @@ type Props = {
   onClick: () => void;
   /** Optional explicit height. Defaults to scale with the bookshelf row. */
   height?: number;
+  /** When true, render an empty placeholder slot regardless of saved config. */
+  blank?: boolean;
 };
 
-export function ShelfPet({ onClick, height = 150 }: Props) {
+export function ShelfPet({ onClick, height = 150, blank = false }: Props) {
   const { petsConfig, setPetConfig } = useSettings();
   const cfg = petsConfig["shelf"];
-  const pet = cfg?.pet ? PETS.find((p) => p.id === cfg.pet) : null;
+  const pet = !blank && cfg?.pet ? PETS.find((p) => p.id === cfg.pet) : null;
   const [hover, setHover] = useState(false);
 
   // Slot dimensions scale together so the figurine matches book height.
