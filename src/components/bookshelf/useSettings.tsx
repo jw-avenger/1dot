@@ -1,12 +1,43 @@
 import { useEffect, useState } from "react";
 
 export type SpineFont = "fantasy" | "serif" | "sans" | "mono" | "custom";
-export type TriMode<T extends string> = T;
 export type Lighting = "dark" | "amber" | "light" | "custom";
 export type BgMode = "white" | "amber" | "dark" | "custom";
 export type TextColorMode = "black" | "amber" | "white" | "custom";
 
-const KEY = "shelf:settings:v2";
+// Canonical theme order — used everywhere atmospheres / tones / mice are listed.
+export type ThemeKey =
+  | "basic"
+  | "cozy"
+  | "whimsical"
+  | "romantic"
+  | "spa"
+  | "nature"
+  | "paperplanner"
+  | "custom";
+
+export const THEME_ORDER: { id: ThemeKey; label: string }[] = [
+  { id: "basic", label: "Basic" },
+  { id: "cozy", label: "Cozy" },
+  { id: "whimsical", label: "Whimsical" },
+  { id: "romantic", label: "Romantic" },
+  { id: "spa", label: "Spa" },
+  { id: "nature", label: "Nature" },
+  { id: "paperplanner", label: "Paper Planner" },
+  { id: "custom", label: "Custom" },
+];
+
+export const ROMANTIC_COLORS: { id: string; label: string; hex: string }[] = [
+  { id: "red", label: "Red", hex: "#c42b2b" },
+  { id: "hotpink", label: "Hot pink", hex: "#ff4d8d" },
+  { id: "lightpink", label: "Light pink", hex: "#f7b8cf" },
+  { id: "lightpurple", label: "Light purple", hex: "#c8a8e0" },
+  { id: "darkpurple", label: "Dark purple", hex: "#5a2a78" },
+  { id: "black", label: "Black", hex: "#111111" },
+  { id: "grey", label: "Grey", hex: "#888888" },
+];
+
+const KEY = "shelf:settings:v3";
 
 export const SPINE_FONTS: { id: SpineFont; label: string; css: string }[] = [
   { id: "fantasy", label: "Fantasy (Cinzel)", css: '"Cinzel", "Fraunces", Georgia, serif' },
@@ -16,25 +47,44 @@ export const SPINE_FONTS: { id: SpineFont; label: string; css: string }[] = [
   { id: "custom", label: "Custom", css: "" },
 ];
 
+export type PetConfig = {
+  pet: string | null; // pet id from PETS
+  animations: boolean;
+  todoEnabled: boolean;
+  todoItems: string[];
+};
+
+export const PETS: { id: string; label: string; emoji: string }[] = [
+  { id: "cat", label: "Cozy Cat", emoji: "🐈" },
+  { id: "dog", label: "Romance Movie Dog", emoji: "🐕" },
+  { id: "dragon", label: "Whimsical Dragon", emoji: "🐉" },
+  { id: "phoenix", label: "Spa Phoenix", emoji: "🦩" },
+  { id: "bird", label: "Nature Bird", emoji: "🐦" },
+  { id: "hamster", label: "Planner Hamster", emoji: "🐹" },
+];
+
 type State = {
   spineFont: SpineFont;
   customFont: string;
   bionic: boolean;
   colors: Record<string, string>;
-  pets: Record<string, string>; // bookId -> emoji/text
+  petsConfig: Record<string, PetConfig>;
   talkToMe: boolean;
   lighting: Lighting;
   lightingCustom: string;
   bgMode: BgMode;
   bgCustom: string;
-  textSize: number; // px base
+  textSize: number;
   textColorMode: TextColorMode;
   textCustom: string;
   language: string;
-  mouseTrails: boolean;
-  atmosphere: string;
-  tone: string;
-  mouse: string;
+  atmosphere: ThemeKey;
+  tone: ThemeKey;
+  mice: ThemeKey;
+  sfxEnabled: boolean;
+  romanticColor: string; // hex used for romantic accents
+  arrowHidden: boolean; // user clicked the arrow twice to hide it
+  hideSettingsBook: boolean; // remove Settings book from library
 };
 
 const defaults: State = {
@@ -42,7 +92,7 @@ const defaults: State = {
   customFont: "",
   bionic: false,
   colors: {},
-  pets: {},
+  petsConfig: {},
   talkToMe: false,
   lighting: "light",
   lightingCustom: "#fff4d6",
@@ -52,10 +102,13 @@ const defaults: State = {
   textColorMode: "black",
   textCustom: "#222222",
   language: "en",
-  mouseTrails: false,
   atmosphere: "cozy",
-  tone: "warm",
-  mouse: "default",
+  tone: "cozy",
+  mice: "basic",
+  sfxEnabled: false,
+  romanticColor: "#c42b2b",
+  arrowHidden: false,
+  hideSettingsBook: false,
 };
 
 let state: State = { ...defaults };
@@ -83,6 +136,12 @@ function save() {
 
 function set<K extends keyof State>(key: K, value: State[K]) {
   state = { ...state, [key]: value };
+  save();
+  emit();
+}
+
+function patch(p: Partial<State>) {
+  state = { ...state, ...p };
   save();
   emit();
 }
@@ -116,11 +175,11 @@ export function useSettings() {
       else delete next[id];
       set("colors", next);
     },
-    setPet: (id: string, pet: string | null) => {
-      const next = { ...state.pets };
-      if (pet) next[id] = pet;
+    setPetConfig: (id: string, cfg: PetConfig | null) => {
+      const next = { ...state.petsConfig };
+      if (cfg) next[id] = cfg;
       else delete next[id];
-      set("pets", next);
+      set("petsConfig", next);
     },
     setTalkToMe: (v: boolean) => set("talkToMe", v),
     setLighting: (v: Lighting) => set("lighting", v),
@@ -131,10 +190,18 @@ export function useSettings() {
     setTextColorMode: (v: TextColorMode) => set("textColorMode", v),
     setTextCustom: (v: string) => set("textCustom", v),
     setLanguage: (v: string) => set("language", v),
-    setMouseTrails: (v: boolean) => set("mouseTrails", v),
-    setAtmosphere: (v: string) => set("atmosphere", v),
-    setTone: (v: string) => set("tone", v),
-    setMouse: (v: string) => set("mouse", v),
+    setAtmosphere: (v: ThemeKey) => set("atmosphere", v),
+    setTone: (v: ThemeKey) => set("tone", v),
+    setMice: (v: ThemeKey) => set("mice", v),
+    setSfxEnabled: (v: boolean) => set("sfxEnabled", v),
+    setRomanticColor: (v: string) => set("romanticColor", v),
+    setArrowHidden: (v: boolean) => set("arrowHidden", v),
+    setHideSettingsBook: (v: boolean) => set("hideSettingsBook", v),
+
+    // High-level resets
+    slapToBasic: () =>
+      patch({ atmosphere: "basic", tone: "basic", mice: "basic", sfxEnabled: false }),
+    shutIt: () => patch({ sfxEnabled: false, mice: state.mice }), // sound off only
   };
 }
 
@@ -159,7 +226,6 @@ export function resolveSpineFontCss(spineFont: SpineFont, customFont: string) {
   return SPINE_FONTS.find((f) => f.id === spineFont)?.css ?? "";
 }
 
-// Map presets to actual values applied to root
 export const LIGHTING_VALUES: Record<Lighting, string> = {
   dark: "rgba(40,40,55,0.4)",
   amber: "#f8d28a",

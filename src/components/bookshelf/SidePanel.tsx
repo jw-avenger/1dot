@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { BOOKS } from "./books";
-import { useSettings, SPINE_FONTS } from "./useSettings";
+import { useSettings, THEME_ORDER, ROMANTIC_COLORS, type ThemeKey } from "./useSettings";
 
 type ViewMode = "shelf" | "simple";
 type Theme = "light" | "dark";
@@ -14,84 +13,93 @@ type Props = {
   setTheme: (v: Theme) => void;
   editMode: boolean;
   setEditMode: (v: boolean) => void;
-  onOpenBook: (id: string) => void;
 };
 
 const PANEL_BG = "#2b2b30";
 const PANEL_FG = "#e6e3da";
-const PANEL_SOFT = "rgba(255,255,255,0.04)";
 
-function Section({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
-  const [open, setOpen] = useState(defaultOpen);
+function ListRow({
+  label,
+  right,
+  onClick,
+}: {
+  label: string;
+  right?: React.ReactNode;
+  onClick?: () => void;
+}) {
+  const Cmp: any = onClick ? "button" : "div";
   return (
-    <div className="rounded-md" style={{ backgroundColor: PANEL_SOFT }}>
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between px-3 py-2.5 text-left text-sm"
-      >
-        <span className="font-medium tracking-wide">{title}</span>
-        <span className="text-xs opacity-50">{open ? "▾" : "▸"}</span>
-      </button>
-      {open && <div className="space-y-3 border-t px-3 py-3" style={{ borderColor: "rgba(255,255,255,0.06)" }}>{children}</div>}
-    </div>
-  );
-}
-
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <span className="text-xs opacity-80">{label}</span>
-      <div className="flex items-center gap-2">{children}</div>
-    </div>
-  );
-}
-
-function Pill({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button
+    <Cmp
       onClick={onClick}
-      className="rounded-full px-2.5 py-1 text-[11px] uppercase tracking-wider transition"
-      style={{
-        backgroundColor: active ? PANEL_FG : "transparent",
-        color: active ? PANEL_BG : PANEL_FG,
-        border: `1px solid ${active ? PANEL_FG : "rgba(255,255,255,0.18)"}`,
-      }}
+      className="flex w-full items-center justify-between gap-3 px-1 py-3 text-left"
+      style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
     >
-      {children}
-    </button>
+      <span className="text-[15px]">{label}</span>
+      <span className="text-[13px] opacity-70">{right}</span>
+    </Cmp>
   );
 }
 
-function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
+function ThemeSheet({
+  open,
+  onClose,
+  title,
+  current,
+  onPick,
+  extras,
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  current: ThemeKey;
+  onPick: (k: ThemeKey) => void;
+  extras?: React.ReactNode;
+}) {
+  if (!open) return null;
   return (
-    <button
-      onClick={() => onChange(!on)}
-      className="relative h-5 w-9 rounded-full transition"
-      style={{ backgroundColor: on ? "#a48a52" : "rgba(255,255,255,0.18)" }}
-      aria-pressed={on}
+    <div
+      className="fixed inset-0 z-[70] flex items-center justify-center px-4"
+      style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
+      onClick={onClose}
     >
-      <span
-        className="absolute top-0.5 h-4 w-4 rounded-full bg-white transition"
-        style={{ left: on ? 18 : 2 }}
-      />
-    </button>
-  );
-}
-
-function ColorSwatchInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  return (
-    <label
-      className="relative inline-block h-6 w-6 cursor-pointer overflow-hidden rounded border"
-      style={{ borderColor: "rgba(255,255,255,0.2)", backgroundColor: value }}
-      title="Custom color"
-    >
-      <input
-        type="color"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="absolute inset-0 cursor-pointer opacity-0"
-      />
-    </label>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-xs rounded-2xl p-4 shadow-2xl"
+        style={{ backgroundColor: PANEL_BG, color: PANEL_FG }}
+      >
+        <p className="mb-3 text-center text-base" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>
+          {title}
+        </p>
+        <ul className="space-y-1">
+          {THEME_ORDER.map((t) => {
+            const active = current === t.id;
+            return (
+              <li key={t.id}>
+                <button
+                  onClick={() => { onPick(t.id); }}
+                  className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-[15px] transition"
+                  style={{
+                    backgroundColor: active ? PANEL_FG : "transparent",
+                    color: active ? PANEL_BG : PANEL_FG,
+                  }}
+                >
+                  <span>{t.label}</span>
+                  {active && <span className="text-xs">✓</span>}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+        {extras}
+        <button
+          onClick={onClose}
+          className="mt-3 w-full rounded-full border px-4 py-2 text-sm"
+          style={{ borderColor: "rgba(255,255,255,0.18)" }}
+        >
+          Done
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -99,9 +107,12 @@ export function SidePanel(props: Props) {
   const { open, setOpen, viewMode, setViewMode, theme, setTheme, editMode, setEditMode } = props;
   const s = useSettings();
   const startX = useRef<number | null>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
 
-  // Swipe to close on the panel + swipe from right edge to open
+  const [openAtmos, setOpenAtmos] = useState(false);
+  const [openTones, setOpenTones] = useState(false);
+  const [openMice, setOpenMice] = useState(false);
+
+  // Swipe to open from right edge / close panel
   useEffect(() => {
     const onTouchStart = (e: TouchEvent) => {
       const t = e.touches[0];
@@ -114,7 +125,10 @@ export function SidePanel(props: Props) {
       const sx = startX.current;
       startX.current = null;
       const w = window.innerWidth;
-      if (!open && sx > w - 24 && dx < -40) setOpen(true);
+      if (!open && sx > w - 24 && dx < -40) {
+        setOpen(true);
+        s.setArrowHidden(false);
+      }
       if (open && dx > 60) setOpen(false);
     };
     window.addEventListener("touchstart", onTouchStart, { passive: true });
@@ -123,202 +137,216 @@ export function SidePanel(props: Props) {
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchend", onTouchEnd);
     };
-  }, [open, setOpen]);
+  }, [open, setOpen, s]);
+
+  // Reveal arrow when user slides from edge
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      if (s.arrowHidden && e.clientX > window.innerWidth - 8) {
+        s.setArrowHidden(false);
+      }
+    };
+    window.addEventListener("mousemove", onMove);
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [s]);
+
+  const handleArrowClick = () => {
+    if (!open) {
+      setOpen(true);
+    } else {
+      // second click while open → hide arrow
+      setOpen(false);
+      s.setArrowHidden(true);
+    }
+  };
 
   return (
     <>
-      <button
-        onClick={() => setOpen(!open)}
-        aria-label="Open menu"
-        className="fixed right-0 top-1/2 z-40 -translate-y-1/2 rounded-l-lg px-2.5 py-3 text-[10px] uppercase tracking-[0.25em] shadow-lg"
-        style={{ backgroundColor: PANEL_BG, color: PANEL_FG, writingMode: "vertical-rl" }}
-      >
-        {open ? "Close" : "Menu"}
-      </button>
+      {!s.arrowHidden && (
+        <button
+          onClick={handleArrowClick}
+          aria-label={open ? "Hide menu arrow" : "Open menu"}
+          className="fixed right-1 top-1/2 z-40 -translate-y-1/2 rounded-full px-1.5 py-2 text-base opacity-70 transition hover:opacity-100"
+          style={{ color: PANEL_FG, backgroundColor: "rgba(43,43,48,0.55)" }}
+        >
+          {open ? "›" : "‹"}
+        </button>
+      )}
 
       <aside
-        ref={panelRef}
-        className="fixed right-0 top-0 z-40 flex h-full w-[88vw] max-w-sm flex-col overflow-y-auto p-4 shadow-2xl transition-transform duration-300"
+        className="fixed right-0 top-0 z-40 flex h-full w-[64vw] max-w-[280px] flex-col overflow-y-auto px-4 py-5 shadow-2xl transition-transform duration-300"
         style={{
           backgroundColor: PANEL_BG,
           color: PANEL_FG,
           transform: open ? "translateX(0)" : "translateX(100%)",
           borderLeft: "1px solid rgba(255,255,255,0.06)",
+          fontSize: 15,
         }}
         aria-hidden={!open}
       >
-        <div className="mb-3 flex items-center justify-between">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.35em] opacity-60">Workshop</p>
-            <h2 className="font-serif text-xl">Customize</h2>
-          </div>
-          <span className="text-[10px] opacity-40">swipe →</span>
+        {/* Top three priority buttons */}
+        <button
+          onClick={() => s.slapToBasic()}
+          className="mb-2 w-full rounded-xl py-3 text-base font-semibold tracking-wide"
+          style={{ backgroundColor: "#3a3a40", color: PANEL_FG, border: "1px solid rgba(255,255,255,0.1)" }}
+        >
+          SLAP TO BASIC
+        </button>
+        <button
+          onClick={() => s.shutIt()}
+          className="mb-2 w-full rounded-xl py-3 text-base font-semibold tracking-wide"
+          style={{ backgroundColor: "#3a3a40", color: PANEL_FG, border: "1px solid rgba(255,255,255,0.1)" }}
+        >
+          SHUT IT!
+        </button>
+        <button
+          onClick={() => s.setTalkToMe(!s.talkToMe)}
+          className="mb-3 w-full rounded-xl py-3 text-base font-semibold tracking-wide"
+          style={{
+            backgroundColor: s.talkToMe ? PANEL_FG : "#3a3a40",
+            color: s.talkToMe ? PANEL_BG : PANEL_FG,
+            border: "1px solid rgba(255,255,255,0.1)",
+          }}
+        >
+          TALK TO ME {s.talkToMe ? "· on" : ""}
+        </button>
+
+        {/* Flat list of individual settings */}
+        <ListRow label="View" right={viewMode === "shelf" ? "Shelf" : "Simple"} onClick={() => setViewMode(viewMode === "shelf" ? "simple" : "shelf")} />
+        {viewMode === "shelf" && (
+          <ListRow label="Arrange shelf" right={editMode ? "On" : "Off"} onClick={() => setEditMode(!editMode)} />
+        )}
+        <ListRow label="Theme" right={theme === "dark" ? "Dark" : "Light"} onClick={() => setTheme(theme === "dark" ? "light" : "dark")} />
+
+        <ListRow
+          label="Atmosphere"
+          right={THEME_ORDER.find((t) => t.id === s.atmosphere)?.label}
+          onClick={() => setOpenAtmos(true)}
+        />
+        <ListRow
+          label="Tone"
+          right={THEME_ORDER.find((t) => t.id === s.tone)?.label}
+          onClick={() => setOpenTones(true)}
+        />
+        <ListRow
+          label="Mice trails"
+          right={THEME_ORDER.find((t) => t.id === s.mice)?.label}
+          onClick={() => setOpenMice(true)}
+        />
+        <ListRow
+          label="Sound effects"
+          right={s.sfxEnabled ? "On" : "Off"}
+          onClick={() => s.setSfxEnabled(!s.sfxEnabled)}
+        />
+        <ListRow
+          label="Bionic reading"
+          right={s.bionic ? "On" : "Off"}
+          onClick={() => s.toggleBionic()}
+        />
+        <div className="flex items-center justify-between gap-3 px-1 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+          <span className="text-[15px]">Text size</span>
+          <input
+            type="range"
+            min={12}
+            max={24}
+            value={s.textSize}
+            onChange={(e) => s.setTextSize(parseInt(e.target.value, 10))}
+            className="w-24"
+          />
         </div>
+        <ListRow
+          label="Notifications"
+          right="Soon"
+          onClick={() => {}}
+        />
+        <ListRow
+          label="Social"
+          right="Soon"
+          onClick={() => {}}
+        />
+        <ListRow
+          label="Accessibility"
+          right="Open"
+          onClick={() => {
+            // Accessibility settings live in their own book — keep panel simple
+            setOpen(false);
+          }}
+        />
 
-        <div className="space-y-2">
-          <Section title="View" defaultOpen>
-            <Row label="Mode">
-              <Pill active={viewMode === "shelf"} onClick={() => setViewMode("shelf")}>Shelf</Pill>
-              <Pill active={viewMode === "simple"} onClick={() => setViewMode("simple")}>Simple</Pill>
-            </Row>
-            {viewMode === "shelf" && (
-              <Row label="Arrange">
-                <Pill active={editMode} onClick={() => setEditMode(!editMode)}>{editMode ? "Done" : "Arrange"}</Pill>
-              </Row>
-            )}
-            <Row label="Talk to me">
-              <Toggle on={s.talkToMe} onChange={s.setTalkToMe} />
-            </Row>
-          </Section>
+        <div className="flex-1" />
 
-          <Section title="Lighting">
-            <Row label="Mood">
-              <Pill active={s.lighting === "dark"} onClick={() => { s.setLighting("dark"); setTheme("dark"); }}>Dark</Pill>
-              <Pill active={s.lighting === "amber"} onClick={() => { s.setLighting("amber"); setTheme("light"); }}>Amber</Pill>
-              <Pill active={s.lighting === "light"} onClick={() => { s.setLighting("light"); setTheme("light"); }}>Light</Pill>
-            </Row>
-            <Row label="Custom">
-              <Pill active={s.lighting === "custom"} onClick={() => s.setLighting("custom")}>Use</Pill>
-              <ColorSwatchInput value={s.lightingCustom} onChange={(v) => { s.setLightingCustom(v); s.setLighting("custom"); }} />
-            </Row>
-          </Section>
+        <button
+          onClick={() => s.setHideSettingsBook(!s.hideSettingsBook)}
+          className="mt-4 w-full rounded-xl py-3 text-sm"
+          style={{
+            backgroundColor: "transparent",
+            color: PANEL_FG,
+            border: "1px solid rgba(255,255,255,0.18)",
+          }}
+        >
+          {s.hideSettingsBook ? "Add Settings book back to library" : "Remove Settings section from library"}
+        </button>
+      </aside>
 
-          <Section title="Background">
-            <Row label="Base">
-              <Pill active={s.bgMode === "white"} onClick={() => s.setBgMode("white")}>White</Pill>
-              <Pill active={s.bgMode === "amber"} onClick={() => s.setBgMode("amber")}>Amber</Pill>
-              <Pill active={s.bgMode === "dark"} onClick={() => s.setBgMode("dark")}>Dark</Pill>
-            </Row>
-            <Row label="Custom">
-              <Pill active={s.bgMode === "custom"} onClick={() => s.setBgMode("custom")}>Use</Pill>
-              <ColorSwatchInput value={s.bgCustom} onChange={(v) => { s.setBgCustom(v); s.setBgMode("custom"); }} />
-            </Row>
-          </Section>
-
-          <Section title="Text">
-            <Row label="Size">
-              <input
-                type="range"
-                min={12}
-                max={24}
-                step={1}
-                value={s.textSize}
-                onChange={(e) => s.setTextSize(parseInt(e.target.value, 10))}
-                className="w-32"
-              />
-              <span className="w-6 text-right text-xs opacity-70">{s.textSize}</span>
-            </Row>
-            <Row label="Color">
-              <Pill active={s.textColorMode === "black"} onClick={() => s.setTextColorMode("black")}>Black</Pill>
-              <Pill active={s.textColorMode === "amber"} onClick={() => s.setTextColorMode("amber")}>Amber</Pill>
-              <Pill active={s.textColorMode === "white"} onClick={() => s.setTextColorMode("white")}>White</Pill>
-            </Row>
-            <Row label="Custom">
-              <Pill active={s.textColorMode === "custom"} onClick={() => s.setTextColorMode("custom")}>Use</Pill>
-              <ColorSwatchInput value={s.textCustom} onChange={(v) => { s.setTextCustom(v); s.setTextColorMode("custom"); }} />
-            </Row>
-            <Row label="Bionic reading">
-              <Toggle on={s.bionic} onChange={s.toggleBionic} />
-            </Row>
-          </Section>
-
-          <Section title="Atmospheres">
-            <p className="text-[11px] opacity-60">Sub-menu coming soon. Current: <em>{s.atmosphere}</em></p>
-          </Section>
-
-          <Section title="Language">
-            <Row label="Choose">
-              <select
-                value={s.language}
-                onChange={(e) => s.setLanguage(e.target.value)}
-                className="rounded-md border bg-transparent px-2 py-1 text-sm"
-                style={{ borderColor: "rgba(255,255,255,0.18)", color: PANEL_FG, backgroundColor: PANEL_BG }}
-              >
-                <option value="en">English</option>
-                <option value="es">Español</option>
-                <option value="fr">Français</option>
-                <option value="de">Deutsch</option>
-                <option value="ja">日本語</option>
-              </select>
-            </Row>
-          </Section>
-
-          <Section title="Tones">
-            <p className="text-[11px] opacity-60">Sub-menu coming soon. Current: <em>{s.tone}</em></p>
-          </Section>
-
-          <Section title="Fonts">
-            <Row label="Spine font">
-              <select
-                value={s.spineFont}
-                onChange={(e) => s.setSpineFont(e.target.value as typeof s.spineFont)}
-                className="rounded-md border bg-transparent px-2 py-1 text-sm"
-                style={{ borderColor: "rgba(255,255,255,0.18)", color: PANEL_FG, backgroundColor: PANEL_BG }}
-              >
-                {SPINE_FONTS.map((f) => (
-                  <option key={f.id} value={f.id}>{f.label}</option>
+      <ThemeSheet
+        open={openAtmos}
+        onClose={() => setOpenAtmos(false)}
+        title="Atmosphere"
+        current={s.atmosphere}
+        onPick={(k) => s.setAtmosphere(k)}
+      />
+      <ThemeSheet
+        open={openTones}
+        onClose={() => setOpenTones(false)}
+        title="Tone"
+        current={s.tone}
+        onPick={(k) => s.setTone(k)}
+      />
+      <ThemeSheet
+        open={openMice}
+        onClose={() => setOpenMice(false)}
+        title="Mice trails"
+        current={s.mice}
+        onPick={(k) => s.setMice(k)}
+        extras={
+          s.mice === "romantic" ? (
+            <div className="mt-3">
+              <p className="mb-2 text-xs opacity-70">Heart color</p>
+              <div className="flex flex-wrap gap-1.5">
+                {ROMANTIC_COLORS.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => s.setRomanticColor(c.hex)}
+                    aria-label={c.label}
+                    className="h-6 w-6 rounded-full border"
+                    style={{
+                      backgroundColor: c.hex,
+                      borderColor: s.romanticColor === c.hex ? PANEL_FG : "rgba(255,255,255,0.2)",
+                      outline: s.romanticColor === c.hex ? `2px solid ${PANEL_FG}` : "none",
+                    }}
+                  />
                 ))}
-              </select>
-            </Row>
-            {s.spineFont === "custom" && (
-              <Row label="Custom CSS">
+              </div>
+            </div>
+          ) : s.mice === "custom" ? (
+            <div className="mt-3 rounded-lg p-3 text-xs" style={{ backgroundColor: "rgba(255,255,255,0.05)" }}>
+              Paste your custom mouse code in the slot below when ready. Optional sound slot appears if Sound effects is on.
+              <input
+                placeholder="Custom mouse code"
+                className="mt-2 w-full rounded border bg-transparent px-2 py-1 text-sm"
+                style={{ borderColor: "rgba(255,255,255,0.18)", color: PANEL_FG }}
+              />
+              {s.sfxEnabled && (
                 <input
-                  type="text"
-                  value={s.customFont}
-                  onChange={(e) => s.setCustomFont(e.target.value)}
-                  placeholder='"Times New Roman", serif'
-                  className="w-44 rounded-md border bg-transparent px-2 py-1 text-xs"
+                  placeholder="Custom sound URL"
+                  className="mt-2 w-full rounded border bg-transparent px-2 py-1 text-sm"
                   style={{ borderColor: "rgba(255,255,255,0.18)", color: PANEL_FG }}
                 />
-              </Row>
-            )}
-          </Section>
-
-          <Section title="Mice">
-            <Row label="Enable trails">
-              <Toggle on={s.mouseTrails} onChange={s.setMouseTrails} />
-            </Row>
-            <p className="text-[11px] opacity-60">Themed mouse animations coming soon.</p>
-          </Section>
-
-          <Section title="Accessibility">
-            <p className="text-[11px] opacity-60 mb-2">Open the Accessibility book for full options.</p>
-            <Pill active={false} onClick={() => { setOpen(false); props.onOpenBook("accessibility"); }}>Open book</Pill>
-          </Section>
-
-          <Section title="Notifications">
-            <p className="text-[11px] opacity-60 mb-2">Coming soon.</p>
-          </Section>
-
-          <Section title="Social">
-            <p className="text-[11px] opacity-60 mb-2">Coming soon.</p>
-          </Section>
-
-          <Section title="Books on shelf">
-            <Row label="Theme">
-              <Pill active={theme === "light"} onClick={() => setTheme("light")}>Light</Pill>
-              <Pill active={theme === "dark"} onClick={() => setTheme("dark")}>Dark</Pill>
-            </Row>
-            <ul className="mt-2 space-y-1.5">
-              {BOOKS.map((b) => {
-                const hex = (s.colors[b.id] ?? (b.spine.startsWith("#") ? b.spine : "#888888"));
-                const isCustom = !!s.colors[b.id];
-                return (
-                  <li key={b.id} className="flex items-center gap-2 rounded-md px-1.5 py-1" style={{ backgroundColor: PANEL_SOFT }}>
-                    <ColorSwatchInput value={hex} onChange={(v) => s.setBookColor(b.id, v)} />
-                    <span className="flex-1 truncate text-xs">{b.title}</span>
-                    {isCustom && (
-                      <button onClick={() => s.setBookColor(b.id, null)} className="text-[10px] opacity-60 hover:opacity-100">reset</button>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </Section>
-        </div>
-
-        <p className="mt-6 text-center text-[10px] opacity-40">Swipe right to close</p>
-      </aside>
+              )}
+            </div>
+          ) : null
+        }
+      />
     </>
   );
 }

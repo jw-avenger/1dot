@@ -1,5 +1,6 @@
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { Book } from "./books";
-import { useSettings, resolveSpineFontCss, bionicize } from "./useSettings";
+import { useSettings, resolveSpineFontCss, bionicize, PETS } from "./useSettings";
 
 type Props = {
   book: Book;
@@ -7,23 +8,22 @@ type Props = {
   editMode: boolean;
   onClick: () => void;
   onToggle: () => void;
+  onPetClick: () => void;
 };
 
-export function BookSpine({ book, onShelf, editMode, onClick, onToggle }: Props) {
-  const { spineFont, customFont, bionic, colors, pets, setPet } = useSettings();
+export function BookSpine({ book, onShelf, editMode, onClick, onToggle, onPetClick }: Props) {
+  const isMobile = useIsMobile();
+  const { spineFont, customFont, bionic, colors, petsConfig, atmosphere } = useSettings();
   const fontFamily = resolveSpineFontCss(spineFont, customFont);
   const spineColor = colors[book.id] ?? book.spine;
-  const pet = pets[book.id];
+  const cfg = petsConfig[book.id];
+  const petEmoji = cfg?.pet ? PETS.find((p) => p.id === cfg.pet)?.emoji : null;
 
-  const handlePetClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (pet) {
-      if (confirm(`Remove pet "${pet}" from ${book.title}?`)) setPet(book.id, null);
-    } else {
-      const v = prompt(`Add a pet (emoji or short text) for ${book.title}:`, "🐈");
-      if (v) setPet(book.id, v.slice(0, 4));
-    }
-  };
+  const scale = isMobile ? 0.62 : 1;
+  const w = Math.round(book.width * scale);
+  const h = Math.round(book.height * scale);
+
+  const showPetSlot = atmosphere !== "basic";
 
   if (!onShelf) {
     return (
@@ -39,28 +39,29 @@ export function BookSpine({ book, onShelf, editMode, onClick, onToggle }: Props)
   }
 
   return (
-    <div className="relative flex flex-col items-center" style={{ width: book.width }}>
-      {/* Pet widget slot */}
-      <button
-        onClick={handlePetClick}
-        aria-label={pet ? `Pet ${pet}` : "Add pet"}
-        className="mb-1 flex items-center justify-center rounded-sm text-base leading-none transition hover:bg-paper/30"
-        style={{ width: book.width, height: 22 }}
-      >
-        {pet ? (
-          <span>{pet}</span>
-        ) : editMode ? (
-          <span className="text-[10px] opacity-40">+ pet</span>
-        ) : (
-          <span className="opacity-0">·</span>
-        )}
-      </button>
+    <div className="relative flex flex-col items-center" style={{ width: w }}>
+      {showPetSlot ? (
+        <button
+          onClick={(e) => { e.stopPropagation(); onPetClick(); }}
+          aria-label={petEmoji ? "Change or remove pet" : "Add pet"}
+          className="mb-1 flex items-center justify-center rounded-sm leading-none transition hover:bg-paper/30"
+          style={{ width: w, height: 22, fontSize: 16 }}
+        >
+          {petEmoji ? (
+            <span>{petEmoji}</span>
+          ) : (
+            <span className="text-[10px] opacity-30">+</span>
+          )}
+        </button>
+      ) : (
+        <div style={{ width: w, height: 6 }} />
+      )}
 
       <button
         onClick={editMode ? onToggle : onClick}
         aria-label={book.title}
         className="group relative origin-bottom cursor-pointer transition-transform duration-300 ease-out hover:-translate-y-1 hover:-rotate-1"
-        style={{ height: book.height, width: book.width }}
+        style={{ height: h, width: w }}
       >
         <div
           className="relative h-full w-full overflow-hidden rounded-t-[3px] rounded-b-[2px]"
@@ -77,21 +78,20 @@ export function BookSpine({ book, onShelf, editMode, onClick, onToggle }: Props)
           <div className="absolute inset-x-0 bottom-0 h-1.5" style={{ background: "rgba(0,0,0,0.4)" }} />
 
           <div
-            className="absolute inset-x-0 top-5 text-center text-[8px] leading-none"
-            style={{ color: "var(--spine-gold)", opacity: 0.7 }}
+            className="absolute inset-x-0 top-5 text-center leading-none"
+            style={{ color: "var(--spine-gold)", opacity: 0.7, fontSize: 8 }}
             aria-hidden
           >
             ❦
           </div>
 
-          {/* title — first (capital) letter on top, last on bottom */}
           <div className="absolute inset-0 flex items-center justify-center" style={{ color: book.textColor }}>
             <span
               className="font-semibold whitespace-nowrap"
               style={{
                 writingMode: "vertical-rl",
                 textOrientation: "mixed",
-                fontSize: Math.min(book.width * 0.32, 12),
+                fontSize: Math.min(w * 0.32, 12),
                 letterSpacing: "0.12em",
                 fontFamily,
                 textShadow: "0 1px 0 rgba(0,0,0,0.5), 0 0 6px rgba(0,0,0,0.25)",
