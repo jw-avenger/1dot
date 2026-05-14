@@ -5,18 +5,27 @@ import { CatFigurine } from "./CatFigurine";
 
 type Props = {
   onClick: () => void;
+  /** Optional explicit height. Defaults to scale with the bookshelf row. */
+  height?: number;
 };
 
-export function ShelfPet({ onClick }: Props) {
+export function ShelfPet({ onClick, height = 150 }: Props) {
   const { petsConfig, setPetConfig } = useSettings();
   const cfg = petsConfig["shelf"];
   const pet = cfg?.pet ? PETS.find((p) => p.id === cfg.pet) : null;
   const [hover, setHover] = useState(false);
 
+  // Slot dimensions scale together so the figurine matches book height.
+  const slotH = height;
+  const slotW = Math.round(slotH * 0.7);
+  // Cat is rendered at full slot width; generic figurines a bit smaller.
+  const catSize = Math.round(slotW * 1.05);
+  const genericSize = Math.round(slotW * 0.85);
+
   return (
     <div
       className="relative ml-1 flex flex-col items-center justify-end self-end"
-      style={{ width: 64, height: 110 }}
+      style={{ width: slotW, height: slotH }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
@@ -36,12 +45,16 @@ export function ShelfPet({ onClick }: Props) {
       >
         {pet ? (
           <div className="pb-1">
-            {pet.id === "cat" ? <CatFigurine size={60} /> : <PetFigurine petId={pet.id} size={56} />}
+            {pet.id === "cat" ? (
+              <CatFigurine size={catSize} />
+            ) : (
+              <PetFigurine petId={pet.id} size={genericSize} />
+            )}
           </div>
         ) : (
           <span
             className="absolute inset-0 flex items-center justify-center"
-            style={{ color: "var(--ink)", fontSize: 28, lineHeight: 1 }}
+            style={{ color: "var(--ink)", fontSize: Math.round(slotH * 0.35), lineHeight: 1 }}
           >
             🐈
           </span>
