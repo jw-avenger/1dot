@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import type { Book } from "./books";
+import { useSettings, SPINE_FONTS, bionicize } from "./useSettings";
 
 type Props = {
   book: Book;
@@ -7,11 +8,16 @@ type Props = {
 };
 
 export function BookOpen({ book, onClose }: Props) {
+  const { spineFont, cycleSpineFont, bionic, toggleBionic } = useSettings();
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
+
+  const isSettings = book.id === "settings";
+  const currentFontLabel = SPINE_FONTS.find((f) => f.id === spineFont)?.label ?? spineFont;
 
   return (
     <div
@@ -31,11 +37,9 @@ export function BookOpen({ book, onClose }: Props) {
             minHeight: 480,
           }}
         >
-          {/* book gutter */}
           <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-ink/25 to-transparent md:block" />
           <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-12 -translate-x-1/2 bg-gradient-to-r from-ink/10 via-transparent to-ink/10 md:block" />
 
-          {/* left page — title */}
           <div
             className="relative flex flex-col justify-between p-10"
             style={{
@@ -49,23 +53,22 @@ export function BookOpen({ book, onClose }: Props) {
                 Volume
               </p>
               <h2
-                className="mt-6 font-serif text-5xl font-semibold leading-tight text-ink"
+                className="mt-6 font-serif text-5xl font-semibold leading-tight"
                 style={{ color: book.spine }}
               >
-                {book.title}
+                {bionicize(book.title, bionic)}
               </h2>
               <div
                 className="mt-6 h-px w-20"
                 style={{ backgroundColor: book.spine }}
               />
               <p className="mt-6 max-w-xs font-serif text-sm italic text-ink/70">
-                A small chapter of your home, opened with care.
+                {bionicize("A small chapter of your home, opened with care.", bionic)}
               </p>
             </div>
             <p className="font-sans text-xs text-ink/50">— Stress-Free Home Help</p>
           </div>
 
-          {/* right page — TOC */}
           <div
             className="relative p-10"
             style={{
@@ -78,27 +81,48 @@ export function BookOpen({ book, onClose }: Props) {
               Table of Contents
             </p>
             <ol className="mt-6 space-y-3">
-              {book.toc.map((item, i) => (
-                <li key={item}>
-                  <button
-                    // TODO: route when submenus exist
-                    className="group flex w-full items-baseline gap-4 text-left font-serif text-lg text-ink transition hover:text-ink"
-                  >
-                    <span className="w-6 text-sm tabular-nums text-ink/40">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="flex-1 border-b border-dotted border-ink/30 pb-1 group-hover:border-ink/70">
-                      {item}
-                    </span>
-                    <span
-                      className="text-sm tabular-nums text-ink/40 transition group-hover:text-ink/70"
+              {book.toc.map((item, i) => {
+                const isFontItem = isSettings && item === "Spine font";
+                const isBionicItem = isSettings && item === "Bionic reading";
+                const interactive = isFontItem || isBionicItem;
+                const onItemClick = isFontItem
+                  ? cycleSpineFont
+                  : isBionicItem
+                    ? toggleBionic
+                    : undefined;
+                const right = isFontItem
+                  ? currentFontLabel
+                  : isBionicItem
+                    ? bionic
+                      ? "On"
+                      : "Off"
+                    : String((i + 1) * 3).padStart(3, "0");
+                return (
+                  <li key={item}>
+                    <button
+                      onClick={onItemClick}
+                      disabled={!interactive && !isSettings}
+                      className="group flex w-full items-baseline gap-4 text-left font-serif text-lg text-ink transition"
                     >
-                      {String((i + 1) * 3).padStart(3, "0")}
-                    </span>
-                  </button>
-                </li>
-              ))}
+                      <span className="w-6 text-sm tabular-nums text-ink/40">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="flex-1 border-b border-dotted border-ink/30 pb-1 group-hover:border-ink/70">
+                        {bionicize(item, bionic)}
+                      </span>
+                      <span className="text-sm tabular-nums text-ink/60 transition group-hover:text-ink">
+                        {interactive ? right : right}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
             </ol>
+            {isSettings && (
+              <p className="mt-6 font-sans text-xs italic text-ink/50">
+                Tap “Spine font” or “Bionic reading” to change.
+              </p>
+            )}
           </div>
         </div>
 

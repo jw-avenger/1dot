@@ -34,7 +34,7 @@ export const BOOKS: Book[] = [
     textColor: "var(--spine-cream)",
     height: 230,
     width: 46,
-    toc: ["Profile", "Preferences", "Notifications", "Theme"],
+    toc: ["Spine font", "Bionic reading", "Profile", "Notifications", "Theme"],
   },
   {
     id: "about",
