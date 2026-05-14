@@ -5,6 +5,7 @@ import { BookOpen } from "./BookOpen";
 import { SimpleMenu } from "./SimpleMenu";
 import { SidePanel } from "./SidePanel";
 import { PetPopup } from "./PetPopup";
+import { ShelfPet } from "./ShelfPet";
 import { MiceTrails } from "./MiceTrails";
 import { TalkToMe } from "./TalkToMe";
 import { useShelfState } from "./useShelfState";
@@ -36,7 +37,7 @@ function useLocalState<T extends string>(key: string, initial: T): [T, (v: T) =>
 
 export function Bookshelf() {
   const [openId, setOpenId] = useState<string | null>(null);
-  const [petBookId, setPetBookId] = useState<string | null>(null);
+  const [petOpen, setPetOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
   const [viewMode, setViewMode] = useLocalState<ViewMode>("shelf:viewMode", "shelf");
@@ -72,17 +73,17 @@ export function Bookshelf() {
 
   const handleOpenBook = (id: string) => {
     if (id === "settings") {
-      // Settings goes straight to the slide-out menu
-      setPanelOpen(true);
+      // Mood Settings toggles the slide-out menu
+      setPanelOpen(!panelOpen);
       return;
     }
     setOpenId(id);
   };
 
   const openBook = visibleBooks.find((b) => b.id === openId) ?? null;
-  const petBook = visibleBooks.find((b) => b.id === petBookId) ?? null;
   const offShelf = visibleBooks.filter((b) => !onShelf.has(b.id));
   const shelved = visibleBooks.filter((b) => onShelf.has(b.id));
+  const showShelfPet = settings.atmosphere !== "basic";
 
   const panelProps = {
     open: panelOpen,
@@ -142,9 +143,9 @@ export function Bookshelf() {
                 editMode={editMode}
                 onClick={() => handleOpenBook(book.id)}
                 onToggle={() => toggle(book.id)}
-                onPetClick={() => setPetBookId(book.id)}
               />
             ))}
+            {showShelfPet && <ShelfPet onClick={() => setPetOpen(true)} />}
             {shelved.length === 0 && (
               <p className="py-16 font-serif italic" style={{ color: "var(--ink)", opacity: 0.5 }}>
                 The shelf is bare. Open the menu to reshelve.
@@ -191,7 +192,6 @@ export function Bookshelf() {
                     editMode
                     onClick={() => {}}
                     onToggle={() => toggle(book.id)}
-                    onPetClick={() => {}}
                   />
                 ))}
               </div>
@@ -203,7 +203,7 @@ export function Bookshelf() {
       <SidePanel {...panelProps} />
       <MiceTrails />
       <TalkToMe />
-      <PetPopup book={petBook} onClose={() => setPetBookId(null)} />
+      <PetPopup open={petOpen} onClose={() => setPetOpen(false)} />
       {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} />}
     </div>
   );

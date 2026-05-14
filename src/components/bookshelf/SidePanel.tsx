@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useSettings, THEME_ORDER, ROMANTIC_COLORS, type ThemeKey } from "./useSettings";
+import { useSettings, THEME_ORDER, ROMANTIC_COLORS, type ThemeKey, type Lighting, type BgMode, type TextColorMode } from "./useSettings";
 
 type ViewMode = "shelf" | "simple";
 type Theme = "light" | "dark";
@@ -56,7 +56,7 @@ function Toggle({
   );
 }
 
-function Chips({
+function Dropdown({
   options,
   current,
   onPick,
@@ -66,25 +66,22 @@ function Chips({
   onPick: (id: any) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-1">
-      {options.map((o) => {
-        const active = o.id === current;
-        return (
-          <button
-            key={o.id}
-            onClick={() => onPick(o.id)}
-            className="rounded-full px-2.5 py-1 text-[12px] transition"
-            style={{
-              backgroundColor: active ? PANEL_FG : "transparent",
-              color: active ? PANEL_BG : PANEL_FG,
-              border: active ? "1px solid transparent" : "1px solid rgba(255,255,255,0.14)",
-            }}
-          >
-            {o.label}
-          </button>
-        );
-      })}
-    </div>
+    <select
+      value={current}
+      onChange={(e) => onPick(e.target.value)}
+      className="w-full rounded-md px-2 py-1.5 text-[13px]"
+      style={{
+        backgroundColor: "#1f1f24",
+        color: PANEL_FG,
+        border: "1px solid rgba(255,255,255,0.14)",
+      }}
+    >
+      {options.map((o) => (
+        <option key={o.id} value={o.id} style={{ backgroundColor: "#1f1f24", color: PANEL_FG }}>
+          {o.label}
+        </option>
+      ))}
+    </select>
   );
 }
 
@@ -211,15 +208,15 @@ export function SidePanel(props: Props) {
 
         <Row>
           <Label>Atmosphere</Label>
-          <Chips options={THEME_ORDER} current={s.atmosphere} onPick={(v: ThemeKey) => s.setAtmosphere(v)} />
+          <Dropdown options={THEME_ORDER} current={s.atmosphere} onPick={(v: ThemeKey) => s.setAtmosphere(v)} />
         </Row>
         <Row>
           <Label>Tone</Label>
-          <Chips options={THEME_ORDER} current={s.tone} onPick={(v: ThemeKey) => s.setTone(v)} />
+          <Dropdown options={THEME_ORDER} current={s.tone} onPick={(v: ThemeKey) => s.setTone(v)} />
         </Row>
         <Row>
           <Label>Mice trails</Label>
-          <Chips options={THEME_ORDER} current={s.mice} onPick={(v: ThemeKey) => s.setMice(v)} />
+          <Dropdown options={THEME_ORDER} current={s.mice} onPick={(v: ThemeKey) => s.setMice(v)} />
           {s.mice === "romantic" && (
             <div className="mt-2 flex flex-wrap gap-1">
               {ROMANTIC_COLORS.map((c) => (
@@ -235,6 +232,70 @@ export function SidePanel(props: Props) {
                 />
               ))}
             </div>
+          )}
+        </Row>
+
+        <Row>
+          <Label>Lighting</Label>
+          <Dropdown
+            options={[
+              { id: "light", label: "Light" },
+              { id: "amber", label: "Amber" },
+              { id: "dark", label: "Dark" },
+              { id: "custom", label: "Custom" },
+            ]}
+            current={s.lighting}
+            onPick={(v: Lighting) => s.setLighting(v)}
+          />
+          {s.lighting === "custom" && (
+            <input
+              type="color"
+              value={s.lightingCustom}
+              onChange={(e) => s.setLightingCustom(e.target.value)}
+              className="mt-1.5 h-7 w-full rounded"
+            />
+          )}
+        </Row>
+        <Row>
+          <Label>Background color</Label>
+          <Dropdown
+            options={[
+              { id: "white", label: "Paper" },
+              { id: "amber", label: "Amber" },
+              { id: "dark", label: "Dark" },
+              { id: "custom", label: "Custom" },
+            ]}
+            current={s.bgMode}
+            onPick={(v: BgMode) => s.setBgMode(v)}
+          />
+          {s.bgMode === "custom" && (
+            <input
+              type="color"
+              value={s.bgCustom}
+              onChange={(e) => s.setBgCustom(e.target.value)}
+              className="mt-1.5 h-7 w-full rounded"
+            />
+          )}
+        </Row>
+        <Row>
+          <Label>Text color</Label>
+          <Dropdown
+            options={[
+              { id: "black", label: "Ink" },
+              { id: "amber", label: "Amber" },
+              { id: "white", label: "Cream" },
+              { id: "custom", label: "Custom" },
+            ]}
+            current={s.textColorMode}
+            onPick={(v: TextColorMode) => s.setTextColorMode(v)}
+          />
+          {s.textColorMode === "custom" && (
+            <input
+              type="color"
+              value={s.textCustom}
+              onChange={(e) => s.setTextCustom(e.target.value)}
+              className="mt-1.5 h-7 w-full rounded"
+            />
           )}
         </Row>
 

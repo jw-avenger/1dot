@@ -1,24 +1,27 @@
 import { useEffect, useState } from "react";
 import { ConfirmSheet, SheetButton, SHEET_FG } from "./ConfirmSheet";
 import { PETS, useSettings, type PetConfig } from "./useSettings";
-import type { Book } from "./books";
 
 type Props = {
-  book: Book | null;
+  open: boolean;
   onClose: () => void;
 };
 
+const SHELF_KEY = "shelf";
+
 const SUGGESTED = [
-  "Drink a glass of water",
-  "Stretch for 30 seconds",
-  "Take three slow breaths",
-  "Tidy one small surface",
-  "Send one kind message",
+  "Fresh water",
+  "Small stretch break",
+  "Three slow breaths",
+  "Tidy one little surface",
+  "Send a kind message",
 ];
 
-export function PetPopup({ book, onClose }: Props) {
+const ASSURANCE = "You can change absolutely everything easily at any time.";
+
+export function PetPopup({ open, onClose }: Props) {
   const { petsConfig, setPetConfig } = useSettings();
-  const existing = book ? petsConfig[book.id] : undefined;
+  const existing = petsConfig[SHELF_KEY];
   const [phase, setPhase] = useState<"ask" | "configure">("ask");
   const [draft, setDraft] = useState<PetConfig>({
     pet: null,
@@ -29,7 +32,7 @@ export function PetPopup({ book, onClose }: Props) {
   const [newTodo, setNewTodo] = useState("");
 
   useEffect(() => {
-    if (!book) return;
+    if (!open) return;
     if (existing) {
       setDraft(existing);
       setPhase("configure");
@@ -38,35 +41,36 @@ export function PetPopup({ book, onClose }: Props) {
       setPhase("ask");
     }
     setNewTodo("");
-  }, [book, existing]);
+  }, [open, existing]);
 
-  if (!book) return null;
+  if (!open) return null;
 
   const save = () => {
     if (!draft.pet) return;
-    setPetConfig(book.id, draft);
+    setPetConfig(SHELF_KEY, draft);
     onClose();
   };
   const remove = () => {
-    setPetConfig(book.id, null);
+    setPetConfig(SHELF_KEY, null);
     onClose();
   };
 
   return (
-    <ConfirmSheet open={!!book} onClose={onClose} maxWidth={380}>
+    <ConfirmSheet open={open} onClose={onClose} maxWidth={380}>
       {phase === "ask" ? (
         <>
           <p className="mb-5 text-center text-base leading-snug" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>
-            Would you like pet support today?
+            Would you like pet support?
           </p>
           <div className="flex gap-3">
             <SheetButton full onClick={() => setPhase("configure")} variant="primary">Yes</SheetButton>
             <SheetButton full onClick={onClose}>No</SheetButton>
           </div>
+          <p className="mt-3 text-center text-[11px] opacity-60">{ASSURANCE}</p>
         </>
       ) : (
         <div className="space-y-4">
-          <p className="text-center text-sm opacity-80">Choose a friend for {book.title}</p>
+          <p className="text-center text-sm opacity-80">Choose a friend</p>
 
           <div className="grid grid-cols-2 gap-2">
             {PETS.map((p) => {
@@ -102,7 +106,7 @@ export function PetPopup({ book, onClose }: Props) {
 
           {draft.todoEnabled && (
             <div className="rounded-xl p-3" style={{ backgroundColor: "rgba(255,255,255,0.04)" }}>
-              <p className="mb-2 text-xs opacity-70">A few gentle suggestions — keep what helps:</p>
+              <p className="mb-2 text-xs opacity-70">Gentle suggestions — keep what helps:</p>
               <div className="mb-2 flex flex-wrap gap-1.5">
                 {SUGGESTED.filter((s) => !draft.todoItems.includes(s)).map((s) => (
                   <button
@@ -165,6 +169,7 @@ export function PetPopup({ book, onClose }: Props) {
             )}
             <SheetButton full onClick={onClose}>Cancel</SheetButton>
           </div>
+          <p className="text-center text-[11px] opacity-60">{ASSURANCE}</p>
         </div>
       )}
     </ConfirmSheet>
