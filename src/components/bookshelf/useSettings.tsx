@@ -65,7 +65,7 @@ export const PETS: { id: string; label: string; emoji: string }[] = [
 
 export type TrashItem = {
   id: string;
-  kind: "pet";
+  kind: "pet" | "plant";
   label: string;
   data: any;
   deletedAt: number;
@@ -94,6 +94,7 @@ type State = {
   arrowHidden: boolean; // user clicked the arrow twice to hide it
   hideSettingsBook: boolean; // remove Settings book from library
   petDismissed: boolean; // user said No / deleted pet — hide slot until restored
+  plantDismissed: boolean; // hide plant widget until restored
   trash: TrashItem[];
 };
 
@@ -120,6 +121,7 @@ const defaults: State = {
   arrowHidden: false,
   hideSettingsBook: false,
   petDismissed: false,
+  plantDismissed: false,
   trash: [],
 };
 
