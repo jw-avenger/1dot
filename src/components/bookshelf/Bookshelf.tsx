@@ -6,6 +6,7 @@ import { SimpleMenu } from "./SimpleMenu";
 import { SidePanel } from "./SidePanel";
 import { PetPopup } from "./PetPopup";
 import { ShelfPet } from "./ShelfPet";
+import { ShelfPlant } from "./ShelfPlant";
 import { MiceTrails } from "./MiceTrails";
 import { TalkToMe } from "./TalkToMe";
 import { useShelfState } from "./useShelfState";
