@@ -1,4 +1,5 @@
 import type { Book } from "./books";
+import { useSettings, SPINE_FONTS, bionicize } from "./useSettings";
 
 type Props = {
   book: Book;
@@ -9,6 +10,8 @@ type Props = {
 };
 
 export function BookSpine({ book, onShelf, editMode, onClick, onToggle }: Props) {
+  const { spineFont, bionic } = useSettings();
+  const fontFamily = SPINE_FONTS.find((f) => f.id === spineFont)?.css;
   if (!onShelf) {
     return (
       <button
@@ -20,7 +23,7 @@ export function BookSpine({ book, onShelf, editMode, onClick, onToggle }: Props)
           style={{ backgroundColor: book.spine }}
           aria-hidden
         />
-        <span className="font-serif">{book.title}</span>
+        <span style={{ fontFamily }}>{bionicize(book.title, bionic)}</span>
         <span className="ml-1 text-xs opacity-60 group-hover:opacity-100">+ shelve</span>
       </button>
     );
@@ -62,15 +65,16 @@ export function BookSpine({ book, onShelf, editMode, onClick, onToggle }: Props)
             style={{ color: book.textColor }}
           >
             <span
-              className="font-serif font-semibold tracking-wide whitespace-nowrap"
+              className="font-semibold tracking-wide whitespace-nowrap"
               style={{
                 writingMode: "vertical-rl",
                 transform: "rotate(180deg)",
                 fontSize: Math.min(book.width * 0.32, 16),
                 letterSpacing: "0.08em",
+                fontFamily,
               }}
             >
-              {book.title}
+              {bionicize(book.title, bionic)}
             </span>
           </div>
         </div>
