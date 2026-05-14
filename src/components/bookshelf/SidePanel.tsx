@@ -208,15 +208,15 @@ export function SidePanel(props: Props) {
 
         <Row>
           <Label>Atmosphere</Label>
-          <Chips options={THEME_ORDER} current={s.atmosphere} onPick={(v: ThemeKey) => s.setAtmosphere(v)} />
+          <Dropdown options={THEME_ORDER} current={s.atmosphere} onPick={(v: ThemeKey) => s.setAtmosphere(v)} />
         </Row>
         <Row>
           <Label>Tone</Label>
-          <Chips options={THEME_ORDER} current={s.tone} onPick={(v: ThemeKey) => s.setTone(v)} />
+          <Dropdown options={THEME_ORDER} current={s.tone} onPick={(v: ThemeKey) => s.setTone(v)} />
         </Row>
         <Row>
           <Label>Mice trails</Label>
-          <Chips options={THEME_ORDER} current={s.mice} onPick={(v: ThemeKey) => s.setMice(v)} />
+          <Dropdown options={THEME_ORDER} current={s.mice} onPick={(v: ThemeKey) => s.setMice(v)} />
           {s.mice === "romantic" && (
             <div className="mt-2 flex flex-wrap gap-1">
               {ROMANTIC_COLORS.map((c) => (
@@ -232,6 +232,70 @@ export function SidePanel(props: Props) {
                 />
               ))}
             </div>
+          )}
+        </Row>
+
+        <Row>
+          <Label>Lighting</Label>
+          <Dropdown
+            options={[
+              { id: "light", label: "Light" },
+              { id: "amber", label: "Amber" },
+              { id: "dark", label: "Dark" },
+              { id: "custom", label: "Custom" },
+            ]}
+            current={s.lighting}
+            onPick={(v: Lighting) => s.setLighting(v)}
+          />
+          {s.lighting === "custom" && (
+            <input
+              type="color"
+              value={s.lightingCustom}
+              onChange={(e) => s.setLightingCustom(e.target.value)}
+              className="mt-1.5 h-7 w-full rounded"
+            />
+          )}
+        </Row>
+        <Row>
+          <Label>Background color</Label>
+          <Dropdown
+            options={[
+              { id: "white", label: "Paper" },
+              { id: "amber", label: "Amber" },
+              { id: "dark", label: "Dark" },
+              { id: "custom", label: "Custom" },
+            ]}
+            current={s.bgMode}
+            onPick={(v: BgMode) => s.setBgMode(v)}
+          />
+          {s.bgMode === "custom" && (
+            <input
+              type="color"
+              value={s.bgCustom}
+              onChange={(e) => s.setBgCustom(e.target.value)}
+              className="mt-1.5 h-7 w-full rounded"
+            />
+          )}
+        </Row>
+        <Row>
+          <Label>Text color</Label>
+          <Dropdown
+            options={[
+              { id: "black", label: "Ink" },
+              { id: "amber", label: "Amber" },
+              { id: "white", label: "Cream" },
+              { id: "custom", label: "Custom" },
+            ]}
+            current={s.textColorMode}
+            onPick={(v: TextColorMode) => s.setTextColorMode(v)}
+          />
+          {s.textColorMode === "custom" && (
+            <input
+              type="color"
+              value={s.textCustom}
+              onChange={(e) => s.setTextCustom(e.target.value)}
+              className="mt-1.5 h-7 w-full rounded"
+            />
           )}
         </Row>
 
