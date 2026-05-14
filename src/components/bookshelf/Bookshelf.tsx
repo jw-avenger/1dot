@@ -36,7 +36,7 @@ function useLocalState<T extends string>(key: string, initial: T): [T, (v: T) =>
 
 export function Bookshelf() {
   const [openId, setOpenId] = useState<string | null>(null);
-  const [petBookId, setPetBookId] = useState<string | null>(null);
+  const [petOpen, setPetOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
   const [viewMode, setViewMode] = useLocalState<ViewMode>("shelf:viewMode", "shelf");
@@ -72,17 +72,17 @@ export function Bookshelf() {
 
   const handleOpenBook = (id: string) => {
     if (id === "settings") {
-      // Settings goes straight to the slide-out menu
-      setPanelOpen(true);
+      // Mood Settings toggles the slide-out menu
+      setPanelOpen(!panelOpen);
       return;
     }
     setOpenId(id);
   };
 
   const openBook = visibleBooks.find((b) => b.id === openId) ?? null;
-  const petBook = visibleBooks.find((b) => b.id === petBookId) ?? null;
   const offShelf = visibleBooks.filter((b) => !onShelf.has(b.id));
   const shelved = visibleBooks.filter((b) => onShelf.has(b.id));
+  const showShelfPet = settings.atmosphere !== "basic";
 
   const panelProps = {
     open: panelOpen,
