@@ -23,7 +23,7 @@ export function ShelfPet({ onClick }: Props) {
       <button
         onClick={onClick}
         aria-label={pet ? `Change ${pet.label} pet` : "Add a pet — currently empty"}
-        className="group relative flex h-full w-full items-end justify-center overflow-hidden rounded-lg transition"
+        className="group relative flex h-full w-full items-end justify-center overflow-hidden rounded-lg"
         style={{
           background: pet
             ? "transparent"
