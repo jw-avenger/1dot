@@ -22,7 +22,7 @@ const SUGGESTED = [
 const ASSURANCE = "You can change absolutely everything easily at any time.";
 
 export function PetPopup({ open, onClose }: Props) {
-  const { petsConfig, setPetConfig } = useSettings();
+  const { petsConfig, setPetConfig, deletePet } = useSettings();
   const existing = petsConfig[SHELF_KEY];
   const [phase, setPhase] = useState<"ask" | "configure">("ask");
   const [draft, setDraft] = useState<PetConfig>({
