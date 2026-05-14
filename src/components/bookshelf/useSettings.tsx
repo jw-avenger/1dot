@@ -93,6 +93,7 @@ type State = {
   romanticColor: string; // hex used for romantic accents
   arrowHidden: boolean; // user clicked the arrow twice to hide it
   hideSettingsBook: boolean; // remove Settings book from library
+  trash: TrashItem[];
 };
 
 const defaults: State = {
