@@ -1,10 +1,12 @@
 import { BOOKS } from "./books";
+import { useSettings, bionicize } from "./useSettings";
 
 type Props = {
   onSelect: (id: string) => void;
 };
 
 export function SimpleMenu({ onSelect }: Props) {
+  const { bionic } = useSettings();
   return (
     <div
       className="min-h-screen px-6 py-12 font-sans"
@@ -29,9 +31,9 @@ export function SimpleMenu({ onSelect }: Props) {
                   aria-hidden
                 />
                 <div className="flex-1">
-                  <p className="font-serif text-xl">{book.title}</p>
+                  <p className="font-serif text-xl">{bionicize(book.title, bionic)}</p>
                   <p className="mt-0.5 text-sm opacity-60">
-                    {book.toc.join(" · ")}
+                    {bionicize(book.toc.join(" · "), bionic)}
                   </p>
                 </div>
                 <span className="opacity-40 transition group-hover:translate-x-1 group-hover:opacity-80">

@@ -151,16 +151,8 @@ export function Bookshelf() {
       {/* shelf */}
       <main className="relative z-10 mx-auto mt-16 max-w-5xl px-6 md:mt-24 md:px-12">
         <div className="relative">
-          {/* back wall behind books */}
-          <div
-            className="absolute inset-x-0 bottom-6 h-[300px] rounded-sm"
-            style={{
-              background:
-                "linear-gradient(180deg, oklch(0.82 0.04 65) 0%, oklch(0.78 0.05 60) 100%)",
-              boxShadow:
-                "inset 0 8px 16px -8px rgba(0,0,0,0.25), inset 0 -2px 4px rgba(255,255,255,0.2)",
-            }}
-          />
+          {/* (back wall removed — shelf is transparent so wall/dark mode shows through) */}
+
 
           {/* books row */}
           <div
