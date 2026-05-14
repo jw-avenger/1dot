@@ -19,7 +19,7 @@ const SUGGESTED = [
   "Send a kind message",
 ];
 
-const ASSURANCE = "You can change absolutely everything easily at any time.";
+const ASSURANCE = "You can change anything anytime.";
 
 export function PetPopup({ open, onClose }: Props) {
   const { petsConfig, setPetConfig, deletePet } = useSettings();
