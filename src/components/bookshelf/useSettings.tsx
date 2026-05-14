@@ -146,43 +146,20 @@ function load() {
   } catch {
     // ignore
   }
-  // One-time seed: temporarily place pet + plant widgets into the trash
-  // so the user can see them as restorable items.
-  const SEED_KEY = "shelf:trash:seed:v2";
+  // One-time restore: bring pet + plant back to their original library spots
+  // and wipe any prior trash entries / configuration for them.
+  const RESTORE_KEY = "shelf:trash:restore:v1";
   try {
-    if (!localStorage.getItem(SEED_KEY)) {
-      const cat = PETS.find((p) => p.id === "cat");
-      const now = Date.now();
-      const seeded: TrashItem[] = [];
-      if (!state.trash.some((t) => t.kind === "pet")) {
-        seeded.push({
-          id: `pet-shelf-seed-${now}`,
-          kind: "pet",
-          label: cat ? `${cat.emoji} ${cat.label} pet` : "Pet",
-          data: {
-            slot: "shelf",
-            config: { pet: "cat", animations: true, todoEnabled: false, todoItems: [] },
-          },
-          deletedAt: now,
-        });
-      }
-      if (!state.trash.some((t) => t.kind === "plant")) {
-        seeded.push({
-          id: `plant-shelf-seed-${now}`,
-          kind: "plant",
-          label: "🪴 Shelf plant",
-          data: { slot: "shelf" },
-          deletedAt: now,
-        });
-      }
+    if (!localStorage.getItem(RESTORE_KEY)) {
       state = {
         ...state,
-        petDismissed: true,
-        plantDismissed: true,
-        trash: [...seeded, ...state.trash],
+        petsConfig: {},
+        petDismissed: false,
+        plantDismissed: false,
+        trash: state.trash.filter((t) => t.kind !== "pet" && t.kind !== "plant"),
       };
       save();
-      localStorage.setItem(SEED_KEY, "1");
+      localStorage.setItem(RESTORE_KEY, "1");
     }
   } catch {
     // ignore
