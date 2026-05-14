@@ -192,7 +192,6 @@ export function Bookshelf() {
                     editMode
                     onClick={() => {}}
                     onToggle={() => toggle(book.id)}
-                    onPetClick={() => {}}
                   />
                 ))}
               </div>
