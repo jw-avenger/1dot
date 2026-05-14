@@ -166,7 +166,7 @@ export function SidePanel(props: Props) {
           className="mb-1.5 w-full rounded-lg py-2.5 text-[13px] font-semibold tracking-wide"
           style={{ backgroundColor: "#3a3a40", color: PANEL_FG, border: "1px solid rgba(255,255,255,0.1)" }}
         >
-          SLAP TO BASIC
+          SLAP TO SIMPLE
         </button>
         <button
           onClick={() => s.shutIt()}

@@ -50,7 +50,7 @@ export function ConfirmSheet({ open, onClose, title, children, maxWidth = 360, s
               border: "1px solid rgba(255,255,255,0.12)",
               backgroundColor: "transparent",
             }}
-            title="Take everything to basic mode"
+            title="Take everything to simple mode"
           >
             [ SIMPLE MODE NOW ]
           </button>
