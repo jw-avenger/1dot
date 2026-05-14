@@ -113,9 +113,16 @@ const defaults: State = {
 
 let state: State = { ...defaults };
 let loaded = false;
+let history: State[] = [];
+const HISTORY_MAX = 30;
 
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
+
+function snapshot() {
+  history.push(state);
+  if (history.length > HISTORY_MAX) history.shift();
+}
 
 function load() {
   if (typeof window === "undefined") return;
