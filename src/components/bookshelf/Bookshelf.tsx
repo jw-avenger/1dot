@@ -130,11 +130,8 @@ export function Bookshelf() {
       {/* header */}
       <header className="relative z-10 flex flex-wrap items-center justify-between gap-3 px-6 pt-8 md:px-12">
         <div>
-          <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
-            Stress-Free Home Help
-          </p>
-          <h1 className="mt-1 font-serif text-2xl font-semibold text-ink">
-            Your Library
+          <h1 className="font-serif text-2xl font-semibold text-ink">
+            Library
           </h1>
         </div>
         {Controls}
