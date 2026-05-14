@@ -13,10 +13,7 @@ export function SimpleMenu({ onSelect }: Props) {
       style={{ backgroundColor: "var(--background)", color: "var(--foreground)" }}
     >
       <div className="mx-auto max-w-2xl">
-        <p className="text-xs uppercase tracking-[0.3em] opacity-60">
-          Stress-Free Home Help
-        </p>
-        <h1 className="mt-2 font-serif text-3xl font-semibold">Menu</h1>
+        <h1 className="font-serif text-3xl font-semibold">Library</h1>
 
         <ul className="mt-10 divide-y" style={{ borderColor: "var(--border)" }}>
           {BOOKS.map((book) => (
