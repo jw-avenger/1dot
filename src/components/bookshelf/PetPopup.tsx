@@ -56,7 +56,7 @@ export function PetPopup({ open, onClose }: Props) {
     onClose();
   };
   const declineOrRemove = () => {
-    if (existing) deletePet(SHELF_KEY);
+    deletePet(SHELF_KEY);
     onClose();
   };
 
