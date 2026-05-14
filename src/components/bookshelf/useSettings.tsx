@@ -65,7 +65,7 @@ export const PETS: { id: string; label: string; emoji: string }[] = [
 
 export type TrashItem = {
   id: string;
-  kind: "pet";
+  kind: "pet" | "plant";
   label: string;
   data: any;
   deletedAt: number;
@@ -94,6 +94,7 @@ type State = {
   arrowHidden: boolean; // user clicked the arrow twice to hide it
   hideSettingsBook: boolean; // remove Settings book from library
   petDismissed: boolean; // user said No / deleted pet — hide slot until restored
+  plantDismissed: boolean; // hide plant widget until restored
   trash: TrashItem[];
 };
 
@@ -120,6 +121,7 @@ const defaults: State = {
   arrowHidden: false,
   hideSettingsBook: false,
   petDismissed: false,
+  plantDismissed: false,
   trash: [],
 };
 
@@ -144,38 +146,43 @@ function load() {
   } catch {
     // ignore
   }
-  // Backfill: if a pet was dismissed before trash existed (or trash was emptied),
-  // restore a placeholder trash entry so the user can bring it back.
-  const BACKFILL_KEY = "shelf:trash:backfill:v1";
+  // One-time seed: temporarily place pet + plant widgets into the trash
+  // so the user can see them as restorable items.
+  const SEED_KEY = "shelf:trash:seed:v2";
   try {
-    if (!localStorage.getItem(BACKFILL_KEY)) {
-      const hasPetTrash = state.trash.some((t) => t.kind === "pet");
-      if (state.petDismissed && !hasPetTrash) {
-        const cat = PETS.find((p) => p.id === "cat");
-        state = {
-          ...state,
-          trash: [
-            {
-              id: `pet-shelf-backfill-${Date.now()}`,
-              kind: "pet",
-              label: cat ? `${cat.emoji} ${cat.label} pet` : "Pet",
-              data: {
-                slot: "shelf",
-                config: {
-                  pet: "cat",
-                  animations: true,
-                  todoEnabled: false,
-                  todoItems: [],
-                },
-              },
-              deletedAt: Date.now(),
-            },
-            ...state.trash,
-          ],
-        };
-        save();
+    if (!localStorage.getItem(SEED_KEY)) {
+      const cat = PETS.find((p) => p.id === "cat");
+      const now = Date.now();
+      const seeded: TrashItem[] = [];
+      if (!state.trash.some((t) => t.kind === "pet")) {
+        seeded.push({
+          id: `pet-shelf-seed-${now}`,
+          kind: "pet",
+          label: cat ? `${cat.emoji} ${cat.label} pet` : "Pet",
+          data: {
+            slot: "shelf",
+            config: { pet: "cat", animations: true, todoEnabled: false, todoItems: [] },
+          },
+          deletedAt: now,
+        });
       }
-      localStorage.setItem(BACKFILL_KEY, "1");
+      if (!state.trash.some((t) => t.kind === "plant")) {
+        seeded.push({
+          id: `plant-shelf-seed-${now}`,
+          kind: "plant",
+          label: "🪴 Shelf plant",
+          data: { slot: "shelf" },
+          deletedAt: now,
+        });
+      }
+      state = {
+        ...state,
+        petDismissed: true,
+        plantDismissed: true,
+        trash: [...seeded, ...state.trash],
+      };
+      save();
+      localStorage.setItem(SEED_KEY, "1");
     }
   } catch {
     // ignore
@@ -276,6 +283,8 @@ export function useSettings() {
           trash: nextTrash,
           petDismissed: false,
         });
+      } else if (item.kind === "plant") {
+        patch({ trash: nextTrash, plantDismissed: false });
       } else {
         patch({ trash: nextTrash });
       }
