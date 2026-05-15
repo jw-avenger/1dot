@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
 import type { Book } from "./books";
 import { useSettings, resolveSpineFontCss, bionicize } from "./useSettings";
 
@@ -12,14 +11,11 @@ type Props = {
 };
 
 function BookSpineImpl({ book, onShelf, editMode, onClick, onToggle }: Props) {
-  const isMobile = useIsMobile();
   const { spineFont, customFont, bionic, colors } = useSettings();
   const fontFamily = resolveSpineFontCss(spineFont, customFont);
   const spineColor = colors[book.id] ?? book.spine;
-
-  const scale = isMobile ? 0.62 : 1;
-  const w = Math.round(book.width * scale);
-  const h = Math.round(book.height * scale);
+  const w = book.width;
+  const h = book.height;
 
   if (!onShelf) {
     return (
