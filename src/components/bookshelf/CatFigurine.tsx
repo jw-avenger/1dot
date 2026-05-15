@@ -169,31 +169,26 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           <stop offset="100%" stopColor="#5a2f10" stopOpacity="0" />
         </linearGradient>
 
-        {/* Cylindrical cross-section gradient for the tail.
-            Lit from upper-left → highlight on top, deep shadow on the underside.
-            Applied perpendicular to the tail axis to give it true volume. */}
-        <linearGradient id={`${ns}-tail3d`} x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
-          <stop offset="0%"   stopColor="#fbe4b8" />
-          <stop offset="18%"  stopColor="#f0b772" />
-          <stop offset="48%"  stopColor="#c98445" />
-          <stop offset="78%"  stopColor="#7d4314" />
-          <stop offset="100%" stopColor="#3d1e07" />
-        </linearGradient>
-        {/* Specular sheen along the lit edge */}
-        <linearGradient id={`${ns}-tail-sheen`} x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
-          <stop offset="0%"   stopColor="#ffffff" stopOpacity="0.55" />
-          <stop offset="35%"  stopColor="#ffffff" stopOpacity="0" />
-        </linearGradient>
-        {/* Radial bloom for the furry tip */}
-        <radialGradient id={`${ns}-tailtip-grad`} cx="35%" cy="35%" r="75%">
-          <stop offset="0%"   stopColor="#fbe4b8" />
-          <stop offset="45%"  stopColor="#c98445" />
-          <stop offset="100%" stopColor="#3d1e07" />
+        {/* Cross-section disc gradient — light upper-left → deep lower-right.
+            Reused on every tube segment so the lighting stays consistent. */}
+        <radialGradient id={`${ns}-tail-disc`} cx="32%" cy="28%" r="78%">
+          <stop offset="0%"   stopColor="#fff1cc" />
+          <stop offset="22%"  stopColor="#f3bd7a" />
+          <stop offset="55%"  stopColor="#c0823f" />
+          <stop offset="85%"  stopColor="#6a3812" />
+          <stop offset="100%" stopColor="#2a1207" />
         </radialGradient>
-        {/* Subtle drop shadow under the tail to lift it off the body */}
-        <filter id={`${ns}-tail-shadow`} x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur in="SourceAlpha" stdDeviation="1.4" />
-          <feOffset dx="1.5" dy="2" result="off" />
+        {/* Tip pom — slightly more bloomed and softer */}
+        <radialGradient id={`${ns}-tailtip-grad`} cx="32%" cy="28%" r="82%">
+          <stop offset="0%"   stopColor="#fff5d8" />
+          <stop offset="30%"  stopColor="#f0b67a" />
+          <stop offset="70%"  stopColor="#9a5a25" />
+          <stop offset="100%" stopColor="#2a1207" />
+        </radialGradient>
+        {/* Soft drop shadow under the tail to lift it off the body */}
+        <filter id={`${ns}-tail-shadow`} x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="1.6" />
+          <feOffset dx="1.6" dy="2.4" result="off" />
           <feComponentTransfer><feFuncA type="linear" slope="0.55" /></feComponentTransfer>
           <feMerge>
             <feMergeNode />
