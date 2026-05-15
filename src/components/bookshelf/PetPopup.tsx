@@ -25,6 +25,7 @@ export function PetPopup({ open, onClose }: Props) {
   const { petsConfig, setPetConfig, deletePet } = useSettings();
   const existing = petsConfig[SHELF_KEY];
   const [phase, setPhase] = useState<"ask" | "configure">("ask");
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [draft, setDraft] = useState<PetConfig>({
     pet: null,
     animations: true,
