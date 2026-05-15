@@ -527,12 +527,13 @@ function Row({
   return (
     <button
       onClick={() => onChange(!checked)}
-      className="flex w-full items-center gap-3 rounded-full px-4 py-1.5 text-left text-[11px] uppercase tracking-[0.18em] transition hover:opacity-100"
+      className="flex w-full items-center gap-3 rounded-full px-4 py-1.5 text-left text-[12px] tracking-[0.04em] transition hover:opacity-100"
       style={{
         backgroundColor: "transparent",
         border: "1px solid rgba(255,255,255,0.18)",
         color: SHEET_FG,
         opacity: 0.8,
+        fontFamily: '"Fraunces", Georgia, serif',
       }}
     >
       <span
