@@ -38,9 +38,11 @@ export function PetPopup({ open, onClose }: Props) {
     if (existing) {
       setDraft(existing);
       setPhase("configure");
+      setPickerOpen(false);
     } else {
       setDraft({ pet: null, animations: true, todoEnabled: false, todoItems: [] });
       setPhase("ask");
+      setPickerOpen(true);
     }
   }, [open, existing]);
 
