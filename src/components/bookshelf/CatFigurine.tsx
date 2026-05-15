@@ -475,7 +475,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             };
             return (
               <div
-                className="flex w-full items-center justify-center gap-3 rounded-full px-3 py-1.5"
+                className="flex w-full items-center justify-center gap-1 rounded-full px-3 py-1.5"
                 style={{
                   backgroundColor: "transparent",
                   border: "none",
@@ -486,7 +486,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 <button
                   onClick={() => step(-1)}
                   aria-label="Previous companion"
-                  className="px-2 text-xs opacity-70 transition hover:opacity-100"
+                  className="px-1 text-xs opacity-70 transition hover:opacity-100"
                 >
                   ▲
                 </button>
@@ -499,7 +499,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 <button
                   onClick={() => step(1)}
                   aria-label="Next companion"
-                  className="px-2 text-xs opacity-70 transition hover:opacity-100"
+                  className="px-1 text-xs opacity-70 transition hover:opacity-100"
                 >
                   ▼
                 </button>
@@ -509,21 +509,23 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
 
           {draft.pet && (
             <>
-              <Row
-                checked={draft.animations}
-                onChange={(v) => setDraft({ ...draft, animations: v })}
-                label="Would you like light animations?"
-              />
-              <Row
-                checked={draft.todoEnabled}
-                onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
-                label="Would you like a simple starter companion list?"
-              />
-              <Row
-                checked={!!draft.remindersEnabled}
-                onChange={(v) => setDraft({ ...draft, remindersEnabled: v })}
-                label="Would you like gentle reminders based on your preferences?"
-              />
+              <div className="space-y-0.5">
+                <Row
+                  checked={draft.animations}
+                  onChange={(v) => setDraft({ ...draft, animations: v })}
+                  label="Would you like light animations?"
+                />
+                <Row
+                  checked={draft.todoEnabled}
+                  onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
+                  label="Would you like a simple starter companion list?"
+                />
+                <Row
+                  checked={!!draft.remindersEnabled}
+                  onChange={(v) => setDraft({ ...draft, remindersEnabled: v })}
+                  label="Would you like gentle reminders based on your preferences?"
+                />
+              </div>
 
               <div className="space-y-2 pt-1">
                 <button
@@ -606,7 +608,7 @@ function Row({
   return (
     <button
       onClick={() => onChange(!checked)}
-      className="flex w-full items-center gap-2 rounded-full px-3 py-1 text-left text-[10px] tracking-[0.04em] transition hover:opacity-100"
+      className="flex w-full items-start gap-2 rounded-full px-2 py-0.5 text-left text-[10px] leading-snug tracking-[0.04em] transition hover:opacity-100"
       style={{
         backgroundColor: "transparent",
         border: "none",
@@ -616,7 +618,7 @@ function Row({
       }}
     >
       <span
-        className="flex h-3 w-3 items-center justify-center rounded-sm border text-[8px]"
+        className="mt-0.5 flex h-3 w-3 shrink-0 items-center justify-center rounded-sm border text-[8px]"
         style={{
           borderColor: "rgba(255,255,255,0.35)",
           backgroundColor: checked ? SHEET_FG : "transparent",
