@@ -492,10 +492,11 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
 
           <ellipse cx="50" cy="62" rx="28" ry="24" fill={`url(#${ns}-fur)`} />
 
-          <g stroke="#6b3a16" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.6">
-            <path d="M 40 44 C 42 50, 44 54, 46 58" />
-            <path d="M 50 42 C 50 48, 50 54, 50 58" />
-            <path d="M 60 44 C 58 50, 56 54, 54 58" />
+          <g stroke="#6b3a16" strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.45">
+            {/* Soft forehead tufts — gentle outward curves, no inward furrow */}
+            <path d="M 38 50 C 40 54, 42 56, 45 58" />
+            <path d="M 50 48 C 50 52, 50 55, 50 58" />
+            <path d="M 62 50 C 60 54, 58 56, 55 58" />
           </g>
 
           <ellipse cx="50" cy="74" rx="16" ry="10" fill="#fbe7c4" opacity="0.85" />
