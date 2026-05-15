@@ -264,12 +264,19 @@ export function useSettings() {
       const item = state.trash.find((t) => t.id === trashId);
       if (!item) return;
       const nextTrash = state.trash.filter((t) => t.id !== trashId);
-      // Restored items return to their original "first encounter" state —
-      // any saved configuration is discarded so the user meets them fresh.
+      // Restored companions come back already saved as the cozy default
+      // (cat). The user can change them anytime, but they persist on the
+      // shelf without needing to reopen the popup to confirm.
       if (item.kind === "pet") {
         const nextPets = { ...state.petsConfig };
-        const slot = item.data?.slot;
-        if (slot) delete nextPets[slot];
+        const slot = item.data?.slot ?? "shelf";
+        nextPets[slot] = {
+          pet: "cat",
+          animations: true,
+          todoEnabled: false,
+          todoItems: [],
+          remindersEnabled: false,
+        };
         patch({
           petsConfig: nextPets,
           trash: nextTrash,
