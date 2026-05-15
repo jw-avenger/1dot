@@ -475,7 +475,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             };
             return (
               <div
-                className="flex w-full items-center justify-center gap-0 rounded-full px-3 py-1.5"
+                className="flex w-full items-center justify-center gap-[1ch] rounded-full px-3 py-1.5"
                 style={{
                   backgroundColor: "transparent",
                   border: "none",
