@@ -66,7 +66,7 @@ export function CatPurr() {
     lfo.start();
 
     // Smooth fade-in
-    const target = 0.18 * purrsVolume;
+    const target = 0.7 * purrsVolume;
     master.gain.cancelScheduledValues(ctx.currentTime);
     master.gain.linearRampToValueAtTime(target, ctx.currentTime + 0.6);
 
@@ -107,7 +107,7 @@ export function CatPurr() {
     const node = nodesRef.current;
     const ctx = ctxRef.current;
     if (!node || !ctx) return;
-    const target = active ? 0.18 * purrsVolume : 0;
+    const target = active ? 0.7 * purrsVolume : 0;
     node.gain.gain.cancelScheduledValues(ctx.currentTime);
     node.gain.gain.linearRampToValueAtTime(target, ctx.currentTime + 0.15);
   }, [purrsVolume, active]);
