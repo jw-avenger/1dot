@@ -301,7 +301,7 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
       >
         {pet ? (
           <div className="pb-1">
-            {pet.id === "cat" ? (
+            {pet.id === "cozy-cat" ? (
               <CatFigurine size={catSize} />
             ) : (
               <PetFigurine petId={pet.id} size={genericSize} />
