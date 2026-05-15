@@ -48,7 +48,7 @@ import { PETS, useSettings, type PetConfig } from "./useSettings";
    ======================================================================== */
 
 type CatPose = "standing" | "curled" | "draped";
-type CatMove = "yawn" | "knead" | "pounce" | "sniff" | "ears" | "belly" | "wince";
+type CatMove = "yawn" | "knead" | "pounce" | "sniff" | "ears" | "belly" | "wince" | "groom";
 type CatTravel = "none" | "leaving" | "arriving";
 
 type CatProps = {
@@ -64,7 +64,7 @@ type CatProps = {
   onArrived?: () => void;
 };
 
-const SPECIAL_MOVES: CatMove[] = ["yawn", "knead", "pounce", "sniff", "ears", "belly", "wince"];
+const SPECIAL_MOVES: CatMove[] = ["yawn", "knead", "pounce", "sniff", "ears", "belly", "wince", "groom"];
 const POSE_CYCLE: CatPose[] = ["standing", "standing", "curled", "standing", "draped", "standing"];
 /* "Rare & subtle" cadence: special move every 30–60s, pose change every 90–180s. */
 const MOVE_INTERVAL_MS = () => 30000 + Math.random() * 30000;
@@ -214,16 +214,16 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           }
           /* tail — slow sway from base. Longer tail = gentler base rotation
              so the tip doesn't whip across the canvas. */
-          .${ns}-tail { transform-origin: 168px 96px; animation: ${ns}-tail 4.2s ease-in-out infinite; }
+          .${ns}-tail { transform-origin: 170px 100px; animation: ${ns}-tail 5.2s ease-in-out infinite; }
           @keyframes ${ns}-tail {
-            0%,100% { transform: rotate(-5deg); }
-            50%     { transform: rotate(7deg); }
+            0%,100% { transform: rotate(-4deg); }
+            50%     { transform: rotate(6deg); }
           }
-          /* tip curl — independent flick at the very end of the long tail */
-          .${ns}-tailtip { transform-origin: 168px 0px; animation: ${ns}-tailtip 4.2s ease-in-out infinite; }
+          /* tip curl — independent flick pivoting from the actual tip joint */
+          .${ns}-tailtip { transform-origin: 170px -10px; animation: ${ns}-tailtip 5.2s ease-in-out infinite; }
           @keyframes ${ns}-tailtip {
-            0%,100% { transform: rotate(10deg); }
-            50%     { transform: rotate(-14deg); }
+            0%,100% { transform: rotate(8deg); }
+            50%     { transform: rotate(-10deg); }
           }
           /* head — gentle bob + tilt, syncs with breath */
           .${ns}-head { transform-origin: 50px 78px; animation: ${ns}-head 6.4s ease-in-out infinite; }
