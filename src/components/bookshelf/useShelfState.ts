@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
 
+const KEY = "shelf:onShelf";
+
+function readBookShelf(allIds: string[]) {
+  if (typeof window === "undefined") return new Set(allIds);
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return new Set(allIds);
+    const arr = JSON.parse(raw) as string[];
+    const bookIds = arr.filter((id) => allIds.includes(id));
+    return new Set(bookIds);
+  } catch {
+    return new Set(allIds);
+  }
+}
+
 export function useShelfState(allIds: string[]) {
-  const KEY = "shelf:onShelf";
-  const [onShelf, setOnShelf] = useState<Set<string>>(() => new Set(allIds));
+  const [onShelf, setOnShelf] = useState<Set<string>>(() => readBookShelf(allIds));
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) {
-        const arr = JSON.parse(raw) as string[];
-        setOnShelf(new Set(arr.filter((id) => allIds.includes(id))));
-      }
-    } catch {
-      // ignore
-    }
+    setOnShelf(readBookShelf(allIds));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
