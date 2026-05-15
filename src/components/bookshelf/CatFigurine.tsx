@@ -616,25 +616,16 @@ function Row({
   return (
     <button
       onClick={() => onChange(!checked)}
-      className="flex w-full items-start justify-center gap-2 rounded-full px-2 py-0 text-[10px] leading-snug tracking-[0.04em] transition hover:opacity-100"
+      className="flex w-full justify-center rounded-full px-2 py-0 text-[10px] leading-snug tracking-[0.04em] transition hover:underline hover:opacity-100"
       style={{
         backgroundColor: "transparent",
         border: "none",
         color: SHEET_FG,
-        opacity: 0.8,
+        opacity: checked ? 1 : 0.6,
         fontFamily: '"Fraunces", Georgia, serif',
+        textDecoration: checked ? "underline" : "none",
       }}
     >
-      <span
-        className="mt-0.5 flex h-3 w-3 shrink-0 items-center justify-center rounded-sm border text-[8px]"
-        style={{
-          borderColor: "rgba(255,255,255,0.35)",
-          backgroundColor: checked ? SHEET_FG : "transparent",
-          color: "#2b2b30",
-        }}
-      >
-        {checked ? "✓" : ""}
-      </span>
       <span>{label}</span>
     </button>
   );
