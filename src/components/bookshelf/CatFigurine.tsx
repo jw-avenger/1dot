@@ -848,7 +848,7 @@ type PetPopupProps = {
 
 const SHELF_KEY = "shelf";
 
-const SUGGESTED = [
+export const SUGGESTED = [
   "Fresh water",
   "Small stretch break",
   "Three slow breaths",
@@ -1065,7 +1065,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 <Row
                   checked={draft.todoEnabled}
                   onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
-                  label="Enable simple starter companion list."
+                  label="Enable editable starter companion care list."
                 />
                 <Row
                   checked={!!draft.remindersEnabled}
