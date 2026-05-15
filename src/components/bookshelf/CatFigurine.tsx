@@ -1,16 +1,43 @@
 /**
- * Pet bundle — the entire pet feature lives in this single file so it can
- * be deleted and restored as one cohesive unit:
- *   • CatFigurine   – the SVG cat
- *   • PetFigurine   – generic CSS figurines for non-cat pets
- *   • ShelfPet      – the shelf widget slot
- *   • PetPopup      – the configuration / conversation pop-up
+ * Companion bundle — the entire animal-companion feature lives in this single
+ * file so it can be deleted and restored as one cohesive unit. Internal
+ * identifiers (CatFigurine, PetFigurine, ShelfPet, PetPopup, PETS, PetConfig,
+ * petsConfig, petDismissed, deletePet) intentionally keep the legacy "pet"
+ * naming so the restoration anchor stays stable across renames; user-facing
+ * copy says "Companion".
  *
- * Restoration: state lives in useSettings (PETS, petsConfig, petDismissed,
- * deletePet/restoreTrash). The "Restore" path in useSettings already returns
- * the pet to its first-encounter state, so as long as this file exists and
- * its exports are imported wherever needed, the widget reliably comes back.
+ * Exports:
+ *   • CatFigurine   – high-fidelity SVG cat (the cozy default companion)
+ *   • PetFigurine   – generic CSS figurines for the other companion species
+ *                     (dog, dragon, phoenix, bird, hamster)
+ *   • ShelfPet      – the shelf widget slot. Renders the chosen companion or
+ *                     a hatched empty placeholder, with a hover × to remove.
+ *   • PetPopup      – the two-phase configuration window:
+ *                       phase "ask"      — "Would you like to visit with an
+ *                                          animal companion today?" with
+ *                                          Yes | No, a SIMPLE MODE NOW
+ *                                          escape hatch, and ← / → arrows.
+ *                       phase "configure" — Choose Companion? title, the
+ *                                          ▲ label ▼ stepper across PETS,
+ *                                          three "Enable …" toggles
+ *                                          (animations, starter list,
+ *                                          gentle reminders), Save for now?,
+ *                                          a Yes | No try-it-out row, and
+ *                                          ← / → arrows. All controls are
+ *                                          borderless Fraunces text;
+ *                                          checked toggles get a subtle
+ *                                          text-only highlight.
+ *
+ * Restoration contract: state lives in useSettings (PETS, petsConfig,
+ * petDismissed, deletePet/restoreTrash, and the optional remindersEnabled
+ * field on PetConfig). deletePet moves the active companion into the shared
+ * trash with a clean "🐈 Cozy Theme Companion (Cat)"-style label; the
+ * "Restore" path returns the companion to its first-encounter state
+ * (cat selected, animations on, list off, reminders off). As long as this
+ * file exists and its exports are imported wherever needed, the widget
+ * reliably comes back without losing wiring.
  */
+
 
 import { useEffect, useState } from "react";
 import { ConfirmSheet, SheetButton, SHEET_FG } from "./ConfirmSheet";
