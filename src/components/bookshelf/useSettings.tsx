@@ -283,6 +283,19 @@ export function useSettings() {
       patch({ petsConfig: next, petDismissed: normalized ? false : state.petDismissed });
     },
     dismissPet: () => patch({ petDismissed: true }),
+    sendPetAway: (id: string, durationMs: number) => {
+      const existing = state.petsConfig[id];
+      if (!existing) return;
+      const next = { ...state.petsConfig, [id]: { ...existing, awayUntil: Date.now() + Math.max(1000, durationMs) } };
+      patch({ petsConfig: next });
+    },
+    recallPet: (id: string) => {
+      const existing = state.petsConfig[id];
+      if (!existing) return;
+      const { awayUntil: _drop, ...rest } = existing;
+      const next = { ...state.petsConfig, [id]: rest as PetConfig };
+      patch({ petsConfig: next });
+    },
     deletePet: (id: string) => {
       const existing = state.petsConfig[id];
       const nextPets = { ...state.petsConfig };
