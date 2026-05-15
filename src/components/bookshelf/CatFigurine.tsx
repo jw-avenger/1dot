@@ -39,7 +39,7 @@
  */
 
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ConfirmSheet, SheetButton, SHEET_FG } from "./ConfirmSheet";
 import { PETS, useSettings, type PetConfig } from "./useSettings";
 
@@ -47,24 +47,92 @@ import { PETS, useSettings, type PetConfig } from "./useSettings";
    CatFigurine — high-fidelity SVG cat
    ======================================================================== */
 
+type CatPose = "standing" | "curled" | "draped";
+type CatMove = "yawn" | "knead" | "pounce" | "sniff" | "ears" | "belly" | "wince";
+type CatTravel = "none" | "leaving" | "arriving";
+
 type CatProps = {
   /** Render size in px. SVG scales cleanly to any size. */
   size?: number;
-  /** When true, the cat is rigged with idle animations (breathing, tail sway,
-   *  ear twitch, blinks, pupil darts, paw tap, whisker quiver). */
+  /** When true, the cat is rigged with idle animations. */
   animated?: boolean;
+  /** Travel state for delete/revive/send-away/recall transitions. */
+  travel?: CatTravel;
+  /** Fires once the leaving animation finishes. */
+  onLeft?: () => void;
+  /** Fires once the arriving animation finishes. */
+  onArrived?: () => void;
 };
+
+const SPECIAL_MOVES: CatMove[] = ["yawn", "knead", "pounce", "sniff", "ears", "belly", "wince"];
+const POSE_CYCLE: CatPose[] = ["standing", "standing", "curled", "standing", "draped", "standing"];
+/* "Rare & subtle" cadence: special move every 30–60s, pose change every 90–180s. */
+const MOVE_INTERVAL_MS = () => 30000 + Math.random() * 30000;
+const POSE_INTERVAL_MS = () => 90000 + Math.random() * 90000;
+const MOVE_DURATION_MS = 2600;
 
 /* Per-instance id suffix so multiple cats on the same page can each carry
    their own <style> scope without colliding. */
 let __catUid = 0;
 
-export function CatFigurine({ size = 96, animated = true }: CatProps) {
+export function CatFigurine({ size = 96, animated = true, travel = "none", onLeft, onArrived }: CatProps) {
   const w = size;
   const h = (size * 140) / 200;
   // stable per-instance id (kept across renders via useState lazy init)
   const [uid] = useState(() => ++__catUid);
   const ns = `cf${uid}`;
+
+  // Pose + special-move state machines (only when animated and not traveling)
+  const [pose, setPose] = useState<CatPose>("standing");
+  const [move, setMove] = useState<CatMove | null>(null);
+  const idle = animated && travel === "none";
+
+  useEffect(() => {
+    if (!idle) return;
+    let i = 0;
+    const tick = () => {
+      i = (i + 1) % POSE_CYCLE.length;
+      setPose(POSE_CYCLE[i]);
+    };
+    const id = window.setInterval(tick, POSE_INTERVAL_MS());
+    return () => window.clearInterval(id);
+  }, [idle]);
+
+  useEffect(() => {
+    if (!idle) return;
+    let cancelled = false;
+    let timeoutId = 0;
+    const schedule = () => {
+      timeoutId = window.setTimeout(() => {
+        if (cancelled) return;
+        const pick = SPECIAL_MOVES[Math.floor(Math.random() * SPECIAL_MOVES.length)];
+        setMove(pick);
+        timeoutId = window.setTimeout(() => {
+          if (cancelled) return;
+          setMove(null);
+          schedule();
+        }, MOVE_DURATION_MS);
+      }, MOVE_INTERVAL_MS());
+    };
+    schedule();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+    };
+  }, [idle]);
+
+  // Travel completion callbacks
+  useEffect(() => {
+    if (travel === "leaving" && onLeft) {
+      const t = window.setTimeout(onLeft, 1600);
+      return () => window.clearTimeout(t);
+    }
+    if (travel === "arriving" && onArrived) {
+      const t = window.setTimeout(onArrived, 1400);
+      return () => window.clearTimeout(t);
+    }
+  }, [travel, onLeft, onArrived]);
+
   return (
     <svg
       width={w}
@@ -181,14 +249,88 @@ export function CatFigurine({ size = 96, animated = true }: CatProps) {
             0%,100% { transform: rotate(0); }
             50%     { transform: rotate(0.6deg); }
           }
+          /* ===================== POSE CYCLING ===================== */
+          /* The outer .cf-pose group carries one of these classes. We CSS-transition
+             between transforms so the cat physically settles into each pose. */
+          .${ns}-pose { transform-origin: 100px 130px; transition: transform 1.4s cubic-bezier(.5,.05,.4,1); }
+          .${ns}-pose-standing { transform: none; }
+          .${ns}-pose-curled   { transform: translate(0px, 14px) scale(0.92, 0.7) rotate(-3deg); }
+          .${ns}-pose-draped   { transform: translate(-2px, -42px) rotate(8deg) scale(1.02, 0.85); }
+
+          /* ===================== SPECIAL MOVES =====================
+             Each move is an additive class on the outer group, applied for ~2.4s
+             then cleared. They override pose transitions briefly. */
+          .${ns}-move { animation-fill-mode: both; }
+          .${ns}-move-yawn   { animation: ${ns}-yawn   2.4s ease-in-out 1; }
+          .${ns}-move-knead  { animation: ${ns}-knead  2.6s ease-in-out 1; }
+          .${ns}-move-pounce { animation: ${ns}-pounce 1.6s cubic-bezier(.4,0,.2,1) 1; }
+          .${ns}-move-sniff  { animation: ${ns}-sniff  2.4s ease-in-out 1; }
+          .${ns}-move-ears   { animation: ${ns}-earsig 1.6s ease-in-out 1; }
+          .${ns}-move-belly  { animation: ${ns}-belly  3.2s cubic-bezier(.4,0,.4,1) 1; }
+          .${ns}-move-wince  { animation: ${ns}-wince  1.6s ease-in-out 1; }
+          @keyframes ${ns}-yawn   { 0%,100%{ transform: none; } 30%{ transform: translateY(-2px) rotate(-2deg); } 60%{ transform: translateY(-2px) rotate(-1deg) scale(1.02); } }
+          @keyframes ${ns}-knead  { 0%,100%{ transform: none; } 25%{ transform: translateY(-1px) rotate(-1deg); } 50%{ transform: translateY(0) rotate(1deg); } 75%{ transform: translateY(-1px) rotate(-1deg); } }
+          @keyframes ${ns}-pounce { 0%{ transform: scale(1,1); } 25%{ transform: scale(1.04, 0.86) translateY(4px); } 55%{ transform: scale(0.95, 1.08) translateY(-12px); } 80%{ transform: scale(1.02, 0.95) translateY(2px); } 100%{ transform: none; } }
+          @keyframes ${ns}-sniff  { 0%,100%{ transform: none; } 30%{ transform: translate(-2px,2px) rotate(-3deg); } 60%{ transform: translate(2px,2px) rotate(2deg); } }
+          @keyframes ${ns}-earsig { 0%,100%{ transform: none; } 50%{ transform: translateY(-1px); } }
+          @keyframes ${ns}-belly  { 0%,100%{ transform: none; } 35%{ transform: rotate(-22deg) translateY(2px); } 65%{ transform: rotate(20deg) translateY(2px); } }
+          @keyframes ${ns}-wince  { 0%,100%{ transform: none; } 40%{ transform: scale(0.97) rotate(-1deg); } }
+
+          /* Yawn mouth — hidden by default, opens during yawn move */
+          .${ns}-yawnmouth { opacity: 0; transform-box: view-box; transform-origin: 50px 78px; }
+          .${ns}-move-yawn .${ns}-yawnmouth { animation: ${ns}-yawnm 2.4s ease-in-out 1; }
+          @keyframes ${ns}-yawnm { 0%,100%{ opacity: 0; transform: scaleY(0.2); } 35%,65%{ opacity: 1; transform: scaleY(1); } }
+
+          /* Wince forces lids fully closed and tilts ears down */
+          .${ns}-move-wince .${ns}-lid { animation: none; transform: scaleY(1); }
+
+          /* Sniff exaggerates whisker quiver */
+          .${ns}-move-sniff .${ns}-whisk { animation: ${ns}-whisk 0.4s ease-in-out 6; }
+
+          /* Ear-wiggle move runs both ear flaps fast in sync */
+          .${ns}-move-ears .${ns}-earL,
+          .${ns}-move-ears .${ns}-earR { animation: ${ns}-earflap 0.4s ease-in-out 4; }
+          @keyframes ${ns}-earflap { 0%,100%{ transform: rotate(0); } 50%{ transform: rotate(-12deg); } }
+
+          /* ===================== TRAVEL TRANSITIONS ===================== */
+          .${ns}-travel-leaving  { animation: ${ns}-walkout 1.6s cubic-bezier(.4,0,.7,.4) 1 forwards; }
+          .${ns}-travel-arriving { animation: ${ns}-dropin  1.4s cubic-bezier(.3,1.4,.5,1) 1 backwards; }
+          @keyframes ${ns}-walkout {
+            0%   { transform: none; opacity: 1; }
+            15%  { transform: translate(20px, -2px) rotate(2deg); }
+            30%  { transform: translate(45px, 1px) rotate(-2deg); }
+            55%  { transform: translate(110px, -2px) rotate(2deg); }
+            85%  { transform: translate(220px, 0) rotate(0); opacity: 0.9; }
+            100% { transform: translate(280px, 0); opacity: 0; }
+          }
+          @keyframes ${ns}-dropin {
+            0%   { transform: translate(60px, -140px) rotate(-18deg) scale(0.9); opacity: 0; }
+            30%  { transform: translate(40px, -100px) rotate(-12deg) scale(0.95); opacity: 1; }
+            60%  { transform: translate(15px, -30px) rotate(-4deg) scale(1.02); }
+            80%  { transform: translate(0, 6px) rotate(0deg) scale(1, 0.92); }
+            100% { transform: none; }
+          }
+
           @media (prefers-reduced-motion: reduce) {
             .${ns}-breath, .${ns}-shadow, .${ns}-tail, .${ns}-tailtip, .${ns}-head,
             .${ns}-earL, .${ns}-earR, .${ns}-lid, .${ns}-pupils,
-            .${ns}-pawFL, .${ns}-whisk { animation: none; }
+            .${ns}-pawFL, .${ns}-whisk, .${ns}-pose, .${ns}-move,
+            .${ns}-travel-leaving, .${ns}-travel-arriving { animation: none; transition: none; }
           }
         `}</style>
       )}
 
+      <g
+        className={
+          travel === "leaving"
+            ? `${ns}-travel-leaving`
+            : travel === "arriving"
+            ? `${ns}-travel-arriving`
+            : undefined
+        }
+      >
+      <g className={animated && move ? `${ns}-move ${ns}-move-${move}` : undefined}>
+      <g className={animated ? `${ns}-pose ${ns}-pose-${pose}` : undefined}>
       <g className={animated ? `${ns}-rig` : undefined}>
         {/* ground shadow */}
         <ellipse
@@ -325,6 +467,10 @@ export function CatFigurine({ size = 96, animated = true }: CatProps) {
           <path d="M 50 79 C 48 81, 45 81, 43.5 79.5" fill="none" stroke="#3a1d0a" strokeWidth="0.7" strokeLinecap="round" />
           <path d="M 50 79 C 52 81, 55 81, 56.5 79.5" fill="none" stroke="#3a1d0a" strokeWidth="0.7" strokeLinecap="round" />
 
+          {/* yawn mouth — only visible during the yawn move */}
+          <ellipse className={`${ns}-yawnmouth`} cx="50" cy="80" rx="3.4" ry="3.2" fill="#2a1208" />
+          <ellipse className={`${ns}-yawnmouth`} cx="50" cy="80.5" rx="2" ry="2" fill="#c44a55" opacity="0.85" />
+
           {/* whiskers — quiver */}
           <g className={animated ? `${ns}-whisk` : undefined}
              stroke="#3a1d0a" strokeWidth="0.6" strokeLinecap="round" opacity="0.75" fill="none">
@@ -334,6 +480,9 @@ export function CatFigurine({ size = 96, animated = true }: CatProps) {
             <path d="M 58 78 C 70 80, 78 82, 86 84" />
           </g>
         </g>
+      </g>
+      </g>
+      </g>
       </g>
     </svg>
   );
@@ -416,15 +565,63 @@ type ShelfPetProps = {
 };
 
 export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps) {
-  const { petsConfig, deletePet } = useSettings();
+  const { petsConfig, deletePet, recallPet } = useSettings();
   const cfg = petsConfig["shelf"];
   const pet = !blank && cfg?.pet ? PETS.find((p) => p.id === cfg.pet) ?? PETS.find((p) => p.id === "cozy-cat") : null;
   const [hover, setHover] = useState(false);
+  const [travel, setTravel] = useState<CatTravel>("none");
+  const [pendingDelete, setPendingDelete] = useState(false);
+
+  const awayActive = !!(cfg?.awayUntil && cfg.awayUntil > Date.now());
+
+  // Detect "pet just appeared" → arriving animation
+  const prevPetRef = useRef<string | null>(pet?.id ?? null);
+  useEffect(() => {
+    const prev = prevPetRef.current;
+    const curr = pet?.id ?? null;
+    if (!prev && curr && !awayActive) setTravel("arriving");
+    prevPetRef.current = curr;
+  }, [pet?.id, awayActive]);
+
+  // Detect away-state transitions
+  const prevAwayRef = useRef<boolean>(awayActive);
+  useEffect(() => {
+    const prev = prevAwayRef.current;
+    if (!prev && awayActive) setTravel("leaving");
+    else if (prev && !awayActive && pet) setTravel("arriving");
+    prevAwayRef.current = awayActive;
+  }, [awayActive, pet]);
+
+  // Auto-recall when the silent timer elapses
+  useEffect(() => {
+    if (!cfg?.awayUntil) return;
+    const remaining = cfg.awayUntil - Date.now();
+    if (remaining <= 0) {
+      recallPet("shelf");
+      return;
+    }
+    const id = window.setTimeout(() => recallPet("shelf"), remaining);
+    return () => window.clearTimeout(id);
+  }, [cfg?.awayUntil, recallPet]);
 
   const slotH = height;
   const slotW = Math.round(slotH * 0.7);
   const catSize = Math.round(slotW * 1.55);
   const genericSize = Math.round(slotW * 0.85);
+
+  const onDelete = () => {
+    if (pendingDelete) return;
+    setPendingDelete(true);
+    setTravel("leaving");
+    window.setTimeout(() => {
+      deletePet("shelf");
+      setPendingDelete(false);
+      setTravel("none");
+    }, 1600);
+  };
+
+  // Cat is visible when present and either not away, or mid-leave animation
+  const showCat = !!pet && (!awayActive || travel === "leaving");
 
   return (
     <div
@@ -436,21 +633,27 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
       <button
         onClick={onClick}
         aria-label={pet ? `Change ${pet.label} companion` : "Add a companion — currently empty"}
-        className="group relative flex h-full w-full items-end justify-center overflow-hidden rounded-lg"
+        className="group relative flex h-full w-full items-end justify-center rounded-lg"
         style={{
-          background: pet
+          background: showCat
             ? "transparent"
             : "repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0 6px, rgba(255,255,255,0.05) 6px 12px)",
-          border: pet ? "1px solid transparent" : "2px dashed rgba(0,0,0,0.32)",
-          boxShadow: pet
+          border: showCat ? "1px solid transparent" : "2px dashed rgba(0,0,0,0.32)",
+          boxShadow: showCat
             ? "none"
             : "inset 0 0 0 1px rgba(255,255,255,0.25), 0 0 0 3px rgba(255,255,255,0.08)",
         }}
       >
-        {pet ? (
+        {showCat && pet ? (
           <div className="pb-1">
             {pet.id === "cozy-cat" ? (
-              <CatFigurine size={catSize} animated={cfg?.animations !== false} />
+              <CatFigurine
+                size={catSize}
+                animated={cfg?.animations !== false}
+                travel={travel}
+                onLeft={() => setTravel("none")}
+                onArrived={() => setTravel("none")}
+              />
             ) : (
               <PetFigurine petId={pet.id} size={genericSize} />
             )}
@@ -458,17 +661,18 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
         ) : (
           <span
             className="absolute inset-0 flex items-center justify-center"
-            style={{ color: "var(--ink)", fontSize: Math.round(slotH * 0.35), lineHeight: 1 }}
+            style={{ color: "var(--ink)", fontSize: Math.round(slotH * 0.35), lineHeight: 1, opacity: awayActive ? 0.4 : 1 }}
+            title={awayActive ? "Companion is away" : undefined}
           >
-            🐈
+            {awayActive ? "💤" : "🐈"}
           </span>
         )}
       </button>
-      {pet && hover && (
+      {pet && hover && !awayActive && !pendingDelete && (
         <button
           onClick={(e) => {
             e.stopPropagation();
-            deletePet("shelf");
+            onDelete();
           }}
           aria-label="Remove companion"
           className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-wood-dark text-[10px] text-paper shadow"
@@ -502,7 +706,7 @@ const SUGGESTED = [
 const ASSURANCE = "You can change anything anytime.";
 
 export function PetPopup({ open, onClose }: PetPopupProps) {
-  const { petsConfig, setPetConfig, deletePet, slapToBasic } = useSettings();
+  const { petsConfig, setPetConfig, deletePet, slapToBasic, sendPetAway, recallPet } = useSettings();
   const existing = petsConfig[SHELF_KEY];
   const [phase, setPhase] = useState<"ask" | "configure">("ask");
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -707,6 +911,11 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                   onChange={(v) => setDraft({ ...draft, remindersEnabled: v })}
                   label="Enable gentle reminders based on your choices."
                 />
+                <SendAwayRow
+                  awayUntil={existing?.awayUntil}
+                  onSend={(mins) => sendPetAway(SHELF_KEY, mins * 60_000)}
+                  onRecall={() => recallPet(SHELF_KEY)}
+                />
               </div>
 
               <div className="space-y-2 pt-1">
@@ -819,5 +1028,99 @@ function Row({
         {label}
       </span>
     </button>
+  );
+}
+
+function SendAwayRow({
+  awayUntil,
+  onSend,
+  onRecall,
+}: {
+  awayUntil?: number;
+  onSend: (minutes: number) => void;
+  onRecall: () => void;
+}) {
+  const [mins, setMins] = useState<string>("15");
+  const [, force] = useState(0);
+  const active = !!(awayUntil && awayUntil > Date.now());
+
+  // Tick every second while active so the remaining-time label stays fresh
+  useEffect(() => {
+    if (!active) return;
+    const id = window.setInterval(() => force((n) => n + 1), 1000);
+    return () => window.clearInterval(id);
+  }, [active]);
+
+  const remainingLabel = (() => {
+    if (!awayUntil) return "";
+    const ms = Math.max(0, awayUntil - Date.now());
+    const totalSec = Math.ceil(ms / 1000);
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    if (m >= 60) {
+      const h = Math.floor(m / 60);
+      return `${h}h ${m % 60}m`;
+    }
+    return m > 0 ? `${m}m ${s.toString().padStart(2, "0")}s` : `${s}s`;
+  })();
+
+  if (active) {
+    return (
+      <div
+        className="flex w-full items-center justify-center gap-2 rounded-full px-2 py-0 text-[10px] tracking-[0.04em]"
+        style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif', opacity: 0.85 }}
+      >
+        <span>Away — back in {remainingLabel}.</span>
+        <button
+          onClick={onRecall}
+          className="rounded-sm px-1 underline-offset-2 transition hover:underline hover:opacity-100"
+          style={{ color: SHEET_FG, opacity: 0.9, border: "none", backgroundColor: "transparent" }}
+        >
+          Call back
+        </button>
+      </div>
+    );
+  }
+
+  const send = () => {
+    const n = Math.max(1, Math.min(720, Math.round(parseFloat(mins) || 0)));
+    onSend(n);
+  };
+
+  return (
+    <div
+      className="flex w-full items-center justify-center gap-[0.5ch] rounded-full px-2 py-0 text-[10px] leading-snug tracking-[0.04em]"
+      style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif', opacity: 0.75 }}
+    >
+      <span>Send cat away for</span>
+      <input
+        type="number"
+        min={1}
+        max={720}
+        value={mins}
+        onChange={(e) => setMins(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") send();
+        }}
+        aria-label="Minutes to send companion away"
+        className="w-[3.5ch] rounded-sm bg-transparent text-center outline-none"
+        style={{
+          color: SHEET_FG,
+          border: "none",
+          borderBottom: "1px solid rgba(255,255,255,0.35)",
+          fontFamily: '"Fraunces", Georgia, serif',
+          fontSize: "10px",
+          padding: "0 0 1px",
+        }}
+      />
+      <span>min (silent timer).</span>
+      <button
+        onClick={send}
+        className="rounded-sm px-1 underline-offset-2 transition hover:underline hover:opacity-100"
+        style={{ color: SHEET_FG, opacity: 0.95, border: "none", backgroundColor: "transparent" }}
+      >
+        Send
+      </button>
+    </div>
   );
 }
