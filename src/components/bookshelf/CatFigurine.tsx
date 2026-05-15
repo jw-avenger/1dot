@@ -373,9 +373,9 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
 
       <g
         className={
-          travel === "leaving"
+          animated && travel === "leaving"
             ? `${ns}-travel-leaving`
-            : travel === "arriving"
+            : animated && travel === "arriving"
             ? `${ns}-travel-arriving`
             : undefined
         }
