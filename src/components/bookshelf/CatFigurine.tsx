@@ -260,7 +260,7 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
     >
       <button
         onClick={onClick}
-        aria-label={pet ? `Change ${pet.label} pet` : "Add a pet — currently empty"}
+        aria-label={pet ? `Change ${pet.label} companion` : "Add a companion — currently empty"}
         className="group relative flex h-full w-full items-end justify-center overflow-hidden rounded-lg"
         style={{
           background: pet
