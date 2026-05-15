@@ -144,7 +144,7 @@ export function Bookshelf() {
             className="relative flex flex-nowrap items-end justify-center gap-x-0.5 gap-y-3 px-2 pb-2 sm:gap-x-1 sm:px-3"
             style={{ minHeight: 180 }}
           >
-            <div className="flex flex-1 flex-wrap items-end justify-center gap-x-0.5 gap-y-3 sm:gap-x-1">
+            <div className="flex flex-1 origin-bottom scale-[0.62] flex-nowrap items-end justify-center gap-x-0.5 sm:scale-100 sm:gap-x-1">
               {shelved.map((book) => (
                 <BookSpine
                   key={book.id}
