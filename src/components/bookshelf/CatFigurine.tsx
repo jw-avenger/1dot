@@ -394,10 +394,10 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
       ) : (
         <div className="space-y-4">
           <p
-            className="text-center text-base leading-snug"
+            className="text-center text-xs font-semibold uppercase tracking-[0.25em]"
             style={{ fontFamily: '"Fraunces", Georgia, serif' }}
           >
-            Which pet would pet like to visit with today?
+            Choose Pet
           </p>
           <button
             onClick={() => setPickerOpen((v) => !v)}

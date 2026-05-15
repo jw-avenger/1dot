@@ -55,12 +55,12 @@ export type PetConfig = {
 };
 
 export const PETS: { id: string; label: string; emoji: string }[] = [
-  { id: "cat", label: "Cozy Theme Pet", emoji: "🐈" },
-  { id: "dog", label: "Romance Theme Pet", emoji: "🐕" },
-  { id: "dragon", label: "Whimsical Theme Pet", emoji: "🐉" },
-  { id: "phoenix", label: "Spa Theme Pet", emoji: "🦩" },
-  { id: "bird", label: "Nature Theme Pet", emoji: "🐦" },
-  { id: "hamster", label: "Paper Planner Theme Pet", emoji: "🐹" },
+  { id: "cat", label: "Cozy Theme Pet (Cat)", emoji: "🐈" },
+  { id: "dog", label: "Romance Theme Pet (Dog)", emoji: "🐕" },
+  { id: "dragon", label: "Whimsical Theme Pet (Dragon)", emoji: "🐉" },
+  { id: "phoenix", label: "Spa Theme Pet (Phoenix)", emoji: "🦩" },
+  { id: "bird", label: "Nature Theme Pet (Bird)", emoji: "🐦" },
+  { id: "hamster", label: "Paper Planner Theme Pet (Hamster)", emoji: "🐹" },
 ];
 
 export type TrashItem = {
