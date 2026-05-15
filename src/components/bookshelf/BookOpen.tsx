@@ -48,7 +48,7 @@ export function BookOpen({ book, onClose }: Props) {
   const updatePetCare = (next: string[]) => {
     const base =
       shelfPet ?? { pet: null, animations: true, todoEnabled: true, todoItems: [] };
-    setPetConfig("shelf", { ...base, todoEnabled: true, todoItems: next });
+    setPetConfig("shelf", { ...base, todoItems: next });
   };
   const addPetTask = () => {
     const v = newPetTask.trim();
@@ -73,7 +73,7 @@ export function BookOpen({ book, onClose }: Props) {
           {bionicize(node.title, bionic)}
         </span>
       </div>
-      {node.list === "petcare" && (
+      {node.list === "petcare" && shelfPet?.todoEnabled && (
         <div className="ml-2 space-y-1.5" style={{ paddingLeft: depth * 14 }}>
           {petCareItems.map((item, i) => (
             <div key={`${item}-${i}`} className="flex items-center gap-2">
