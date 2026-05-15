@@ -390,8 +390,32 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             [ SIMPLE MODE NOW ]
           </button>
           <div className="flex gap-2">
-            <SheetButton full onClick={() => setPhase("configure")} variant="primary">Yes</SheetButton>
-            <SheetButton full onClick={declineOrRemove} variant="ghost">No</SheetButton>
+            <button
+              onClick={() => setPhase("configure")}
+              className="w-full rounded-full py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
+              style={{
+                color: SHEET_FG,
+                opacity: 0.9,
+                border: "none",
+                backgroundColor: "transparent",
+                fontFamily: '"Fraunces", Georgia, serif',
+              }}
+            >
+              Yes
+            </button>
+            <button
+              onClick={declineOrRemove}
+              className="w-full rounded-full py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
+              style={{
+                color: SHEET_FG,
+                opacity: 0.7,
+                border: "none",
+                backgroundColor: "transparent",
+                fontFamily: '"Fraunces", Georgia, serif',
+              }}
+            >
+              No
+            </button>
           </div>
           <p className="mt-3 text-center text-[11px] opacity-60">{ASSURANCE}</p>
           <div className="flex justify-center pt-3">
