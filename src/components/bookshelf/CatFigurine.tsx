@@ -580,7 +580,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             </>
           )}
           <p className="text-center text-[11px] opacity-60 whitespace-nowrap">{ASSURANCE}</p>
-          <div className="flex justify-center pt-1">
+          <div className="flex justify-center gap-6 pt-1">
             <button
               onClick={() => setPhase("ask")}
               aria-label="Back"
@@ -588,6 +588,14 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               style={{ fontFamily: '"Fraunces", Georgia, serif' }}
             >
               ←
+            </button>
+            <button
+              onClick={onClose}
+              aria-label="Forward"
+              className="text-lg opacity-70 transition hover:translate-x-0.5 hover:opacity-100"
+              style={{ fontFamily: '"Fraunces", Georgia, serif' }}
+            >
+              →
             </button>
           </div>
         </div>
@@ -608,7 +616,7 @@ function Row({
   return (
     <button
       onClick={() => onChange(!checked)}
-      className="flex w-full items-start gap-2 rounded-full px-2 py-0 text-left text-[10px] leading-snug tracking-[0.04em] transition hover:opacity-100"
+      className="flex w-full items-start justify-center gap-2 rounded-full px-2 py-0 text-[10px] leading-snug tracking-[0.04em] transition hover:opacity-100"
       style={{
         backgroundColor: "transparent",
         border: "none",
