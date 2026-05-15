@@ -1030,3 +1030,97 @@ function Row({
     </button>
   );
 }
+
+function SendAwayRow({
+  awayUntil,
+  onSend,
+  onRecall,
+}: {
+  awayUntil?: number;
+  onSend: (minutes: number) => void;
+  onRecall: () => void;
+}) {
+  const [mins, setMins] = useState<string>("15");
+  const [, force] = useState(0);
+  const active = !!(awayUntil && awayUntil > Date.now());
+
+  // Tick every second while active so the remaining-time label stays fresh
+  useEffect(() => {
+    if (!active) return;
+    const id = window.setInterval(() => force((n) => n + 1), 1000);
+    return () => window.clearInterval(id);
+  }, [active]);
+
+  const remainingLabel = (() => {
+    if (!awayUntil) return "";
+    const ms = Math.max(0, awayUntil - Date.now());
+    const totalSec = Math.ceil(ms / 1000);
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    if (m >= 60) {
+      const h = Math.floor(m / 60);
+      return `${h}h ${m % 60}m`;
+    }
+    return m > 0 ? `${m}m ${s.toString().padStart(2, "0")}s` : `${s}s`;
+  })();
+
+  if (active) {
+    return (
+      <div
+        className="flex w-full items-center justify-center gap-2 rounded-full px-2 py-0 text-[10px] tracking-[0.04em]"
+        style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif', opacity: 0.85 }}
+      >
+        <span>Away — back in {remainingLabel}.</span>
+        <button
+          onClick={onRecall}
+          className="rounded-sm px-1 underline-offset-2 transition hover:underline hover:opacity-100"
+          style={{ color: SHEET_FG, opacity: 0.9, border: "none", backgroundColor: "transparent" }}
+        >
+          Call back
+        </button>
+      </div>
+    );
+  }
+
+  const send = () => {
+    const n = Math.max(1, Math.min(720, Math.round(parseFloat(mins) || 0)));
+    onSend(n);
+  };
+
+  return (
+    <div
+      className="flex w-full items-center justify-center gap-[0.5ch] rounded-full px-2 py-0 text-[10px] leading-snug tracking-[0.04em]"
+      style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif', opacity: 0.75 }}
+    >
+      <span>Send cat away for</span>
+      <input
+        type="number"
+        min={1}
+        max={720}
+        value={mins}
+        onChange={(e) => setMins(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") send();
+        }}
+        aria-label="Minutes to send companion away"
+        className="w-[3.5ch] rounded-sm bg-transparent text-center outline-none"
+        style={{
+          color: SHEET_FG,
+          border: "none",
+          borderBottom: "1px solid rgba(255,255,255,0.35)",
+          fontFamily: '"Fraunces", Georgia, serif',
+          fontSize: "10px",
+          padding: "0 0 1px",
+        }}
+      />
+      <span>min (silent timer).</span>
+      <button
+        onClick={send}
+        className="rounded-sm px-1 underline-offset-2 transition hover:underline hover:opacity-100"
+        style={{ color: SHEET_FG, opacity: 0.95, border: "none", backgroundColor: "transparent" }}
+      >
+        Send
+      </button>
+    </div>
+  );
+}
