@@ -36,8 +36,81 @@ export function BookOpen({ book, onClose }: Props) {
   const isSettings = book.id === "settings";
   const isDashboard = book.id === "dashboard";
   const isMusic = book.id === "music";
+  const isSpaces = book.id === "spaces";
   const currentFontLabel = SPINE_FONTS.find((f) => f.id === spineFont)?.label ?? spineFont;
   const purrsOn = purrsVolume > 0;
+
+  const shelfPet = petsConfig["shelf"];
+  const petCareItems: string[] =
+    shelfPet?.todoItems && shelfPet.todoItems.length > 0
+      ? shelfPet.todoItems
+      : SUGGESTED;
+  const updatePetCare = (next: string[]) => {
+    const base =
+      shelfPet ?? { pet: null, animations: true, todoEnabled: true, todoItems: [] };
+    setPetConfig("shelf", { ...base, todoEnabled: true, todoItems: next });
+  };
+  const addPetTask = () => {
+    const v = newPetTask.trim();
+    if (!v) return;
+    updatePetCare([...petCareItems, v]);
+    setNewPetTask("");
+  };
+  const removePetTask = (i: number) => {
+    updatePetCare(petCareItems.filter((_, idx) => idx !== i));
+  };
+
+  const renderNode = (node: SpaceNode, depth: number, key: string) => (
+    <li key={key} className="space-y-2">
+      <div
+        className="flex items-baseline gap-3 border-b border-dotted border-ink/20 pb-1"
+        style={{ paddingLeft: depth * 14 }}
+      >
+        <span
+          className="font-serif text-ink"
+          style={{ fontSize: depth === 0 ? 18 : depth === 1 ? 15 : 13 }}
+        >
+          {bionicize(node.title, bionic)}
+        </span>
+      </div>
+      {node.list === "petcare" && (
+        <div className="ml-2 space-y-1.5" style={{ paddingLeft: depth * 14 }}>
+          {petCareItems.map((item, i) => (
+            <div key={`${item}-${i}`} className="flex items-center gap-2">
+              <span className="font-serif text-sm text-ink/80">• {bionicize(item, bionic)}</span>
+              <button
+                onClick={() => removePetTask(i)}
+                aria-label={`Remove ${item}`}
+                className="ml-auto text-xs text-ink/40 hover:text-ink"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+          <div className="flex items-center gap-2 pt-1">
+            <input
+              value={newPetTask}
+              onChange={(e) => setNewPetTask(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && addPetTask()}
+              placeholder="Add pet care task…"
+              className="flex-1 border-b border-ink/15 bg-transparent py-1 font-serif text-sm text-ink placeholder:text-ink/35 focus:border-ink/50 focus:outline-none"
+            />
+            <button
+              onClick={addPetTask}
+              className="font-sans text-xs uppercase tracking-wider text-ink/60 hover:text-ink"
+            >
+              add
+            </button>
+          </div>
+        </div>
+      )}
+      {node.children && node.children.length > 0 && (
+        <ul className="space-y-2">
+          {node.children.map((c, i) => renderNode(c, depth + 1, `${key}-${i}`))}
+        </ul>
+      )}
+    </li>
+  );
 
   return (
     <div
