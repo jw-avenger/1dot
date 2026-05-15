@@ -423,7 +423,7 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
 
   const slotH = height;
   const slotW = Math.round(slotH * 0.7);
-  const catSize = Math.round(slotW * 1.05);
+  const catSize = Math.round(slotW * 1.55);
   const genericSize = Math.round(slotW * 0.85);
 
   return (
