@@ -373,7 +373,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
       {phase === "ask" ? (
         <>
           <p className="mb-3 text-center text-base leading-snug" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>
-            Would you like a companion?
+            Would you like an animal companion?
           </p>
           <button
             onClick={() => { slapToBasic(); onClose(); }}
@@ -389,7 +389,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
           >
             [ SIMPLE MODE NOW ]
           </button>
-          <div className="space-y-2">
+          <div className="flex gap-2">
             <SheetButton full onClick={() => setPhase("configure")} variant="primary">Yes</SheetButton>
             <SheetButton full onClick={declineOrRemove} variant="ghost">No</SheetButton>
           </div>
