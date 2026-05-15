@@ -8,7 +8,19 @@ type Props = {
 };
 
 export function BookOpen({ book, onClose }: Props) {
-  const { spineFont, cycleSpineFont, bionic, toggleBionic, trash, restoreTrash, clearTrash } = useSettings();
+  const {
+    spineFont,
+    cycleSpineFont,
+    bionic,
+    toggleBionic,
+    trash,
+    restoreTrash,
+    clearTrash,
+    sfxEnabled,
+    setSfxEnabled,
+    purrsVolume,
+    setPurrsVolume,
+  } = useSettings();
   const [trashOpen, setTrashOpen] = useState(false);
 
   useEffect(() => {
@@ -19,7 +31,9 @@ export function BookOpen({ book, onClose }: Props) {
 
   const isSettings = book.id === "settings";
   const isDashboard = book.id === "dashboard";
+  const isMusic = book.id === "music";
   const currentFontLabel = SPINE_FONTS.find((f) => f.id === spineFont)?.label ?? spineFont;
+  const purrsOn = purrsVolume > 0;
 
   return (
     <div
