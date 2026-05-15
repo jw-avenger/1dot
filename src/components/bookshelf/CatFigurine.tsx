@@ -518,7 +518,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 <Row
                   checked={draft.todoEnabled}
                   onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
-                  label="Would you like a simple starter companion list?"
+                  label="Enable simple starter companion list."
                 />
                 <Row
                   checked={!!draft.remindersEnabled}
