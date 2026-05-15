@@ -389,7 +389,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
           >
             [ SIMPLE MODE NOW ]
           </button>
-          <div className="space-y-2">
+          <div className="flex gap-2">
             <SheetButton full onClick={() => setPhase("configure")} variant="primary">Yes</SheetButton>
             <SheetButton full onClick={declineOrRemove} variant="ghost">No</SheetButton>
           </div>
