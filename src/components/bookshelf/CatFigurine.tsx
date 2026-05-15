@@ -465,14 +465,43 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
 
         {/* back legs (static) */}
         <path d="M 64 102 C 62 118, 62 124, 66 128 L 76 128 C 78 124, 78 116, 76 102 Z" fill={`url(#${ns}-fur)`} />
-        <path d="M 156 102 C 155 116, 154 122, 158 126 L 166 126 C 168 122, 168 114, 167 102 Z" fill="#a06a2c" />
+        {/* back legs with proper haunches/thighs.
+            Right rear (the visible "butt"): a rounded haunch bulges up over
+            the hip, sweeps down through a muscled thigh, and tapers into the
+            paw. Left rear gets a smaller matching haunch hint. Painted under
+            the body fur gradient so it reads as one continuous animal. */}
+        {/* right rear haunch + thigh + lower leg */}
         <path
-          d="M 142 100 C 138 112, 138 122, 144 128 L 156 128 C 160 122, 160 112, 156 100 Z"
+          d="M 138 86 C 130 90, 128 102, 132 116 C 134 124, 140 130, 150 130 L 164 130 C 172 130, 176 122, 174 110 C 172 96, 166 84, 154 82 C 146 81, 142 84, 138 86 Z"
           fill={`url(#${ns}-fur)`}
         />
-        <ellipse cx="71" cy="128" rx="6" ry="2" fill="#3a1d0a" />
-        <ellipse cx="150" cy="128" rx="6.5" ry="2" fill="#3a1d0a" />
-        <ellipse cx="162" cy="126" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
+        {/* darker thigh shading along the back of the haunch */}
+        <path
+          d="M 168 92 C 174 104, 174 118, 168 126 C 172 122, 174 114, 174 106 C 174 100, 172 95, 168 92 Z"
+          fill="#7a4818"
+          opacity="0.55"
+        />
+        {/* warm haunch highlight catching light on top */}
+        <ellipse cx="148" cy="92" rx="10" ry="5" fill="rgba(255,235,200,0.28)" transform="rotate(-12 148 92)" />
+        {/* haunch stripe wraps */}
+        <g stroke="#6b3a16" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.45">
+          <path d="M 142 96 C 146 102, 150 106, 152 112" />
+          <path d="M 152 92 C 158 100, 162 106, 164 114" />
+        </g>
+        {/* lower-leg/foot at base */}
+        <path d="M 144 122 C 142 128, 144 132, 150 132 L 164 132 C 168 132, 170 128, 168 122 Z" fill="#a06a2c" />
+
+        {/* left rear thigh — smaller bulge for the far side */}
+        <path
+          d="M 60 96 C 56 100, 56 112, 60 122 C 62 128, 68 130, 74 130 L 80 130 C 84 128, 84 120, 82 110 C 80 100, 72 94, 60 96 Z"
+          fill={`url(#${ns}-fur)`}
+        />
+        <ellipse cx="68" cy="100" rx="7" ry="4" fill="rgba(255,235,200,0.22)" transform="rotate(-10 68 100)" />
+        <path d="M 64 124 C 62 130, 64 132, 68 132 L 78 132 C 82 132, 82 128, 80 124 Z" fill="#a06a2c" />
+
+        <ellipse cx="71" cy="132" rx="6" ry="2" fill="#3a1d0a" />
+        <ellipse cx="155" cy="132" rx="6.5" ry="2" fill="#3a1d0a" />
+        <ellipse cx="166" cy="130" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
 
         {/* front-left paw — taps */}
         <g className={animated ? `${ns}-pawFL` : undefined}>
