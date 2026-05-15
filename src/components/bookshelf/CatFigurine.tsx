@@ -389,7 +389,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
           >
             [ SIMPLE MODE NOW ]
           </button>
-          <div className="flex justify-center gap-4">
+          <div className="flex items-center justify-center gap-2">
             <button
               onClick={() => setPhase("configure")}
               className="rounded-full px-6 py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
@@ -403,6 +403,13 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             >
               Yes
             </button>
+            <span
+              aria-hidden
+              className="text-[12px] opacity-50 select-none"
+              style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif' }}
+            >
+              /
+            </span>
             <button
               onClick={declineOrRemove}
               className="rounded-full px-6 py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
@@ -519,7 +526,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 >
                   Save for now?
                 </button>
-                <div className="flex justify-center gap-4">
+                <div className="flex items-center justify-center gap-2">
                   <button
                     onClick={save}
                     className="rounded-full px-6 py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
@@ -533,6 +540,13 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                   >
                     Yes
                   </button>
+                  <span
+                    aria-hidden
+                    className="text-[12px] opacity-50 select-none"
+                    style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif' }}
+                  >
+                    /
+                  </span>
                   <button
                     onClick={onClose}
                     className="rounded-full px-6 py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
