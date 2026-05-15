@@ -403,6 +403,13 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             >
               Yes
             </button>
+            <span
+              aria-hidden
+              className="text-[12px] opacity-50 select-none"
+              style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif' }}
+            >
+              /
+            </span>
             <button
               onClick={declineOrRemove}
               className="rounded-full px-6 py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
