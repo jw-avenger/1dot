@@ -411,7 +411,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             className="text-center text-xs font-semibold uppercase tracking-[0.25em]"
             style={{ fontFamily: '"Fraunces", Georgia, serif' }}
           >
-            Choose Pet
+            Choose Companion
           </p>
           <button
             onClick={() => { slapToBasic(); onClose(); }}
