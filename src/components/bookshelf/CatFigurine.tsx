@@ -911,6 +911,11 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                   onChange={(v) => setDraft({ ...draft, remindersEnabled: v })}
                   label="Enable gentle reminders based on your choices."
                 />
+                <SendAwayRow
+                  awayUntil={existing?.awayUntil}
+                  onSend={(mins) => sendPetAway(SHELF_KEY, mins * 60_000)}
+                  onRecall={() => recallPet(SHELF_KEY)}
+                />
               </div>
 
               <div className="space-y-2 pt-1">
