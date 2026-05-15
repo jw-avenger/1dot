@@ -497,12 +497,12 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               <Row
                 checked={draft.animations}
                 onChange={(v) => setDraft({ ...draft, animations: v })}
-                label="Enable light animations."
+                label="Would you like light animations?"
               />
               <Row
                 checked={draft.todoEnabled}
                 onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
-                label="Enable simple starter companion list."
+                label="Would you like a simple starter companion list?"
               />
 
               <div className="space-y-2 pt-1">
@@ -519,6 +519,34 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 >
                   Save for now?
                 </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={save}
+                    className="w-full rounded-full py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
+                    style={{
+                      color: SHEET_FG,
+                      opacity: 0.9,
+                      border: "none",
+                      backgroundColor: "transparent",
+                      fontFamily: '"Fraunces", Georgia, serif',
+                    }}
+                  >
+                    Yes
+                  </button>
+                  <button
+                    onClick={onClose}
+                    className="w-full rounded-full py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
+                    style={{
+                      color: SHEET_FG,
+                      opacity: 0.7,
+                      border: "none",
+                      backgroundColor: "transparent",
+                      fontFamily: '"Fraunces", Georgia, serif',
+                    }}
+                  >
+                    No
+                  </button>
+                </div>
               </div>
             </>
           )}
