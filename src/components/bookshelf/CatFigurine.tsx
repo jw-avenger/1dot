@@ -389,7 +389,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
           >
             [ SIMPLE MODE NOW ]
           </button>
-          <div className="flex justify-center gap-4">
+          <div className="flex items-center justify-center gap-2">
             <button
               onClick={() => setPhase("configure")}
               className="rounded-full px-6 py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
