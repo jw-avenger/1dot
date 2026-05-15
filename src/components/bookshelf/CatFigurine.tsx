@@ -425,7 +425,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             </button>
           </div>
           <p className="mt-3 text-center text-[11px] opacity-60">{ASSURANCE}</p>
-          <div className="flex justify-center pt-3">
+          <div className="flex justify-center gap-6 pt-3">
             <button
               onClick={onClose}
               aria-label="Back"
@@ -433,6 +433,14 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               style={{ fontFamily: '"Fraunces", Georgia, serif' }}
             >
               ←
+            </button>
+            <button
+              onClick={() => setPhase("configure")}
+              aria-label="Forward"
+              className="text-lg opacity-70 transition hover:translate-x-0.5 hover:opacity-100"
+              style={{ fontFamily: '"Fraunces", Georgia, serif' }}
+            >
+              →
             </button>
           </div>
         </>
