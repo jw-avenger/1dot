@@ -477,6 +477,9 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           </g>
         </g>
       </g>
+      </g>
+      </g>
+      </g>
     </svg>
   );
 }
