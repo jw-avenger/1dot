@@ -405,7 +405,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             </button>
             <button
               onClick={declineOrRemove}
-              className="w-full rounded-full py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
+              className="rounded-full px-6 py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
               style={{
                 color: SHEET_FG,
                 opacity: 0.7,
