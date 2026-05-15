@@ -372,9 +372,23 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
     <ConfirmSheet open={open} onClose={onClose} maxWidth={380} showSimplify={false}>
       {phase === "ask" ? (
         <>
-          <p className="mb-5 text-center text-base leading-snug" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>
+          <p className="mb-3 text-center text-base leading-snug" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>
             Would you like pet support?
           </p>
+          <button
+            onClick={() => { slapToBasic(); onClose(); }}
+            className="mb-4 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
+            style={{
+              color: SHEET_FG,
+              opacity: 0.55,
+              border: "1px solid rgba(255,255,255,0.12)",
+              backgroundColor: "transparent",
+              fontFamily: '"Fraunces", Georgia, serif',
+            }}
+            title="Take everything to simple mode"
+          >
+            [ SIMPLE MODE NOW ]
+          </button>
           <div className="space-y-2">
             <SheetButton full onClick={() => setPhase("configure")} variant="primary">Yes</SheetButton>
             <SheetButton full onClick={declineOrRemove} variant="ghost">No</SheetButton>
@@ -407,6 +421,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               opacity: 0.55,
               border: "1px solid rgba(255,255,255,0.12)",
               backgroundColor: "transparent",
+              fontFamily: '"Fraunces", Georgia, serif',
             }}
             title="Take everything to simple mode"
           >
@@ -436,7 +451,10 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 >
                   ▲
                 </button>
-                <span className="flex-1 text-center text-[11px] uppercase tracking-[0.18em]">
+                <span
+                  className="flex-1 text-center text-[12px] tracking-[0.04em]"
+                  style={{ fontFamily: '"Fraunces", Georgia, serif' }}
+                >
                   {current?.label ?? "Choose a friend"}
                 </span>
                 <button
@@ -466,12 +484,13 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               <div className="space-y-2 pt-1">
                 <button
                   onClick={save}
-                  className="w-full rounded-full py-2 text-[11px] uppercase tracking-[0.22em] transition hover:opacity-100"
+                  className="w-full rounded-full py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
                   style={{
                     color: SHEET_FG,
                     opacity: 0.9,
                     border: "1px solid rgba(255,255,255,0.28)",
                     backgroundColor: "transparent",
+                    fontFamily: '"Fraunces", Georgia, serif',
                   }}
                 >
                   Save for now
@@ -508,12 +527,13 @@ function Row({
   return (
     <button
       onClick={() => onChange(!checked)}
-      className="flex w-full items-center gap-3 rounded-full px-4 py-1.5 text-left text-[11px] uppercase tracking-[0.18em] transition hover:opacity-100"
+      className="flex w-full items-center gap-3 rounded-full px-4 py-1.5 text-left text-[12px] tracking-[0.04em] transition hover:opacity-100"
       style={{
         backgroundColor: "transparent",
         border: "1px solid rgba(255,255,255,0.18)",
         color: SHEET_FG,
         opacity: 0.8,
+        fontFamily: '"Fraunces", Georgia, serif',
       }}
     >
       <span
