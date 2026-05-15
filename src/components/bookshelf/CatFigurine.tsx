@@ -39,7 +39,7 @@
  */
 
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ConfirmSheet, SheetButton, SHEET_FG } from "./ConfirmSheet";
 import { PETS, useSettings, type PetConfig } from "./useSettings";
 
