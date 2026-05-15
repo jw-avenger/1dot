@@ -21,8 +21,11 @@ export function BookOpen({ book, onClose }: Props) {
     setSfxEnabled,
     purrsVolume,
     setPurrsVolume,
+    petsConfig,
+    setPetConfig,
   } = useSettings();
   const [trashOpen, setTrashOpen] = useState(false);
+  const [newPetTask, setNewPetTask] = useState("");
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
