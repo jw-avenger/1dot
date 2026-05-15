@@ -519,6 +519,11 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
                 label="Would you like a simple starter companion list?"
               />
+              <Row
+                checked={!!draft.remindersEnabled}
+                onChange={(v) => setDraft({ ...draft, remindersEnabled: v })}
+                label="Would you like gentle reminders based on your preferences?"
+              />
 
               <div className="space-y-2 pt-1">
                 <button
