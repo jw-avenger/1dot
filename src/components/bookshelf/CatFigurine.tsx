@@ -509,7 +509,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
 
           {draft.pet && (
             <>
-              <div className="space-y-0">
+              <div className="space-y-[1ch]">
                 <Row
                   checked={draft.animations}
                   onChange={(v) => setDraft({ ...draft, animations: v })}
@@ -616,14 +616,13 @@ function Row({
   return (
     <button
       onClick={() => onChange(!checked)}
-      className="flex w-full justify-center rounded-full px-2 py-0 text-[10px] leading-snug tracking-[0.04em] transition hover:underline hover:opacity-100"
+      className="flex w-full justify-center rounded-full px-2 py-0 text-[10px] leading-snug tracking-[0.04em] transition hover:opacity-100"
       style={{
-        backgroundColor: "transparent",
+        backgroundColor: checked ? "rgba(255,255,255,0.10)" : "transparent",
         border: "none",
         color: SHEET_FG,
         opacity: checked ? 1 : 0.6,
         fontFamily: '"Fraunces", Georgia, serif',
-        textDecoration: checked ? "underline" : "none",
       }}
     >
       <span>{label}</span>
