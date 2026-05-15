@@ -205,9 +205,8 @@ export function SidePanel(props: Props) {
         <Row>
           <Toggle label="Dark theme" on={theme === "dark"} onChange={() => setTheme(theme === "dark" ? "light" : "dark")} />
         </Row>
-        <Row>
-          <Toggle label="Sound effects" on={s.sfxEnabled} onChange={() => s.setSfxEnabled(!s.sfxEnabled)} />
-        </Row>
+        {/* Sound effects controls have moved to the Music book — open it
+            from the shelf to toggle SFX and adjust the cat-purr volume. */}
         <Row>
           <Toggle label="Bionic reading" on={s.bionic} onChange={() => s.toggleBionic()} />
         </Row>
