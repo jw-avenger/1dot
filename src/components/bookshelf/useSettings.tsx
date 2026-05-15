@@ -283,15 +283,16 @@ export function useSettings() {
       // If a pet is already in the trash, don't add another — just remove the
       // active one and mark dismissed.
       const alreadyInTrash = state.trash.some((t) => t.kind === "pet");
-      if (existing) {
+      const restored = normalizePetConfig(existing);
+      if (restored) {
         delete nextPets[id];
         if (!alreadyInTrash) {
-          const petMeta = PETS.find((p) => p.id === existing.pet);
+          const petMeta = PETS.find((p) => p.id === restored.pet);
           const trashItem: TrashItem = {
             id: `pet-${id}-${Date.now()}`,
             kind: "pet",
             label: petMeta ? `${petMeta.emoji} ${petMeta.label}` : "Companion",
-            data: { slot: id, config: existing },
+            data: { slot: id, config: restored },
             deletedAt: Date.now(),
           };
           nextTrash = [trashItem, ...state.trash];
@@ -309,13 +310,7 @@ export function useSettings() {
       if (item.kind === "pet") {
         const nextPets = { ...state.petsConfig };
         const slot = item.data?.slot ?? "shelf";
-        nextPets[slot] = {
-          pet: "cat",
-          animations: true,
-          todoEnabled: false,
-          todoItems: [],
-          remindersEnabled: false,
-        };
+        nextPets[slot] = normalizePetConfig(item.data?.config) ?? freshCatConfig();
         patch({
           petsConfig: nextPets,
           trash: nextTrash,
