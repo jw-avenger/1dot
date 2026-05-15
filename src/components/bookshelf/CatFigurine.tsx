@@ -397,10 +397,10 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
       >
       <g className={animated && move ? `${ns}-move ${ns}-move-${move}` : undefined}>
       <g className={animated ? `${ns}-pose ${ns}-pose-${pose}` : undefined}>
-      <g className={animated ? `${ns}-rig` : undefined}>
+      <g className={`${ns}-rig`}>
         {/* ground shadow */}
         <ellipse
-          className={animated ? `${ns}-shadow` : undefined}
+          className={`${ns}-shadow`}
           cx="105" cy="128" rx="70" ry="3.5"
           fill="rgba(0,0,0,0.32)" filter={`url(#${ns}-blur)`}
         />
@@ -409,7 +409,7 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
             the body so it reads as the same illustration. A single tapered
             shape with the body's fur gradient, a cream highlight ellipse where
             it joins the body, and the same wavy q-stripes used on the back. */}
-        <g className={animated ? `${ns}-tail` : undefined}>
+        <g className={`${ns}-tail`}>
           {/* soft ground/contact shadow under the base */}
           <ellipse
             cx="172" cy="104" rx="14" ry="4"
@@ -447,13 +447,13 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
               tapered end. A tiny highlight kisses the lit edge so it still
               reads as a fur tip rather than a stub. The empty group preserves
               the rig anchor for the tip-flick animation. */}
-          <g className={animated ? `${ns}-tailtip` : undefined}>
+          <g className={`${ns}-tailtip`}>
             <ellipse cx="167" cy="-12" rx="2.4" ry="1.6" fill="rgba(255,235,200,0.5)" />
           </g>
         </g>
 
         {/* body — breathes */}
-        <g className={animated ? `${ns}-breath` : undefined}>
+        <g className={`${ns}-breath`}>
           <path
             d="M 60 96 C 50 92, 48 82, 56 74 C 62 68, 72 66, 86 66 L 150 66 C 166 66, 174 76, 174 90 C 174 104, 168 110, 156 110 L 70 110 C 58 110, 56 104, 60 96 Z"
             fill={`url(#${ns}-fur)`}
@@ -564,7 +564,7 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
         {/* (no far-side front paw — it's hidden behind the near front paw in this 3/4 view) */}
 
         {/* front-left paw — taps */}
-        <g className={animated ? `${ns}-pawFL` : undefined}>
+        <g className={`${ns}-pawFL`}>
           <path d="M 76 102 C 75 116, 75 122, 78 126 L 86 126 C 88 122, 88 114, 87 102 Z" fill="#a06a2c" />
           {/* wrist cuff */}
           <ellipse cx="82" cy="120" rx="7" ry="2.4" fill={`url(#${ns}-fur)`} />
@@ -573,13 +573,13 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
         </g>
 
         {/* head — bobs and tilts */}
-        <g className={animated ? `${ns}-head` : undefined}>
+        <g className={`${ns}-head`}>
           {/* ears */}
-          <g className={animated ? `${ns}-earL` : undefined}>
+          <g className={`${ns}-earL`}>
             <path d="M 24 50 L 30 22 L 46 44 Z" fill={`url(#${ns}-fur)`} />
             <path d="M 30 46 L 32 30 L 42 44 Z" fill={`url(#${ns}-ear)`} />
           </g>
-          <g className={animated ? `${ns}-earR` : undefined}>
+          <g className={`${ns}-earR`}>
             <path d="M 76 50 L 70 22 L 54 44 Z" fill={`url(#${ns}-fur)`} />
             <path d="M 70 46 L 68 30 L 58 44 Z" fill={`url(#${ns}-ear)`} />
           </g>
@@ -599,7 +599,7 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           {/* eyes — sclera + darting pupils + blink lids */}
           <ellipse cx="40" cy="62" rx="4.2" ry="5" fill={`url(#${ns}-eye)`} />
           <ellipse cx="60" cy="62" rx="4.2" ry="5" fill={`url(#${ns}-eye)`} />
-          <g className={animated ? `${ns}-pupils` : undefined}>
+          <g className={`${ns}-pupils`}>
             <ellipse cx="40" cy="62" rx="1.1" ry="4.2" fill="#0a0a0a" />
             <ellipse cx="60" cy="62" rx="1.1" ry="4.2" fill="#0a0a0a" />
             <circle cx="41.4" cy="60" r="1" fill="#ffffff" />
@@ -608,7 +608,7 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           <ellipse cx="40" cy="62" rx="4.2" ry="5" fill="none" stroke="#3a1d0a" strokeWidth="0.6" />
           <ellipse cx="60" cy="62" rx="4.2" ry="5" fill="none" stroke="#3a1d0a" strokeWidth="0.6" />
           {/* eyelids — scaleY blink */}
-          <g className={animated ? `${ns}-lid` : undefined} fill={`url(#${ns}-fur)`}>
+          <g className={`${ns}-lid`} fill={`url(#${ns}-fur)`}>
             <ellipse cx="40" cy="62" rx="4.4" ry="5.2" />
             <ellipse cx="60" cy="62" rx="4.4" ry="5.2" />
           </g>
@@ -625,7 +625,7 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           <ellipse className={`${ns}-yawnmouth`} cx="50" cy="80.5" rx="2" ry="2" fill="#c44a55" opacity="0.85" />
 
           {/* whiskers — quiver */}
-          <g className={animated ? `${ns}-whisk` : undefined}
+          <g className={`${ns}-whisk`}
              stroke="#3a1d0a" strokeWidth="0.6" strokeLinecap="round" opacity="0.75" fill="none">
             <path d="M 42 76 C 30 76, 22 74, 14 72" />
             <path d="M 42 78 C 30 80, 22 82, 14 84" />
