@@ -179,7 +179,7 @@ export function Bookshelf() {
         {(showShelfPet || showShelfPlant) && (
           <div className="mt-8 flex items-end justify-center gap-10 px-6 sm:gap-20">
             {showShelfPlant && <ShelfPlant size={64} blank={settings.plantDismissed} />}
-            {showShelfPet && !settings.petDismissed && (
+            {showShelfPet && (settings.petsConfig["shelf"]?.pet || !settings.petDismissed) && (
               <ShelfPet onClick={() => setPetOpen(true)} height={180} />
             )}
           </div>
