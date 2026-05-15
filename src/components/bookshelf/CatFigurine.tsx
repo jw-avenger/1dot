@@ -419,7 +419,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             style={{
               color: SHEET_FG,
               opacity: 0.55,
-              border: "1px solid rgba(255,255,255,0.12)",
+              border: "none",
               backgroundColor: "transparent",
               fontFamily: '"Fraunces", Georgia, serif',
             }}
