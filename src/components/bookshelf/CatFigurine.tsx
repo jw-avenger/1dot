@@ -372,9 +372,23 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
     <ConfirmSheet open={open} onClose={onClose} maxWidth={380} showSimplify={false}>
       {phase === "ask" ? (
         <>
-          <p className="mb-5 text-center text-base leading-snug" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>
+          <p className="mb-3 text-center text-base leading-snug" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>
             Would you like pet support?
           </p>
+          <button
+            onClick={() => { slapToBasic(); onClose(); }}
+            className="mb-4 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
+            style={{
+              color: SHEET_FG,
+              opacity: 0.55,
+              border: "1px solid rgba(255,255,255,0.12)",
+              backgroundColor: "transparent",
+              fontFamily: '"Fraunces", Georgia, serif',
+            }}
+            title="Take everything to simple mode"
+          >
+            [ SIMPLE MODE NOW ]
+          </button>
           <div className="space-y-2">
             <SheetButton full onClick={() => setPhase("configure")} variant="primary">Yes</SheetButton>
             <SheetButton full onClick={declineOrRemove} variant="ghost">No</SheetButton>
