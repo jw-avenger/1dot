@@ -251,7 +251,7 @@ export function useSettings() {
           const trashItem: TrashItem = {
             id: `pet-${id}-${Date.now()}`,
             kind: "pet",
-            label: petMeta ? `${petMeta.emoji} ${petMeta.label} companion` : "Companion",
+            label: petMeta ? `${petMeta.emoji} ${petMeta.label}` : "Companion",
             data: { slot: id, config: existing },
             deletedAt: Date.now(),
           };
