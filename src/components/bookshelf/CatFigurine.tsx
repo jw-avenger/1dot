@@ -463,7 +463,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 className="flex w-full items-center justify-between rounded-full px-3 py-1.5"
                 style={{
                   backgroundColor: "transparent",
-                  border: "1px solid rgba(255,255,255,0.18)",
+                  border: "none",
                   color: SHEET_FG,
                   opacity: 0.85,
                 }}
