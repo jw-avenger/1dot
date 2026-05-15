@@ -48,7 +48,7 @@ import { PETS, useSettings, type PetConfig } from "./useSettings";
    ======================================================================== */
 
 type CatPose = "standing" | "curled" | "draped";
-type CatMove = "yawn" | "knead" | "pounce" | "sniff" | "ears" | "belly" | "wince";
+type CatMove = "yawn" | "knead" | "pounce" | "sniff" | "ears" | "belly" | "wince" | "groom";
 type CatTravel = "none" | "leaving" | "arriving";
 
 type CatProps = {
@@ -64,7 +64,7 @@ type CatProps = {
   onArrived?: () => void;
 };
 
-const SPECIAL_MOVES: CatMove[] = ["yawn", "knead", "pounce", "sniff", "ears", "belly", "wince"];
+const SPECIAL_MOVES: CatMove[] = ["yawn", "knead", "pounce", "sniff", "ears", "belly", "wince", "groom"];
 const POSE_CYCLE: CatPose[] = ["standing", "standing", "curled", "standing", "draped", "standing"];
 /* "Rare & subtle" cadence: special move every 30–60s, pose change every 90–180s. */
 const MOVE_INTERVAL_MS = () => 30000 + Math.random() * 30000;
@@ -214,16 +214,16 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           }
           /* tail — slow sway from base. Longer tail = gentler base rotation
              so the tip doesn't whip across the canvas. */
-          .${ns}-tail { transform-origin: 168px 96px; animation: ${ns}-tail 4.2s ease-in-out infinite; }
+          .${ns}-tail { transform-origin: 170px 100px; animation: ${ns}-tail 5.2s ease-in-out infinite; }
           @keyframes ${ns}-tail {
-            0%,100% { transform: rotate(-5deg); }
-            50%     { transform: rotate(7deg); }
+            0%,100% { transform: rotate(-4deg); }
+            50%     { transform: rotate(6deg); }
           }
-          /* tip curl — independent flick at the very end of the long tail */
-          .${ns}-tailtip { transform-origin: 168px 0px; animation: ${ns}-tailtip 4.2s ease-in-out infinite; }
+          /* tip curl — independent flick pivoting from the actual tip joint */
+          .${ns}-tailtip { transform-origin: 170px -10px; animation: ${ns}-tailtip 5.2s ease-in-out infinite; }
           @keyframes ${ns}-tailtip {
-            0%,100% { transform: rotate(10deg); }
-            50%     { transform: rotate(-14deg); }
+            0%,100% { transform: rotate(8deg); }
+            50%     { transform: rotate(-10deg); }
           }
           /* head — gentle bob + tilt, syncs with breath */
           .${ns}-head { transform-origin: 50px 78px; animation: ${ns}-head 6.4s ease-in-out infinite; }
@@ -296,6 +296,7 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           .${ns}-move-ears   { animation: ${ns}-earsig 1.6s ease-in-out 1; }
           .${ns}-move-belly  { animation: ${ns}-belly  3.2s cubic-bezier(.4,0,.4,1) 1; }
           .${ns}-move-wince  { animation: ${ns}-wince  1.6s ease-in-out 1; }
+          .${ns}-move-groom  { animation: ${ns}-groom  3.2s ease-in-out 1; }
           @keyframes ${ns}-yawn   { 0%,100%{ transform: none; } 30%{ transform: translateY(-2px) rotate(-2deg); } 60%{ transform: translateY(-2px) rotate(-1deg) scale(1.02); } }
           @keyframes ${ns}-knead  { 0%,100%{ transform: none; } 25%{ transform: translateY(-1px) rotate(-1deg); } 50%{ transform: translateY(0) rotate(1deg); } 75%{ transform: translateY(-1px) rotate(-1deg); } }
           @keyframes ${ns}-pounce { 0%{ transform: scale(1,1); } 25%{ transform: scale(1.04, 0.86) translateY(4px); } 55%{ transform: scale(0.95, 1.08) translateY(-12px); } 80%{ transform: scale(1.02, 0.95) translateY(2px); } 100%{ transform: none; } }
@@ -303,6 +304,25 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           @keyframes ${ns}-earsig { 0%,100%{ transform: none; } 50%{ transform: translateY(-1px); } }
           @keyframes ${ns}-belly  { 0%,100%{ transform: none; } 35%{ transform: rotate(-22deg) translateY(2px); } 65%{ transform: rotate(20deg) translateY(2px); } }
           @keyframes ${ns}-wince  { 0%,100%{ transform: none; } 40%{ transform: scale(0.97) rotate(-1deg); } }
+          @keyframes ${ns}-groom  { 0%,100%{ transform: none; } 50%{ transform: none; } }
+
+          /* Grooming — head bows toward the lifted front-left paw with a few licks. */
+          .${ns}-move-groom .${ns}-head { animation: ${ns}-groomhead 3.2s ease-in-out 1; }
+          .${ns}-move-groom .${ns}-pawFL { animation: ${ns}-groompaw 3.2s ease-in-out 1; }
+          @keyframes ${ns}-groomhead {
+            0%,100% { transform: none; }
+            20%     { transform: translate(-6px, 8px) rotate(-22deg); }
+            40%     { transform: translate(-6px, 6px) rotate(-18deg); }
+            55%     { transform: translate(-6px, 8px) rotate(-22deg); }
+            70%     { transform: translate(-6px, 6px) rotate(-18deg); }
+            85%     { transform: translate(-3px, 3px) rotate(-8deg); }
+          }
+          @keyframes ${ns}-groompaw {
+            0%,100% { transform: none; }
+            25%     { transform: translate(0, -16px) rotate(8deg); }
+            70%     { transform: translate(0, -16px) rotate(8deg); }
+            85%     { transform: translate(0, -6px) rotate(3deg); }
+          }
 
           /* Yawn mouth — hidden by default, opens during yawn move */
           .${ns}-yawnmouth { opacity: 0; transform-box: view-box; transform-origin: 50px 78px; }
@@ -472,10 +492,11 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
 
           <ellipse cx="50" cy="62" rx="28" ry="24" fill={`url(#${ns}-fur)`} />
 
-          <g stroke="#6b3a16" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.6">
-            <path d="M 40 44 C 42 50, 44 54, 46 58" />
-            <path d="M 50 42 C 50 48, 50 54, 50 58" />
-            <path d="M 60 44 C 58 50, 56 54, 54 58" />
+          <g stroke="#6b3a16" strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.45">
+            {/* Soft forehead tufts — gentle outward curves, no inward furrow */}
+            <path d="M 38 50 C 40 54, 42 56, 45 58" />
+            <path d="M 50 48 C 50 52, 50 55, 50 58" />
+            <path d="M 62 50 C 60 54, 58 56, 55 58" />
           </g>
 
           <ellipse cx="50" cy="74" rx="16" ry="10" fill="#fbe7c4" opacity="0.85" />
