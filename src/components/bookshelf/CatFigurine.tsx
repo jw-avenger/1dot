@@ -467,6 +467,10 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           <path d="M 50 79 C 48 81, 45 81, 43.5 79.5" fill="none" stroke="#3a1d0a" strokeWidth="0.7" strokeLinecap="round" />
           <path d="M 50 79 C 52 81, 55 81, 56.5 79.5" fill="none" stroke="#3a1d0a" strokeWidth="0.7" strokeLinecap="round" />
 
+          {/* yawn mouth — only visible during the yawn move */}
+          <ellipse className={`${ns}-yawnmouth`} cx="50" cy="80" rx="3.4" ry="3.2" fill="#2a1208" />
+          <ellipse className={`${ns}-yawnmouth`} cx="50" cy="80.5" rx="2" ry="2" fill="#c44a55" opacity="0.85" />
+
           {/* whiskers — quiver */}
           <g className={animated ? `${ns}-whisk` : undefined}
              stroke="#3a1d0a" strokeWidth="0.6" strokeLinecap="round" opacity="0.75" fill="none">
