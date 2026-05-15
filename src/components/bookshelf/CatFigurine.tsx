@@ -408,7 +408,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               className="text-[12px] opacity-50 select-none"
               style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif' }}
             >
-              /
+              |
             </span>
             <button
               onClick={declineOrRemove}
@@ -545,7 +545,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                     className="text-[12px] opacity-50 select-none"
                     style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif' }}
                   >
-                    /
+                    |
                   </span>
                   <button
                     onClick={onClose}
