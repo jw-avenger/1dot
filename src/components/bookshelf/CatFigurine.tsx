@@ -214,16 +214,19 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           }
           /* tail — slow sway from base. Longer tail = gentler base rotation
              so the tip doesn't whip across the canvas. */
-          .${ns}-tail { transform-origin: 170px 100px; animation: ${ns}-tail 5.2s ease-in-out infinite; }
+          /* tail — sway pivots from the actual base now tucked behind the
+             haunch (~170,80) so the swing arcs out from the butt, not from
+             mid-thigh. */
+          .${ns}-tail { transform-origin: 170px 80px; animation: ${ns}-tail 5.6s ease-in-out infinite; }
           @keyframes ${ns}-tail {
-            0%,100% { transform: rotate(-4deg); }
-            50%     { transform: rotate(6deg); }
+            0%,100% { transform: rotate(-3deg); }
+            50%     { transform: rotate(5deg); }
           }
-          /* tip curl — independent flick pivoting from the actual tip joint */
-          .${ns}-tailtip { transform-origin: 170px -10px; animation: ${ns}-tailtip 5.2s ease-in-out infinite; }
+          /* tip curl — gentle independent flick at the very end */
+          .${ns}-tailtip { transform-origin: 170px -10px; animation: ${ns}-tailtip 5.6s ease-in-out infinite; }
           @keyframes ${ns}-tailtip {
-            0%,100% { transform: rotate(8deg); }
-            50%     { transform: rotate(-10deg); }
+            0%,100% { transform: rotate(6deg); }
+            50%     { transform: rotate(-8deg); }
           }
           /* head — gentle bob + tilt, syncs with breath */
           .${ns}-head { transform-origin: 50px 78px; animation: ${ns}-head 6.4s ease-in-out infinite; }
@@ -543,9 +546,7 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
         <ellipse cx="155" cy="132" rx="6.5" ry="2" fill="#3a1d0a" />
         <ellipse cx="166" cy="130" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
 
-        {/* far-side front paw — sits just behind the near front paw, only
-            the toes peek through so it doesn't read as a chest limb. */}
-        <ellipse cx="89" cy="131" rx="4" ry="1.4" fill="#3a1d0a" opacity="0.75" />
+        {/* (no far-side front paw — it's hidden behind the near front paw in this 3/4 view) */}
 
         {/* front-left paw — taps */}
         <g className={animated ? `${ns}-pawFL` : undefined}>
