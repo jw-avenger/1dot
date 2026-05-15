@@ -412,46 +412,40 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
           >
             [ SIMPLE MODE NOW ]
           </button>
-          <button
-            onClick={() => setPickerOpen((v) => !v)}
-            aria-expanded={pickerOpen}
-            className="flex w-full items-center justify-center gap-2 text-center text-sm opacity-80 transition hover:opacity-100"
-          >
-            <span>{draft.pet ? PETS.find((p) => p.id === draft.pet)?.label ?? "Choose a friend" : "Choose a friend"}</span>
-            <span
-              className="inline-block transition-transform"
-              style={{ transform: pickerOpen ? "rotate(180deg)" : "rotate(0deg)" }}
-              aria-hidden
-            >
-              ▾
-            </span>
-          </button>
-
-          <div
-            className="flex flex-col gap-1 overflow-hidden transition-all duration-300"
-            style={{
-              maxHeight: pickerOpen ? 400 : 0,
-              opacity: pickerOpen ? 1 : 0,
-            }}
-          >
-            {PETS.map((p) => {
-              const active = draft.pet === p.id;
-              return (
+          {(() => {
+            const currentIdx = Math.max(0, PETS.findIndex((p) => p.id === draft.pet));
+            const current = PETS[currentIdx];
+            const step = (dir: 1 | -1) => {
+              const next = PETS[(currentIdx + dir + PETS.length) % PETS.length];
+              setDraft({ ...draft, pet: next.id });
+            };
+            return (
+              <div
+                className="flex w-full items-center justify-between rounded-lg px-3 py-2"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  color: SHEET_FG,
+                }}
+              >
                 <button
-                  key={p.id}
-                  onClick={() => setDraft({ ...draft, pet: p.id })}
-                  className="w-full rounded-lg px-3 py-2 text-left text-sm transition"
-                  style={{
-                    backgroundColor: active ? SHEET_FG : "rgba(255,255,255,0.05)",
-                    color: active ? "#2b2b30" : SHEET_FG,
-                    border: `1px solid ${active ? SHEET_FG : "rgba(255,255,255,0.12)"}`,
-                  }}
+                  onClick={() => step(-1)}
+                  aria-label="Previous pet"
+                  className="px-2 text-base opacity-70 transition hover:opacity-100"
                 >
-                  {p.label}
+                  ▲
                 </button>
-              );
-            })}
-          </div>
+                <span className="flex-1 text-center text-sm">{current?.label ?? "Choose a friend"}</span>
+                <button
+                  onClick={() => step(1)}
+                  aria-label="Next pet"
+                  className="px-2 text-base opacity-70 transition hover:opacity-100"
+                >
+                  ▼
+                </button>
+              </div>
+            );
+          })()}
 
           {draft.pet && (
             <>
