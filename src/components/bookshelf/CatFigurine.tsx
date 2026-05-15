@@ -320,6 +320,17 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
         `}</style>
       )}
 
+      <g
+        className={
+          travel === "leaving"
+            ? `${ns}-travel-leaving`
+            : travel === "arriving"
+            ? `${ns}-travel-arriving`
+            : undefined
+        }
+      >
+      <g className={animated && move ? `${ns}-move ${ns}-move-${move}` : undefined}>
+      <g className={animated ? `${ns}-pose ${ns}-pose-${pose}` : undefined}>
       <g className={animated ? `${ns}-rig` : undefined}>
         {/* ground shadow */}
         <ellipse
