@@ -185,17 +185,18 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
             0%,100% { transform: scaleX(1); opacity: 0.32; }
             50%     { transform: scaleX(0.96); opacity: 0.28; }
           }
-          /* tail — slow sway from base */
-          .${ns}-tail { transform-origin: 168px 94px; animation: ${ns}-tail 3.8s ease-in-out infinite; }
+          /* tail — slow sway from base. Longer tail = gentler base rotation
+             so the tip doesn't whip across the canvas. */
+          .${ns}-tail { transform-origin: 168px 96px; animation: ${ns}-tail 4.2s ease-in-out infinite; }
           @keyframes ${ns}-tail {
-            0%,100% { transform: rotate(-8deg); }
-            50%     { transform: rotate(12deg); }
+            0%,100% { transform: rotate(-5deg); }
+            50%     { transform: rotate(7deg); }
           }
-          /* tail tip — extra curl at the end */
-          .${ns}-tailtip { transform-origin: 186px 50px; animation: ${ns}-tailtip 3.8s ease-in-out infinite; }
+          /* tip curl — independent flick at the very end of the long tail */
+          .${ns}-tailtip { transform-origin: 168px 0px; animation: ${ns}-tailtip 4.2s ease-in-out infinite; }
           @keyframes ${ns}-tailtip {
-            0%,100% { transform: rotate(6deg); }
-            50%     { transform: rotate(-10deg); }
+            0%,100% { transform: rotate(10deg); }
+            50%     { transform: rotate(-14deg); }
           }
           /* head — gentle bob + tilt, syncs with breath */
           .${ns}-head { transform-origin: 50px 78px; animation: ${ns}-head 6.4s ease-in-out infinite; }
