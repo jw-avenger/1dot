@@ -1,3 +1,10 @@
+export type SpaceNode = {
+  title: string;
+  children?: SpaceNode[];
+  /** Special interactive list rendered inside this node. */
+  list?: "petcare";
+};
+
 export type Book = {
   id: string;
   title: string;
@@ -6,6 +13,7 @@ export type Book = {
   height: number; // px
   width: number; // px
   toc: string[];
+  sections?: SpaceNode[];
 };
 
 // Scaled down so all books comfortably fit within the shelf on small screens.
