@@ -543,12 +543,9 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
         <ellipse cx="155" cy="132" rx="6.5" ry="2" fill="#3a1d0a" />
         <ellipse cx="166" cy="130" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
 
-        {/* front-right paw — partially visible behind the front-left,
-            completing the four-limb silhouette */}
-        <path d="M 92 104 C 91 118, 91 124, 94 128 L 102 128 C 104 124, 104 116, 103 104 Z" fill="#7a4818" />
-        <ellipse cx="98" cy="124" rx="7" ry="2.4" fill={`url(#${ns}-fur)`} opacity="0.9" />
-        <path d="M 92 125 C 96 127, 102 127, 104 125" stroke="#5a2f10" strokeWidth="0.9" strokeLinecap="round" fill="none" opacity="0.6" />
-        <ellipse cx="98" cy="130" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
+        {/* far-side front paw — sits just behind the near front paw, only
+            the toes peek through so it doesn't read as a chest limb. */}
+        <ellipse cx="89" cy="131" rx="4" ry="1.4" fill="#3a1d0a" opacity="0.75" />
 
         {/* front-left paw — taps */}
         <g className={animated ? `${ns}-pawFL` : undefined}>
