@@ -47,24 +47,92 @@ import { PETS, useSettings, type PetConfig } from "./useSettings";
    CatFigurine — high-fidelity SVG cat
    ======================================================================== */
 
+type CatPose = "standing" | "curled" | "draped";
+type CatMove = "yawn" | "knead" | "pounce" | "sniff" | "ears" | "belly" | "wince";
+type CatTravel = "none" | "leaving" | "arriving";
+
 type CatProps = {
   /** Render size in px. SVG scales cleanly to any size. */
   size?: number;
-  /** When true, the cat is rigged with idle animations (breathing, tail sway,
-   *  ear twitch, blinks, pupil darts, paw tap, whisker quiver). */
+  /** When true, the cat is rigged with idle animations. */
   animated?: boolean;
+  /** Travel state for delete/revive/send-away/recall transitions. */
+  travel?: CatTravel;
+  /** Fires once the leaving animation finishes. */
+  onLeft?: () => void;
+  /** Fires once the arriving animation finishes. */
+  onArrived?: () => void;
 };
+
+const SPECIAL_MOVES: CatMove[] = ["yawn", "knead", "pounce", "sniff", "ears", "belly", "wince"];
+const POSE_CYCLE: CatPose[] = ["standing", "standing", "curled", "standing", "draped", "standing"];
+/* "Rare & subtle" cadence: special move every 30–60s, pose change every 90–180s. */
+const MOVE_INTERVAL_MS = () => 30000 + Math.random() * 30000;
+const POSE_INTERVAL_MS = () => 90000 + Math.random() * 90000;
+const MOVE_DURATION_MS = 2600;
 
 /* Per-instance id suffix so multiple cats on the same page can each carry
    their own <style> scope without colliding. */
 let __catUid = 0;
 
-export function CatFigurine({ size = 96, animated = true }: CatProps) {
+export function CatFigurine({ size = 96, animated = true, travel = "none", onLeft, onArrived }: CatProps) {
   const w = size;
   const h = (size * 140) / 200;
   // stable per-instance id (kept across renders via useState lazy init)
   const [uid] = useState(() => ++__catUid);
   const ns = `cf${uid}`;
+
+  // Pose + special-move state machines (only when animated and not traveling)
+  const [pose, setPose] = useState<CatPose>("standing");
+  const [move, setMove] = useState<CatMove | null>(null);
+  const idle = animated && travel === "none";
+
+  useEffect(() => {
+    if (!idle) return;
+    let i = 0;
+    const tick = () => {
+      i = (i + 1) % POSE_CYCLE.length;
+      setPose(POSE_CYCLE[i]);
+    };
+    const id = window.setInterval(tick, POSE_INTERVAL_MS());
+    return () => window.clearInterval(id);
+  }, [idle]);
+
+  useEffect(() => {
+    if (!idle) return;
+    let cancelled = false;
+    let timeoutId = 0;
+    const schedule = () => {
+      timeoutId = window.setTimeout(() => {
+        if (cancelled) return;
+        const pick = SPECIAL_MOVES[Math.floor(Math.random() * SPECIAL_MOVES.length)];
+        setMove(pick);
+        timeoutId = window.setTimeout(() => {
+          if (cancelled) return;
+          setMove(null);
+          schedule();
+        }, MOVE_DURATION_MS);
+      }, MOVE_INTERVAL_MS());
+    };
+    schedule();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+    };
+  }, [idle]);
+
+  // Travel completion callbacks
+  useEffect(() => {
+    if (travel === "leaving" && onLeft) {
+      const t = window.setTimeout(onLeft, 1600);
+      return () => window.clearTimeout(t);
+    }
+    if (travel === "arriving" && onArrived) {
+      const t = window.setTimeout(onArrived, 1400);
+      return () => window.clearTimeout(t);
+    }
+  }, [travel, onLeft, onArrived]);
+
   return (
     <svg
       width={w}
