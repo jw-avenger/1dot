@@ -181,10 +181,73 @@ export function CatFigurine({ size = 96, animated = true }: CatProps) {
             0%,100% { transform: rotate(0); }
             50%     { transform: rotate(0.6deg); }
           }
+          /* ===================== POSE CYCLING ===================== */
+          /* The outer .cf-pose group carries one of these classes. We CSS-transition
+             between transforms so the cat physically settles into each pose. */
+          .${ns}-pose { transform-origin: 100px 130px; transition: transform 1.4s cubic-bezier(.5,.05,.4,1); }
+          .${ns}-pose-standing { transform: none; }
+          .${ns}-pose-curled   { transform: translate(0px, 14px) scale(0.92, 0.7) rotate(-3deg); }
+          .${ns}-pose-draped   { transform: translate(-2px, -42px) rotate(8deg) scale(1.02, 0.85); }
+
+          /* ===================== SPECIAL MOVES =====================
+             Each move is an additive class on the outer group, applied for ~2.4s
+             then cleared. They override pose transitions briefly. */
+          .${ns}-move { animation-fill-mode: both; }
+          .${ns}-move-yawn   { animation: ${ns}-yawn   2.4s ease-in-out 1; }
+          .${ns}-move-knead  { animation: ${ns}-knead  2.6s ease-in-out 1; }
+          .${ns}-move-pounce { animation: ${ns}-pounce 1.6s cubic-bezier(.4,0,.2,1) 1; }
+          .${ns}-move-sniff  { animation: ${ns}-sniff  2.4s ease-in-out 1; }
+          .${ns}-move-ears   { animation: ${ns}-earsig 1.6s ease-in-out 1; }
+          .${ns}-move-belly  { animation: ${ns}-belly  3.2s cubic-bezier(.4,0,.4,1) 1; }
+          .${ns}-move-wince  { animation: ${ns}-wince  1.6s ease-in-out 1; }
+          @keyframes ${ns}-yawn   { 0%,100%{ transform: none; } 30%{ transform: translateY(-2px) rotate(-2deg); } 60%{ transform: translateY(-2px) rotate(-1deg) scale(1.02); } }
+          @keyframes ${ns}-knead  { 0%,100%{ transform: none; } 25%{ transform: translateY(-1px) rotate(-1deg); } 50%{ transform: translateY(0) rotate(1deg); } 75%{ transform: translateY(-1px) rotate(-1deg); } }
+          @keyframes ${ns}-pounce { 0%{ transform: scale(1,1); } 25%{ transform: scale(1.04, 0.86) translateY(4px); } 55%{ transform: scale(0.95, 1.08) translateY(-12px); } 80%{ transform: scale(1.02, 0.95) translateY(2px); } 100%{ transform: none; } }
+          @keyframes ${ns}-sniff  { 0%,100%{ transform: none; } 30%{ transform: translate(-2px,2px) rotate(-3deg); } 60%{ transform: translate(2px,2px) rotate(2deg); } }
+          @keyframes ${ns}-earsig { 0%,100%{ transform: none; } 50%{ transform: translateY(-1px); } }
+          @keyframes ${ns}-belly  { 0%,100%{ transform: none; } 35%{ transform: rotate(-22deg) translateY(2px); } 65%{ transform: rotate(20deg) translateY(2px); } }
+          @keyframes ${ns}-wince  { 0%,100%{ transform: none; } 40%{ transform: scale(0.97) rotate(-1deg); } }
+
+          /* Yawn mouth — hidden by default, opens during yawn move */
+          .${ns}-yawnmouth { opacity: 0; transform-box: view-box; transform-origin: 50px 78px; }
+          .${ns}-move-yawn .${ns}-yawnmouth { animation: ${ns}-yawnm 2.4s ease-in-out 1; }
+          @keyframes ${ns}-yawnm { 0%,100%{ opacity: 0; transform: scaleY(0.2); } 35%,65%{ opacity: 1; transform: scaleY(1); } }
+
+          /* Wince forces lids fully closed and tilts ears down */
+          .${ns}-move-wince .${ns}-lid { animation: none; transform: scaleY(1); }
+
+          /* Sniff exaggerates whisker quiver */
+          .${ns}-move-sniff .${ns}-whisk { animation: ${ns}-whisk 0.4s ease-in-out 6; }
+
+          /* Ear-wiggle move runs both ear flaps fast in sync */
+          .${ns}-move-ears .${ns}-earL,
+          .${ns}-move-ears .${ns}-earR { animation: ${ns}-earflap 0.4s ease-in-out 4; }
+          @keyframes ${ns}-earflap { 0%,100%{ transform: rotate(0); } 50%{ transform: rotate(-12deg); } }
+
+          /* ===================== TRAVEL TRANSITIONS ===================== */
+          .${ns}-travel-leaving  { animation: ${ns}-walkout 1.6s cubic-bezier(.4,0,.7,.4) 1 forwards; }
+          .${ns}-travel-arriving { animation: ${ns}-dropin  1.4s cubic-bezier(.3,1.4,.5,1) 1 backwards; }
+          @keyframes ${ns}-walkout {
+            0%   { transform: none; opacity: 1; }
+            15%  { transform: translate(20px, -2px) rotate(2deg); }
+            30%  { transform: translate(45px, 1px) rotate(-2deg); }
+            55%  { transform: translate(110px, -2px) rotate(2deg); }
+            85%  { transform: translate(220px, 0) rotate(0); opacity: 0.9; }
+            100% { transform: translate(280px, 0); opacity: 0; }
+          }
+          @keyframes ${ns}-dropin {
+            0%   { transform: translate(60px, -140px) rotate(-18deg) scale(0.9); opacity: 0; }
+            30%  { transform: translate(40px, -100px) rotate(-12deg) scale(0.95); opacity: 1; }
+            60%  { transform: translate(15px, -30px) rotate(-4deg) scale(1.02); }
+            80%  { transform: translate(0, 6px) rotate(0deg) scale(1, 0.92); }
+            100% { transform: none; }
+          }
+
           @media (prefers-reduced-motion: reduce) {
             .${ns}-breath, .${ns}-shadow, .${ns}-tail, .${ns}-tailtip, .${ns}-head,
             .${ns}-earL, .${ns}-earR, .${ns}-lid, .${ns}-pupils,
-            .${ns}-pawFL, .${ns}-whisk { animation: none; }
+            .${ns}-pawFL, .${ns}-whisk, .${ns}-pose, .${ns}-move,
+            .${ns}-travel-leaving, .${ns}-travel-arriving { animation: none; transition: none; }
           }
         `}</style>
       )}
