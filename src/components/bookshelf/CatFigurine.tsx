@@ -373,9 +373,9 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
 
       <g
         className={
-          travel === "leaving"
+          animated && travel === "leaving"
             ? `${ns}-travel-leaving`
-            : travel === "arriving"
+            : animated && travel === "arriving"
             ? `${ns}-travel-arriving`
             : undefined
         }
@@ -1205,7 +1205,7 @@ function SendAwayRow({
   if (active) {
     return (
       <div
-        className="mt-2 flex w-full items-center justify-center gap-2 rounded-full px-2 py-0 text-[10px] tracking-[0.04em]"
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full px-2 py-0 text-[10px] tracking-[0.04em]"
         style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif', opacity: 0.85 }}
       >
         <span aria-hidden style={{ opacity: 0.55 }}>—</span>
@@ -1229,7 +1229,7 @@ function SendAwayRow({
 
   return (
     <div
-      className="mt-2 flex w-full items-center justify-center gap-[0.5ch] rounded-full px-2 py-0 text-[10px] leading-snug tracking-[0.04em]"
+      className="mt-5 flex w-full items-center justify-center gap-[0.5ch] rounded-full px-2 py-0 text-[10px] leading-snug tracking-[0.04em]"
       style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif', opacity: 0.75 }}
     >
       <span aria-hidden style={{ opacity: 0.55 }}>—</span>
