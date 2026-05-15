@@ -197,23 +197,39 @@ export function CatFigurine({ size = 96, animated = true }: CatProps) {
           fill="rgba(0,0,0,0.32)" filter={`url(#${ns}-blur)`}
         />
 
-        {/* tail — sways from base */}
+        {/* tail — solid tapered shape, sways from base */}
         <g className={animated ? `${ns}-tail` : undefined}>
+          {/* main tail body — closed filled path, wide at base, narrow at tip */}
           <path
-            d="M 168 96 C 184 84, 190 60, 178 42 C 170 30, 158 36, 162 48 C 166 58, 168 70, 160 76"
-            fill="none"
-            stroke={`url(#${ns}-fur)`}
-            strokeWidth="11"
-            strokeLinecap="round"
+            d="M 162 96
+               C 156 78, 168 54, 182 42
+               C 190 35, 198 40, 195 50
+               C 188 70, 180 86, 174 100 Z"
+            fill={`url(#${ns}-fur)`}
+            stroke="#5a2f10"
+            strokeWidth="0.8"
+            strokeLinejoin="round"
           />
-          <circle cx="174" cy="38" r="5.2" fill="#a5621f" />
+          {/* cream underside highlight */}
           <path
-            d="M 170 92 C 184 80, 188 60, 178 44"
+            d="M 168 96
+               C 162 80, 172 60, 184 48"
             fill="none"
-            stroke="rgba(255,225,180,0.32)"
+            stroke="rgba(255,225,180,0.45)"
             strokeWidth="3"
             strokeLinecap="round"
           />
+          {/* faint stripe rings */}
+          <g stroke="#5a2f10" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" fill="none">
+            <path d="M 165 86 C 169 84, 173 84, 176 88" />
+            <path d="M 170 70 C 175 68, 180 68, 183 72" />
+            <path d="M 178 54 C 183 52, 188 52, 190 56" />
+          </g>
+          {/* tail tip — darker cap with subtle independent curl */}
+          <g className={animated ? `${ns}-tailtip` : undefined}>
+            <ellipse cx="188" cy="44" rx="6" ry="5" fill="#6e3f15" />
+            <ellipse cx="187" cy="42.5" rx="3.2" ry="2.4" fill="#a5621f" opacity="0.8" />
+          </g>
         </g>
 
         {/* body — breathes */}
