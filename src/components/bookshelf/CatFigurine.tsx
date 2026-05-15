@@ -428,7 +428,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
           </button>
 
           <div
-            className="grid grid-cols-3 gap-2 overflow-hidden transition-all duration-300"
+            className="flex flex-col gap-1 overflow-hidden transition-all duration-300"
             style={{
               maxHeight: pickerOpen ? 400 : 0,
               opacity: pickerOpen ? 1 : 0,
@@ -440,15 +440,14 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 <button
                   key={p.id}
                   onClick={() => setDraft({ ...draft, pet: p.id })}
-                  className="flex flex-col items-center gap-1 rounded-xl px-2 py-2 text-center text-[11px] transition"
+                  className="w-full rounded-lg px-3 py-2 text-left text-sm transition"
                   style={{
                     backgroundColor: active ? SHEET_FG : "rgba(255,255,255,0.05)",
                     color: active ? "#2b2b30" : SHEET_FG,
                     border: `1px solid ${active ? SHEET_FG : "rgba(255,255,255,0.12)"}`,
                   }}
                 >
-                  {p.id === "cat" ? <CatFigurine size={48} /> : <PetFigurine petId={p.id} size={44} />}
-                  <span className="leading-tight">{p.label}</span>
+                  {p.label}
                 </button>
               );
             })}
