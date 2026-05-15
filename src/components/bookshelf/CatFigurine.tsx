@@ -475,7 +475,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             };
             return (
               <div
-                className="flex w-full items-center justify-center gap-1 rounded-full px-3 py-1.5"
+                className="flex w-full items-center justify-center gap-0 rounded-full px-3 py-1.5"
                 style={{
                   backgroundColor: "transparent",
                   border: "none",
@@ -486,7 +486,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 <button
                   onClick={() => step(-1)}
                   aria-label="Previous companion"
-                  className="px-1 text-xs opacity-70 transition hover:opacity-100"
+                  className="px-0 text-[10px] opacity-70 transition hover:opacity-100"
                 >
                   ▲
                 </button>
@@ -499,7 +499,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 <button
                   onClick={() => step(1)}
                   aria-label="Next companion"
-                  className="px-1 text-xs opacity-70 transition hover:opacity-100"
+                  className="px-0 text-[10px] opacity-70 transition hover:opacity-100"
                 >
                   ▼
                 </button>
@@ -509,7 +509,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
 
           {draft.pet && (
             <>
-              <div className="space-y-0.5">
+              <div className="space-y-0">
                 <Row
                   checked={draft.animations}
                   onChange={(v) => setDraft({ ...draft, animations: v })}
@@ -608,7 +608,7 @@ function Row({
   return (
     <button
       onClick={() => onChange(!checked)}
-      className="flex w-full items-start gap-2 rounded-full px-2 py-0.5 text-left text-[10px] leading-snug tracking-[0.04em] transition hover:opacity-100"
+      className="flex w-full items-start gap-2 rounded-full px-2 py-0 text-left text-[10px] leading-snug tracking-[0.04em] transition hover:opacity-100"
       style={{
         backgroundColor: "transparent",
         border: "none",
