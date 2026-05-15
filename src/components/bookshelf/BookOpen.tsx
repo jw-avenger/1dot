@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import type { Book } from "./books";
+import type { Book, SpaceNode } from "./books";
 import { useSettings, SPINE_FONTS, bionicize } from "./useSettings";
+import { SUGGESTED } from "./CatFigurine";
 
 type Props = {
   book: Book;
