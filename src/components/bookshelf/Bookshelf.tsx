@@ -8,6 +8,7 @@ import { PetPopup, ShelfPet } from "./CatFigurine";
 import { ShelfPlant } from "./ShelfPlant";
 import { MiceTrails } from "./MiceTrails";
 import { TalkToMe } from "./TalkToMe";
+import { CatPurr } from "./CatPurr";
 import { useShelfState } from "./useShelfState";
 import { useSettings, BG_VALUES, TEXT_VALUES, LIGHTING_VALUES } from "./useSettings";
 
@@ -113,6 +114,7 @@ export function Bookshelf() {
         <SidePanel {...panelProps} />
         <MiceTrails />
         <TalkToMe />
+        <CatPurr />
         {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} />}
       </div>
     );
