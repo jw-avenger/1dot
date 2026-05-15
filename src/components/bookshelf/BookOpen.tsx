@@ -173,44 +173,50 @@ export function BookOpen({ book, onClose }: Props) {
             <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
               Table of Contents
             </p>
-            <ol className="mt-6 space-y-3">
-              {book.toc.map((item, i) => {
-                const isFontItem = isSettings && item === "Spine font";
-                const isBionicItem = isSettings && item === "Bionic reading";
-                const interactive = isFontItem || isBionicItem;
-                const onItemClick = isFontItem
-                  ? cycleSpineFont
-                  : isBionicItem
-                    ? toggleBionic
-                    : undefined;
-                const right = isFontItem
-                  ? currentFontLabel
-                  : isBionicItem
-                    ? bionic
-                      ? "On"
-                      : "Off"
-                    : String((i + 1) * 3).padStart(3, "0");
-                return (
-                  <li key={item}>
-                    <button
-                      onClick={onItemClick}
-                      disabled={!interactive && !isSettings}
-                      className="group flex w-full items-baseline gap-4 text-left font-serif text-lg text-ink transition"
-                    >
-                      <span className="w-6 text-sm tabular-nums text-ink/40">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <span className="flex-1 border-b border-dotted border-ink/30 pb-1 group-hover:border-ink/70">
-                        {bionicize(item, bionic)}
-                      </span>
-                      <span className="text-sm tabular-nums text-ink/60 transition group-hover:text-ink">
-                        {interactive ? right : right}
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ol>
+            {isSpaces && book.sections ? (
+              <ul className="mt-6 space-y-3">
+                {book.sections.map((s, i) => renderNode(s, 0, `s-${i}`))}
+              </ul>
+            ) : (
+              <ol className="mt-6 space-y-3">
+                {book.toc.map((item, i) => {
+                  const isFontItem = isSettings && item === "Spine font";
+                  const isBionicItem = isSettings && item === "Bionic reading";
+                  const interactive = isFontItem || isBionicItem;
+                  const onItemClick = isFontItem
+                    ? cycleSpineFont
+                    : isBionicItem
+                      ? toggleBionic
+                      : undefined;
+                  const right = isFontItem
+                    ? currentFontLabel
+                    : isBionicItem
+                      ? bionic
+                        ? "On"
+                        : "Off"
+                      : String((i + 1) * 3).padStart(3, "0");
+                  return (
+                    <li key={item}>
+                      <button
+                        onClick={onItemClick}
+                        disabled={!interactive && !isSettings}
+                        className="group flex w-full items-baseline gap-4 text-left font-serif text-lg text-ink transition"
+                      >
+                        <span className="w-6 text-sm tabular-nums text-ink/40">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <span className="flex-1 border-b border-dotted border-ink/30 pb-1 group-hover:border-ink/70">
+                          {bionicize(item, bionic)}
+                        </span>
+                        <span className="text-sm tabular-nums text-ink/60 transition group-hover:text-ink">
+                          {interactive ? right : right}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+            )}
             {isSettings && (
               <p className="mt-6 font-sans text-xs italic text-ink/50">
                 Tap “Spine font” or “Bionic reading” to change.
