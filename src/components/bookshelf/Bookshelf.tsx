@@ -222,6 +222,7 @@ export function Bookshelf() {
       <SidePanel {...panelProps} />
       <MiceTrails />
       <TalkToMe />
+      <CatPurr />
       <PetPopup open={petOpen} onClose={() => setPetOpen(false)} />
       {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} />}
     </div>
