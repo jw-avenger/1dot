@@ -361,6 +361,10 @@ export function useSettings() {
     setTone: (v: ThemeKey) => set("tone", v),
     setMice: (v: ThemeKey) => set("mice", v),
     setSfxEnabled: (v: boolean) => set("sfxEnabled", v),
+    setPurrsVolume: (v: number) => {
+      const clamped = Math.max(0, Math.min(1, v));
+      set("purrsVolume", clamped);
+    },
     setRomanticColor: (v: string) => set("romanticColor", v),
     setArrowHidden: (v: boolean) => set("arrowHidden", v),
     setHideSettingsBook: (v: boolean) => set("hideSettingsBook", v),
