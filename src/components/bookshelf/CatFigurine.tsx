@@ -340,38 +340,43 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           fill="rgba(0,0,0,0.32)" filter={`url(#${ns}-blur)`}
         />
 
-        {/* tail — solid tapered shape, sways from base */}
+        {/* tail — long, solid tapered shape with a curling tip. ~2× the
+            previous length: rises high above the body and hooks back over. */}
         <g className={animated ? `${ns}-tail` : undefined}>
-          {/* main tail body — closed filled path, wide at base, narrow at tip */}
+          {/* main tail body — closed filled path, wide at base, narrowing
+              along a tall S-curve to a curled tip near (160, 0). */}
           <path
             d="M 162 96
-               C 156 78, 168 54, 182 42
-               C 190 35, 198 40, 195 50
-               C 188 70, 180 86, 174 100 Z"
+               C 150 70, 198 48, 200 18
+               C 201 0, 184 -10, 170 -2
+               C 158 4, 156 16, 166 20
+               C 180 18, 188 32, 184 52
+               C 180 72, 180 88, 174 100 Z"
             fill={`url(#${ns}-fur)`}
             stroke="#5a2f10"
             strokeWidth="0.8"
             strokeLinejoin="round"
           />
-          {/* cream underside highlight */}
+          {/* cream underside highlight — traces the inner edge */}
           <path
             d="M 168 96
-               C 162 80, 172 60, 184 48"
+               C 160 76, 188 52, 192 24"
             fill="none"
             stroke="rgba(255,225,180,0.45)"
             strokeWidth="3"
             strokeLinecap="round"
           />
-          {/* faint stripe rings */}
+          {/* faint stripe rings spaced along the longer length */}
           <g stroke="#5a2f10" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" fill="none">
-            <path d="M 165 86 C 169 84, 173 84, 176 88" />
-            <path d="M 170 70 C 175 68, 180 68, 183 72" />
-            <path d="M 178 54 C 183 52, 188 52, 190 56" />
+            <path d="M 165 88 C 169 86, 173 86, 176 90" />
+            <path d="M 173 72 C 178 70, 183 70, 185 74" />
+            <path d="M 184 54 C 189 52, 194 52, 195 56" />
+            <path d="M 192 36 C 196 34, 200 34, 200 38" />
           </g>
-          {/* tail tip — darker cap with subtle independent curl */}
+          {/* tip curl — darker cap with subtle independent flick */}
           <g className={animated ? `${ns}-tailtip` : undefined}>
-            <ellipse cx="188" cy="44" rx="6" ry="5" fill="#6e3f15" />
-            <ellipse cx="187" cy="42.5" rx="3.2" ry="2.4" fill="#a5621f" opacity="0.8" />
+            <ellipse cx="172" cy="-2" rx="6" ry="5" fill="#6e3f15" />
+            <ellipse cx="170" cy="-3.5" rx="3.2" ry="2.4" fill="#a5621f" opacity="0.85" />
           </g>
         </g>
 
