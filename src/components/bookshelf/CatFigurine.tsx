@@ -1051,7 +1051,15 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               <div className="space-y-[1ch]">
                 <Row
                   checked={draft.animations}
-                  onChange={(v) => setDraft({ ...draft, animations: v })}
+                  onChange={(v) => {
+                    const nextDraft = { ...draft, animations: v };
+                    setDraft(nextDraft);
+                    // Apply immediately so the cat behind the popup updates live —
+                    // users shouldn't have to hit Save to see the toggle take effect.
+                    if (existing && draft.pet) {
+                      setPetConfig(SHELF_KEY, nextDraft);
+                    }
+                  }}
                   label="Enable light animations."
                 />
                 <Row

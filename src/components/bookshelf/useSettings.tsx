@@ -130,6 +130,9 @@ type State = {
   tone: ThemeKey;
   mice: ThemeKey;
   sfxEnabled: boolean;
+  /** Cat purr volume, 0–1. When 0 the purr is automatically off (the
+   *  fragile-bar slider in the Music book treats 0 as "off"). */
+  purrsVolume: number;
   romanticColor: string; // hex used for romantic accents
   arrowHidden: boolean; // user clicked the arrow twice to hide it
   hideSettingsBook: boolean; // remove Settings book from library
@@ -159,6 +162,7 @@ const defaults: State = {
   tone: "cozy",
   mice: "basic",
   sfxEnabled: false,
+  purrsVolume: 0,
   romanticColor: "#c42b2b",
   arrowHidden: false,
   hideSettingsBook: false,
@@ -357,6 +361,10 @@ export function useSettings() {
     setTone: (v: ThemeKey) => set("tone", v),
     setMice: (v: ThemeKey) => set("mice", v),
     setSfxEnabled: (v: boolean) => set("sfxEnabled", v),
+    setPurrsVolume: (v: number) => {
+      const clamped = Math.max(0, Math.min(1, v));
+      set("purrsVolume", clamped);
+    },
     setRomanticColor: (v: string) => set("romanticColor", v),
     setArrowHidden: (v: boolean) => set("arrowHidden", v),
     setHideSettingsBook: (v: boolean) => set("hideSettingsBook", v),

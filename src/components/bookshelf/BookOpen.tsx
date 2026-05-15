@@ -8,7 +8,19 @@ type Props = {
 };
 
 export function BookOpen({ book, onClose }: Props) {
-  const { spineFont, cycleSpineFont, bionic, toggleBionic, trash, restoreTrash, clearTrash } = useSettings();
+  const {
+    spineFont,
+    cycleSpineFont,
+    bionic,
+    toggleBionic,
+    trash,
+    restoreTrash,
+    clearTrash,
+    sfxEnabled,
+    setSfxEnabled,
+    purrsVolume,
+    setPurrsVolume,
+  } = useSettings();
   const [trashOpen, setTrashOpen] = useState(false);
 
   useEffect(() => {
@@ -19,7 +31,9 @@ export function BookOpen({ book, onClose }: Props) {
 
   const isSettings = book.id === "settings";
   const isDashboard = book.id === "dashboard";
+  const isMusic = book.id === "music";
   const currentFontLabel = SPINE_FONTS.find((f) => f.id === spineFont)?.label ?? spineFont;
+  const purrsOn = purrsVolume > 0;
 
   return (
     <div
@@ -181,6 +195,107 @@ export function BookOpen({ book, onClose }: Props) {
                   >
                     ←
                   </button>
+                </div>
+              </div>
+            )}
+            {isMusic && (
+              <div className="mt-8 space-y-5">
+                <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-ink/50">
+                  Sound
+                </p>
+
+                {/* Sound effects toggle (moved here from settings menu) */}
+                <button
+                  onClick={() => setSfxEnabled(!sfxEnabled)}
+                  className="flex w-full items-center justify-between gap-4 rounded-md border border-ink/15 px-3 py-2 font-serif text-sm text-ink transition hover:border-ink/40"
+                  aria-pressed={sfxEnabled}
+                >
+                  <span>Sound effects</span>
+                  <span
+                    className="font-sans text-[10px] uppercase tracking-[0.25em]"
+                    style={{ color: sfxEnabled ? book.spine : "var(--ink)", opacity: sfxEnabled ? 1 : 0.5 }}
+                  >
+                    {sfxEnabled ? "On" : "Off"}
+                  </span>
+                </button>
+
+                {/* Cat purrs — fragile-bar volume slider; auto-off at zero */}
+                <div className="space-y-2">
+                  <div className="flex items-baseline justify-between">
+                    <label htmlFor="purrs-volume" className="font-serif text-sm text-ink">
+                      Cat purrs
+                    </label>
+                    <span
+                      className="font-sans text-[10px] uppercase tracking-[0.25em]"
+                      style={{ color: purrsOn ? book.spine : "var(--ink)", opacity: purrsOn ? 1 : 0.5 }}
+                    >
+                      {purrsOn ? `${Math.round(purrsVolume * 100)}%` : "Off"}
+                    </span>
+                  </div>
+                  {/* Fragile bar: a thin hairline track with a delicate thumb.
+                      Slide all the way to the left to turn purrs off. */}
+                  <div className="relative h-6">
+                    <div
+                      className="pointer-events-none absolute left-0 right-0 top-1/2 h-px -translate-y-1/2"
+                      style={{ backgroundColor: "rgba(0,0,0,0.18)" }}
+                    />
+                    <div
+                      className="pointer-events-none absolute left-0 top-1/2 h-px -translate-y-1/2 transition-all"
+                      style={{
+                        width: `${purrsVolume * 100}%`,
+                        backgroundColor: purrsOn ? book.spine : "transparent",
+                        opacity: purrsOn ? 0.85 : 0,
+                      }}
+                    />
+                    <input
+                      id="purrs-volume"
+                      type="range"
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={Math.round(purrsVolume * 100)}
+                      onChange={(e) => setPurrsVolume(Number(e.target.value) / 100)}
+                      aria-label="Cat purr volume — drag to zero to turn purrs off"
+                      className="purrs-fragile absolute inset-0 w-full appearance-none bg-transparent"
+                      style={{ height: "100%" }}
+                    />
+                    <style>{`
+                      .purrs-fragile::-webkit-slider-thumb {
+                        -webkit-appearance: none;
+                        appearance: none;
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        background: ${purrsOn ? book.spine : "rgba(0,0,0,0.35)"};
+                        border: 1px solid rgba(0,0,0,0.25);
+                        box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+                        cursor: pointer;
+                        margin-top: 0;
+                      }
+                      .purrs-fragile::-moz-range-thumb {
+                        width: 10px;
+                        height: 10px;
+                        border-radius: 50%;
+                        background: ${purrsOn ? book.spine : "rgba(0,0,0,0.35)"};
+                        border: 1px solid rgba(0,0,0,0.25);
+                        box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+                        cursor: pointer;
+                      }
+                      .purrs-fragile::-webkit-slider-runnable-track {
+                        background: transparent;
+                        height: 100%;
+                      }
+                      .purrs-fragile::-moz-range-track {
+                        background: transparent;
+                        height: 100%;
+                      }
+                    `}</style>
+                  </div>
+                  <p className="font-sans text-[10px] italic text-ink/55">
+                    {purrsOn
+                      ? "Slide to the left edge to silence."
+                      : "At zero, purrs are off."}
+                  </p>
                 </div>
               </div>
             )}
