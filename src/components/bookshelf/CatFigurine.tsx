@@ -475,7 +475,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             };
             return (
               <div
-                className="flex w-full items-center justify-between rounded-full px-3 py-1.5"
+                className="flex w-full items-center justify-center gap-3 rounded-full px-3 py-1.5"
                 style={{
                   backgroundColor: "transparent",
                   border: "none",
@@ -491,7 +491,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                   ▲
                 </button>
                 <span
-                  className="flex-1 text-center text-[12px] tracking-[0.04em]"
+                  className="text-center text-[12px] tracking-[0.04em]"
                   style={{ fontFamily: '"Fraunces", Georgia, serif' }}
                 >
                   {current?.label ?? "Choose a friend"}
@@ -518,6 +518,11 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 checked={draft.todoEnabled}
                 onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
                 label="Would you like a simple starter companion list?"
+              />
+              <Row
+                checked={!!draft.remindersEnabled}
+                onChange={(v) => setDraft({ ...draft, remindersEnabled: v })}
+                label="Would you like gentle reminders based on your preferences?"
               />
 
               <div className="space-y-2 pt-1">
@@ -611,7 +616,7 @@ function Row({
       }}
     >
       <span
-        className="flex h-3 w-3 items-center justify-center rounded-full border text-[8px]"
+        className="flex h-3 w-3 items-center justify-center rounded-sm border text-[8px]"
         style={{
           borderColor: "rgba(255,255,255,0.35)",
           backgroundColor: checked ? SHEET_FG : "transparent",
