@@ -530,7 +530,7 @@ function Row({
       className="flex w-full items-center gap-2 rounded-full px-3 py-1 text-left text-[10px] tracking-[0.04em] transition hover:opacity-100"
       style={{
         backgroundColor: "transparent",
-        border: "1px solid rgba(255,255,255,0.18)",
+        border: "none",
         color: SHEET_FG,
         opacity: 0.8,
         fontFamily: '"Fraunces", Georgia, serif',
