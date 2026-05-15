@@ -463,6 +463,21 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           </g>
         </g>
 
+        {/* back-fur cape — bridges the body's upper back into the haunch top
+            so there's no visible spine seam. Painted in the same fur gradient
+            with a subtle stripe wrap for tabby continuity. */}
+        <path
+          d="M 78 68 C 90 60, 130 58, 160 62 C 174 64, 184 70, 182 84 C 180 92, 172 92, 160 88 C 140 82, 110 80, 90 84 C 78 86, 72 80, 78 68 Z"
+          fill={`url(#${ns}-fur)`}
+        />
+        <ellipse cx="120" cy="70" rx="36" ry="6" fill="rgba(255,235,200,0.22)" />
+        <g fill={`url(#${ns}-stripe)`} opacity="0.55">
+          <path d="M 100 64 q 3 -6 6 0 q -3 6 -6 0 Z" />
+          <path d="M 118 62 q 3 -6 6 0 q -3 6 -6 0 Z" />
+          <path d="M 136 62 q 3 -6 6 0 q -3 6 -6 0 Z" />
+          <path d="M 154 64 q 3 -6 6 0 q -3 6 -6 0 Z" />
+        </g>
+
         {/* back legs (static) */}
         <path d="M 64 102 C 62 118, 62 124, 66 128 L 76 128 C 78 124, 78 116, 76 102 Z" fill={`url(#${ns}-fur)`} />
         {/* back legs with proper haunches/thighs.
@@ -512,13 +527,34 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
         <ellipse cx="68" cy="100" rx="7" ry="4" fill="rgba(255,235,200,0.22)" transform="rotate(-10 68 100)" />
         <path d="M 64 124 C 62 130, 64 132, 68 132 L 78 132 C 82 132, 82 128, 80 124 Z" fill="#a06a2c" />
 
+        {/* ankle/wrist cuffs — fur tufts + dark crease above each paw so the
+            joints read clearly on all four limbs. */}
+        <g opacity="0.85">
+          {/* back-left ankle */}
+          <ellipse cx="71" cy="124" rx="9" ry="3" fill={`url(#${ns}-fur)`} />
+          <path d="M 64 125 C 68 127, 74 127, 78 125" stroke="#5a2f10" strokeWidth="0.9" strokeLinecap="round" fill="none" opacity="0.6" />
+          {/* back-right ankle */}
+          <ellipse cx="155" cy="124" rx="11" ry="3.4" fill={`url(#${ns}-fur)`} />
+          <path d="M 145 125 C 150 127, 160 127, 165 125" stroke="#5a2f10" strokeWidth="0.9" strokeLinecap="round" fill="none" opacity="0.6" />
+        </g>
+
         <ellipse cx="71" cy="132" rx="6" ry="2" fill="#3a1d0a" />
         <ellipse cx="155" cy="132" rx="6.5" ry="2" fill="#3a1d0a" />
         <ellipse cx="166" cy="130" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
 
+        {/* front-right paw — partially visible behind the front-left,
+            completing the four-limb silhouette */}
+        <path d="M 92 104 C 91 118, 91 124, 94 128 L 102 128 C 104 124, 104 116, 103 104 Z" fill="#7a4818" />
+        <ellipse cx="98" cy="124" rx="7" ry="2.4" fill={`url(#${ns}-fur)`} opacity="0.9" />
+        <path d="M 92 125 C 96 127, 102 127, 104 125" stroke="#5a2f10" strokeWidth="0.9" strokeLinecap="round" fill="none" opacity="0.6" />
+        <ellipse cx="98" cy="130" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
+
         {/* front-left paw — taps */}
         <g className={animated ? `${ns}-pawFL` : undefined}>
           <path d="M 76 102 C 75 116, 75 122, 78 126 L 86 126 C 88 122, 88 114, 87 102 Z" fill="#a06a2c" />
+          {/* wrist cuff */}
+          <ellipse cx="82" cy="120" rx="7" ry="2.4" fill={`url(#${ns}-fur)`} />
+          <path d="M 76 121 C 80 123, 86 123, 88 121" stroke="#5a2f10" strokeWidth="0.9" strokeLinecap="round" fill="none" opacity="0.6" />
           <ellipse cx="82" cy="126" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
         </g>
 
