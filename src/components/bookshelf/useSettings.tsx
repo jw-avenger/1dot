@@ -55,12 +55,12 @@ export type PetConfig = {
 };
 
 export const PETS: { id: string; label: string; emoji: string }[] = [
-  { id: "cat", label: "Cozy Theme Pet (Cat)", emoji: "🐈" },
-  { id: "dog", label: "Romance Theme Pet (Dog)", emoji: "🐕" },
-  { id: "dragon", label: "Whimsical Theme Pet (Dragon)", emoji: "🐉" },
-  { id: "phoenix", label: "Spa Theme Pet (Phoenix)", emoji: "🦩" },
-  { id: "bird", label: "Nature Theme Pet (Bird)", emoji: "🐦" },
-  { id: "hamster", label: "Paper Planner Theme Pet (Hamster)", emoji: "🐹" },
+  { id: "cat", label: "Cozy Theme Companion (Cat)", emoji: "🐈" },
+  { id: "dog", label: "Romance Theme Companion (Dog)", emoji: "🐕" },
+  { id: "dragon", label: "Whimsical Theme Companion (Dragon)", emoji: "🐉" },
+  { id: "phoenix", label: "Spa Theme Companion (Phoenix)", emoji: "🦩" },
+  { id: "bird", label: "Nature Theme Companion (Bird)", emoji: "🐦" },
+  { id: "hamster", label: "Paper Planner Theme Companion (Hamster)", emoji: "🐹" },
 ];
 
 export type TrashItem = {
@@ -250,7 +250,7 @@ export function useSettings() {
           const trashItem: TrashItem = {
             id: `pet-${id}-${Date.now()}`,
             kind: "pet",
-            label: petMeta ? `${petMeta.emoji} ${petMeta.label} pet` : "Pet",
+            label: petMeta ? `${petMeta.emoji} ${petMeta.label} companion` : "Companion",
             data: { slot: id, config: existing },
             deletedAt: Date.now(),
           };

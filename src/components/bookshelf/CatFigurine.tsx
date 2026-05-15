@@ -260,7 +260,7 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
     >
       <button
         onClick={onClick}
-        aria-label={pet ? `Change ${pet.label} pet` : "Add a pet — currently empty"}
+        aria-label={pet ? `Change ${pet.label} companion` : "Add a companion — currently empty"}
         className="group relative flex h-full w-full items-end justify-center overflow-hidden rounded-lg"
         style={{
           background: pet
@@ -295,7 +295,7 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
             e.stopPropagation();
             setPetConfig("shelf", null);
           }}
-          aria-label="Remove pet"
+          aria-label="Remove companion"
           className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-wood-dark text-[10px] text-paper shadow"
         >
           ×
@@ -373,7 +373,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
       {phase === "ask" ? (
         <>
           <p className="mb-3 text-center text-base leading-snug" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>
-            Would you like pet support?
+            Would you like a companion?
           </p>
           <button
             onClick={() => { slapToBasic(); onClose(); }}
@@ -411,7 +411,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             className="text-center text-xs font-semibold uppercase tracking-[0.25em]"
             style={{ fontFamily: '"Fraunces", Georgia, serif' }}
           >
-            Choose Pet
+            Choose Companion
           </p>
           <button
             onClick={() => { slapToBasic(); onClose(); }}
@@ -446,7 +446,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               >
                 <button
                   onClick={() => step(-1)}
-                  aria-label="Previous pet"
+                  aria-label="Previous companion"
                   className="px-2 text-xs opacity-70 transition hover:opacity-100"
                 >
                   ▲
@@ -459,7 +459,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 </span>
                 <button
                   onClick={() => step(1)}
-                  aria-label="Next pet"
+                  aria-label="Next companion"
                   className="px-2 text-xs opacity-70 transition hover:opacity-100"
                 >
                   ▼
@@ -478,7 +478,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               <Row
                 checked={draft.todoEnabled}
                 onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
-                label="Enable simple starter pet list."
+                label="Enable simple starter companion list."
               />
 
               <div className="space-y-2 pt-1">
