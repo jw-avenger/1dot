@@ -184,6 +184,10 @@ function load() {
       const parsed = JSON.parse(raw);
       state = { ...defaults, ...parsed, petsConfig: normalizePetsConfig(parsed.petsConfig) };
     }
+    if (!state.petDismissed && !state.petsConfig.shelf) {
+      state = { ...state, petsConfig: { ...state.petsConfig, shelf: freshCatConfig() } };
+      save();
+    }
   } catch {
     // ignore
   }
