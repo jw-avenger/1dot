@@ -197,7 +197,7 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
         </filter>
       </defs>
 
-      {animated && (
+      {animated ? (
         <style>{`
           .${ns}-rig * { transform-box: view-box; }
           /* breathing — subtle vertical scale around mid-body */
@@ -368,6 +368,21 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
             .${ns}-pawFL, .${ns}-whisk, .${ns}-pose, .${ns}-move,
             .${ns}-travel-leaving, .${ns}-travel-arriving { animation: none; transition: none; }
           }
+        `}</style>
+      ) : (
+        /* Hard kill-switch: when animations are disabled, neutralize every
+           rig class in this cat's namespace AND keep the lid + yawn-mouth
+           hidden so the resting cat looks awake, not asleep. */
+        <style>{`
+          [class*="${ns}-"], [class*="${ns}-"] * {
+            animation: none !important;
+            animation-name: none !important;
+            animation-duration: 0s !important;
+            animation-iteration-count: 1 !important;
+            transition: none !important;
+          }
+          .${ns}-lid { transform: scaleY(0) !important; transform-box: view-box; transform-origin: 50px 62px; }
+          .${ns}-yawnmouth { opacity: 0 !important; }
         `}</style>
       )}
 
