@@ -527,7 +527,7 @@ function Row({
   return (
     <button
       onClick={() => onChange(!checked)}
-      className="flex w-full items-center gap-3 rounded-full px-4 py-1.5 text-left text-[12px] tracking-[0.04em] transition hover:opacity-100"
+      className="flex w-full items-center gap-2 rounded-full px-3 py-1 text-left text-[10px] tracking-[0.04em] transition hover:opacity-100"
       style={{
         backgroundColor: "transparent",
         border: "1px solid rgba(255,255,255,0.18)",
@@ -537,7 +537,7 @@ function Row({
       }}
     >
       <span
-        className="flex h-4 w-4 items-center justify-center rounded-full border text-[9px]"
+        className="flex h-3 w-3 items-center justify-center rounded-full border text-[8px]"
         style={{
           borderColor: "rgba(255,255,255,0.35)",
           backgroundColor: checked ? SHEET_FG : "transparent",
