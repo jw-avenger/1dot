@@ -367,71 +367,93 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           fill="rgba(0,0,0,0.32)" filter={`url(#${ns}-blur)`}
         />
 
-        {/* tail — full 3D rendered volume. Plump cylindrical body with a
-            cylindrical-cross-section gradient, top-edge sheen, ambient
-            shadow underneath, and a furry rounded tip. */}
-        <g className={animated ? `${ns}-tail` : undefined} filter={`url(#${ns}-tail-shadow)`}>
-          {/* Soft contact shadow at the base, bleeding onto the body */}
-          <ellipse cx="170" cy="100" rx="14" ry="3" fill="#2a1408" opacity="0.35" />
+        {/* tail — sculpted 3D tube. Built as a series of overlapping shaded
+            cross-section discs along the spine curve so the lighting actually
+            wraps around a cylindrical form, with fur tufts breaking the
+            silhouette so it doesn't read as a flat ribbon. */}
+        <g className={animated ? `${ns}-tail` : undefined}>
+          {(() => {
+            // Spine samples: [x, y, radius]. Roughly uniform thickness
+            // through the body, tapering only near the very tip.
+            const spine: [number, number, number][] = [
+              [172, 100, 12],
+              [176, 88,  12],
+              [182, 74,  11.5],
+              [190, 60,  11],
+              [198, 46,  10.5],
+              [202, 32,  10],
+              [202, 18,  9.5],
+              [198,  6,  9],
+              [190, -2,  8.5],
+              [180, -6,  8],
+            ];
+            // Outline polygon for fur silhouette + drop shadow base
+            const outline: string[] = [];
+            spine.forEach(([x, y, r], i) => {
+              outline.push(`${i === 0 ? "M" : "L"} ${x - r * 0.95} ${y}`);
+            });
+            for (let i = spine.length - 1; i >= 0; i--) {
+              const [x, y, r] = spine[i];
+              outline.push(`L ${x + r * 0.95} ${y}`);
+            }
+            outline.push("Z");
 
-          {/* Main tail volume — fat, rounded sausage curling up and over.
-              Outer (lit) edge runs up the left side; inner (shadowed) edge
-              returns down the right. Drawn with no harsh stroke so the
-              cylindrical gradient does the dimensional work. */}
-          <path
-            d="M 172 100
-               C 152 78, 214 56, 214 18
-               C 214 -4, 188 -18, 168 -10
-               C 152 -4, 150 12, 162 18
-               C 180 16, 192 32, 188 54
-               C 184 78, 184 92, 162 96 Z"
-            fill={`url(#${ns}-tail3d)`}
-          />
+            return (
+              <g filter={`url(#${ns}-tail-shadow)`}>
+                {/* Fluffy fur silhouette — soft outline behind the discs */}
+                <path d={outline.join(" ")} fill="#7d4a1e" opacity="0.6" />
+                {/* Fur tufts along the lit (left) edge */}
+                <g fill="#c0823f" opacity="0.85">
+                  {spine.slice(1, -1).map(([x, y, r], i) => (
+                    <ellipse key={`tuftL-${i}`} cx={x - r * 0.85} cy={y - 1} rx={r * 0.45} ry={r * 0.7} transform={`rotate(-12 ${x - r * 0.85} ${y})`} />
+                  ))}
+                </g>
+                {/* Cross-section discs — the cylindrical body itself */}
+                {spine.map(([x, y, r], i) => (
+                  <circle key={`disc-${i}`} cx={x} cy={y} r={r} fill={`url(#${ns}-tail-disc)`} />
+                ))}
+                {/* Tabby stripe rings perpendicular to the axis */}
+                <g stroke="#3a1d07" strokeWidth="1.6" strokeLinecap="round" opacity="0.55" fill="none">
+                  {[1, 3, 5, 7].map((i) => {
+                    const [x, y, r] = spine[i];
+                    const [px, py] = spine[i - 1];
+                    const dx = x - px, dy = y - py;
+                    const len = Math.hypot(dx, dy) || 1;
+                    // perpendicular unit vector
+                    const nx = -dy / len, ny = dx / len;
+                    const ax = x - nx * r * 0.9, ay = y - ny * r * 0.9;
+                    const bx = x + nx * r * 0.9, by = y + ny * r * 0.9;
+                    return <path key={`stripe-${i}`} d={`M ${ax} ${ay} Q ${x} ${y - 1} ${bx} ${by}`} />;
+                  })}
+                </g>
+                {/* Underside core shadow — deepens lower-right of each disc */}
+                <g fill="#2a1207" opacity="0.35">
+                  {spine.map(([x, y, r], i) => (
+                    <ellipse key={`shd-${i}`} cx={x + r * 0.45} cy={y + r * 0.4} rx={r * 0.55} ry={r * 0.45} />
+                  ))}
+                </g>
+                {/* Specular highlights — tight pin on each disc, upper-left */}
+                <g fill="#fff3d4" opacity="0.7">
+                  {spine.map(([x, y, r], i) => (
+                    <ellipse key={`hi-${i}`} cx={x - r * 0.35} cy={y - r * 0.45} rx={r * 0.22} ry={r * 0.32} />
+                  ))}
+                </g>
+              </g>
+            );
+          })()}
 
-          {/* Top-lit edge sheen — a thin lighter band hugging the outside curve */}
-          <path
-            d="M 168 96
-               C 154 74, 208 54, 206 20
-               C 205 4, 192 -8, 178 -10"
-            fill="none"
-            stroke={`url(#${ns}-tail-sheen)`}
-            strokeWidth="5"
-            strokeLinecap="round"
-            opacity="0.9"
-          />
-          {/* Brightest specular pin near the bend — sells the cylindrical form */}
-          <ellipse cx="206" cy="30" rx="3.5" ry="9" fill="#fff3d4" opacity="0.55" transform="rotate(-18 206 30)" />
-
-          {/* Underside core shadow — deepens the shadowed half of the cylinder */}
-          <path
-            d="M 175 96
-               C 178 80, 190 60, 188 36"
-            fill="none"
-            stroke="#3a1d07"
-            strokeWidth="6"
-            strokeLinecap="round"
-            opacity="0.35"
-          />
-
-          {/* Faint tabby stripe wraps — curve around the cylinder, fading on
-              the shadowed side to reinforce the 3D form. */}
-          <g stroke="#3a1d07" strokeWidth="1.4" strokeLinecap="round" opacity="0.45" fill="none">
-            <path d="M 162 86 C 170 80, 180 80, 184 88" />
-            <path d="M 174 64 C 184 58, 196 58, 198 66" />
-            <path d="M 196 40 C 204 36, 212 36, 210 44" />
-            <path d="M 198 14 C 204 8, 212 8, 210 18" />
-          </g>
-
-          {/* Furry 3D tip — overlapping rounded blobs read as a soft pom */}
+          {/* Furry 3D tip pom — sits at the end of the tube */}
           <g className={animated ? `${ns}-tailtip` : undefined}>
-            <circle cx="172" cy="-4" r="9.5" fill={`url(#${ns}-tailtip-grad)`} />
-            <ellipse cx="167" cy="-8" rx="4" ry="3" fill="#fbe4b8" opacity="0.55" />
-            <circle cx="166" cy="-9" r="1.4" fill="#ffffff" opacity="0.85" />
-            {/* hint of fur fronds at the very tip */}
-            <g stroke="#3d1e07" strokeWidth="0.7" strokeLinecap="round" opacity="0.6" fill="none">
-              <path d="M 178 -9 C 182 -12, 184 -14, 184 -17" />
-              <path d="M 174 -13 C 175 -16, 175 -18, 173 -20" />
-              <path d="M 168 -13 C 167 -16, 165 -18, 162 -19" />
+            <circle cx="170" cy="-12" r="13" fill="#7d4a1e" opacity="0.55" />
+            <circle cx="170" cy="-12" r="11" fill={`url(#${ns}-tailtip-grad)`} />
+            <ellipse cx="166" cy="-16" rx="4.5" ry="3.2" fill="#fff3d4" opacity="0.6" />
+            <circle cx="165" cy="-17" r="1.6" fill="#ffffff" opacity="0.9" />
+            {/* fur fronds radiating from the pom */}
+            <g stroke="#3d1e07" strokeWidth="0.9" strokeLinecap="round" opacity="0.7" fill="none">
+              <path d="M 180 -16 C 184 -19, 186 -22, 186 -25" />
+              <path d="M 175 -22 C 176 -25, 175 -28, 173 -30" />
+              <path d="M 167 -23 C 165 -26, 162 -28, 158 -29" />
+              <path d="M 159 -19 C 155 -22, 151 -23, 148 -23" />
             </g>
           </g>
         </g>
