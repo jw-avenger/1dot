@@ -130,6 +130,9 @@ type State = {
   tone: ThemeKey;
   mice: ThemeKey;
   sfxEnabled: boolean;
+  /** Cat purr volume, 0–1. When 0 the purr is automatically off (the
+   *  fragile-bar slider in the Music book treats 0 as "off"). */
+  purrsVolume: number;
   romanticColor: string; // hex used for romantic accents
   arrowHidden: boolean; // user clicked the arrow twice to hide it
   hideSettingsBook: boolean; // remove Settings book from library
