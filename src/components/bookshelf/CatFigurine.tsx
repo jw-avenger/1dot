@@ -454,12 +454,13 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
             <path d="M 134 66 q 3 -7 6 0 q -3 7 -6 0 Z" />
             <path d="M 148 66 q 3 -6 6 0 q -3 6 -6 0 Z" />
           </g>
-          <g stroke="#6b3a16" strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.45">
-            <path d="M 96 76 C 97 84, 97 92, 96 100" />
-            <path d="M 110 76 C 111 84, 111 92, 110 100" />
-            <path d="M 124 76 C 125 84, 125 92, 124 100" />
-            <path d="M 138 76 C 139 84, 139 92, 138 100" />
-            <path d="M 152 78 C 153 94, 153 94, 152 102" />
+          {/* tabby side wraps — short horizontal arcs that read as fur
+              markings, not vertical rib bones. */}
+          <g stroke="#6b3a16" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.4">
+            <path d="M 92 82 q 6 -3 12 0" />
+            <path d="M 110 86 q 7 -3 14 0" />
+            <path d="M 130 82 q 7 -3 14 0" />
+            <path d="M 148 86 q 6 -3 12 0" />
           </g>
         </g>
 
