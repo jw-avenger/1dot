@@ -327,7 +327,7 @@ const SUGGESTED = [
 const ASSURANCE = "You can change anything anytime.";
 
 export function PetPopup({ open, onClose }: PetPopupProps) {
-  const { petsConfig, setPetConfig, deletePet } = useSettings();
+  const { petsConfig, setPetConfig, deletePet, slapToBasic } = useSettings();
   const existing = petsConfig[SHELF_KEY];
   const [phase, setPhase] = useState<"ask" | "configure">("ask");
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -369,7 +369,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
   };
 
   return (
-    <ConfirmSheet open={open} onClose={onClose} maxWidth={380}>
+    <ConfirmSheet open={open} onClose={onClose} maxWidth={380} showSimplify={false}>
       {phase === "ask" ? (
         <>
           <p className="mb-5 text-center text-base leading-snug" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>
@@ -399,6 +399,19 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
           >
             Choose Pet
           </p>
+          <button
+            onClick={() => { slapToBasic(); onClose(); }}
+            className="w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
+            style={{
+              color: SHEET_FG,
+              opacity: 0.55,
+              border: "1px solid rgba(255,255,255,0.12)",
+              backgroundColor: "transparent",
+            }}
+            title="Take everything to simple mode"
+          >
+            [ SIMPLE MODE NOW ]
+          </button>
           <button
             onClick={() => setPickerOpen((v) => !v)}
             aria-expanded={pickerOpen}
