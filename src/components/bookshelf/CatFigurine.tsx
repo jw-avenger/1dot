@@ -682,7 +682,7 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
 type PetStyle = { body: string; head: string; accent: string };
 
 const STYLES: Record<string, PetStyle> = {
-  dog: { body: "linear-gradient(160deg,#f3a3b3,#b7445e)", head: "#ffffff", accent: "#5a1a2a" },
+  dog: { body: "linear-gradient(160deg,#ffffff,#b7445e)", head: "#ffffff", accent: "#5a1a2a" },
   dragon: { body: "linear-gradient(160deg,#7fd3b7,#1f7a5e)", head: "#a8e8d0", accent: "#0e3a2c" },
   phoenix: { body: "linear-gradient(160deg,#f7c2b0,#c95f4a)", head: "#fbd9cc", accent: "#5e1f12" },
   bird: { body: "linear-gradient(160deg,#9bc28a,#3f7236)", head: "#bcd8ad", accent: "#1f3a18" },
