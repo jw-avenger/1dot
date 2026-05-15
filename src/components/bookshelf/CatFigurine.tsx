@@ -484,12 +484,13 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               <div className="space-y-2 pt-1">
                 <button
                   onClick={save}
-                  className="w-full rounded-full py-2 text-[11px] uppercase tracking-[0.22em] transition hover:opacity-100"
+                  className="w-full rounded-full py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
                   style={{
                     color: SHEET_FG,
                     opacity: 0.9,
                     border: "1px solid rgba(255,255,255,0.28)",
                     backgroundColor: "transparent",
+                    fontFamily: '"Fraunces", Georgia, serif',
                   }}
                 >
                   Save for now
