@@ -421,6 +421,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               opacity: 0.55,
               border: "1px solid rgba(255,255,255,0.12)",
               backgroundColor: "transparent",
+              fontFamily: '"Fraunces", Georgia, serif',
             }}
             title="Take everything to simple mode"
           >
