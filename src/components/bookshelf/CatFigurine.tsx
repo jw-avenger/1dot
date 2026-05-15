@@ -509,7 +509,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
 
           {draft.pet && (
             <>
-              <div className="space-y-0.5">
+              <div className="space-y-0">
                 <Row
                   checked={draft.animations}
                   onChange={(v) => setDraft({ ...draft, animations: v })}
