@@ -1,18 +1,31 @@
-type Props = {
+/**
+ * Pet bundle — the entire pet feature lives in this single file so it can
+ * be deleted and restored as one cohesive unit:
+ *   • CatFigurine   – the SVG cat
+ *   • PetFigurine   – generic CSS figurines for non-cat pets
+ *   • ShelfPet      – the shelf widget slot
+ *   • PetPopup      – the configuration / conversation pop-up
+ *
+ * Restoration: state lives in useSettings (PETS, petsConfig, petDismissed,
+ * deletePet/restoreTrash). The "Restore" path in useSettings already returns
+ * the pet to its first-encounter state, so as long as this file exists and
+ * its exports are imported wherever needed, the widget reliably comes back.
+ */
+
+import { useEffect, useState } from "react";
+import { ConfirmSheet, SheetButton, SHEET_FG } from "./ConfirmSheet";
+import { PETS, useSettings, type PetConfig } from "./useSettings";
+
+/* ========================================================================
+   CatFigurine — high-fidelity SVG cat
+   ======================================================================== */
+
+type CatProps = {
   /** Render size in px. SVG scales cleanly to any size. */
   size?: number;
 };
 
-/**
- * High-fidelity cat figurine modeled after the 🐈 emoji silhouette.
- * Side-profile orange tabby, all four paws planted, tail held high with
- * a soft S-curve, head turned three-quarters toward the viewer.
- *
- * Built as a single resolution-independent SVG (viewBox 200x140) so it
- * scales cleanly from a 24px favicon to a 240px shelf figurine.
- */
-export function CatFigurine({ size = 96 }: Props) {
-  // preserve 200:140 aspect ratio
+export function CatFigurine({ size = 96 }: CatProps) {
   const w = size;
   const h = (size * 140) / 200;
   return (
@@ -24,62 +37,44 @@ export function CatFigurine({ size = 96 }: Props) {
       style={{ display: "block", overflow: "visible" }}
     >
       <defs>
-        {/* main fur — warm orange tabby with belly highlight at top, deep shadow at bottom */}
         <linearGradient id="cf-fur" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#f5c98a" />
           <stop offset="35%" stopColor="#e3a158" />
           <stop offset="75%" stopColor="#b3712f" />
           <stop offset="100%" stopColor="#6e3f15" />
         </linearGradient>
-        {/* belly / chin — soft cream */}
         <linearGradient id="cf-cream" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#fbe7c4" stopOpacity="0" />
           <stop offset="100%" stopColor="#fbe7c4" stopOpacity="0.95" />
         </linearGradient>
-        {/* inner ear */}
         <radialGradient id="cf-ear" cx="50%" cy="70%" r="65%">
           <stop offset="0%" stopColor="#f0a6ad" />
           <stop offset="100%" stopColor="#7a3a3d" />
         </radialGradient>
-        {/* eyes */}
         <radialGradient id="cf-eye" cx="50%" cy="40%" r="60%">
           <stop offset="0%" stopColor="#cfe89a" />
           <stop offset="60%" stopColor="#7aa84a" />
           <stop offset="100%" stopColor="#2c5018" />
         </radialGradient>
-        {/* ground shadow blur */}
         <filter id="cf-blur" x="-20%" y="-50%" width="140%" height="200%">
           <feGaussianBlur stdDeviation="1.6" />
         </filter>
-        {/* tabby stripe pattern */}
         <linearGradient id="cf-stripe" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#5a2f10" stopOpacity="0.55" />
           <stop offset="100%" stopColor="#5a2f10" stopOpacity="0" />
         </linearGradient>
       </defs>
 
-      {/* ground shadow */}
       <ellipse cx="105" cy="128" rx="70" ry="3.5" fill="rgba(0,0,0,0.32)" filter="url(#cf-blur)" />
 
-      {/* ============================================================
-          TAIL — held high with relaxed S-curve, originating from rump.
-          Drawn first so the body overlaps cleanly at the base.
-         ============================================================ */}
       <path
-        d="
-          M 168 96
-          C 184 84, 190 60, 178 42
-          C 170 30, 158 36, 162 48
-          C 166 58, 168 70, 160 76
-        "
+        d="M 168 96 C 184 84, 190 60, 178 42 C 170 30, 158 36, 162 48 C 166 58, 168 70, 160 76"
         fill="none"
         stroke="url(#cf-fur)"
         strokeWidth="11"
         strokeLinecap="round"
       />
-      {/* tail tip — slightly darker for definition */}
       <circle cx="174" cy="38" r="5.2" fill="#a5621f" />
-      {/* tail highlight */}
       <path
         d="M 170 92 C 184 80, 188 60, 178 44"
         fill="none"
@@ -88,36 +83,17 @@ export function CatFigurine({ size = 96 }: Props) {
         strokeLinecap="round"
       />
 
-      {/* ============================================================
-          BODY — long elongated silhouette with a slight back arch and
-          a soft chest curve. One continuous path so the silhouette
-          reads cleanly at small sizes.
-         ============================================================ */}
       <path
-        d="
-          M 60 96
-          C 50 92, 48 82, 56 74
-          C 62 68, 72 66, 86 66
-          L 150 66
-          C 166 66, 174 76, 174 90
-          C 174 104, 168 110, 156 110
-          L 70 110
-          C 58 110, 56 104, 60 96
-          Z
-        "
+        d="M 60 96 C 50 92, 48 82, 56 74 C 62 68, 72 66, 86 66 L 150 66 C 166 66, 174 76, 174 90 C 174 104, 168 110, 156 110 L 70 110 C 58 110, 56 104, 60 96 Z"
         fill="url(#cf-fur)"
       />
-      {/* belly cream band */}
       <path
         d="M 70 100 C 90 112, 150 112, 168 100 C 162 110, 80 110, 70 100 Z"
         fill="url(#cf-cream)"
       />
-      {/* shoulder shading */}
       <ellipse cx="78" cy="80" rx="14" ry="8" fill="rgba(255,235,200,0.25)" />
-      {/* hip shading */}
       <ellipse cx="155" cy="78" rx="16" ry="9" fill="rgba(255,235,200,0.18)" />
 
-      {/* tabby stripes across back */}
       <g fill="url(#cf-stripe)" opacity="0.65">
         <path d="M 92 66 q 3 -6 6 0 q -3 6 -6 0 Z" />
         <path d="M 106 66 q 3 -7 6 0 q -3 7 -6 0 Z" />
@@ -125,7 +101,6 @@ export function CatFigurine({ size = 96 }: Props) {
         <path d="M 134 66 q 3 -7 6 0 q -3 7 -6 0 Z" />
         <path d="M 148 66 q 3 -6 6 0 q -3 6 -6 0 Z" />
       </g>
-      {/* side rib stripes */}
       <g stroke="#6b3a16" strokeWidth="1.4" strokeLinecap="round" fill="none" opacity="0.45">
         <path d="M 96 76 C 97 84, 97 92, 96 100" />
         <path d="M 110 76 C 111 84, 111 92, 110 100" />
@@ -134,76 +109,50 @@ export function CatFigurine({ size = 96 }: Props) {
         <path d="M 152 78 C 153 86, 153 94, 152 102" />
       </g>
 
-      {/* ============================================================
-          LEGS — front pair (left side of cat, screen-left) and back
-          pair, with subtle separation between near and far leg.
-         ============================================================ */}
-      {/* far front leg (behind) */}
       <path d="M 76 102 C 75 116, 75 122, 78 126 L 86 126 C 88 122, 88 114, 87 102 Z" fill="#a06a2c" />
-      {/* near front leg */}
       <path d="M 64 102 C 62 118, 62 124, 66 128 L 76 128 C 78 124, 78 116, 76 102 Z" fill="url(#cf-fur)" />
-      {/* far back leg */}
       <path d="M 156 102 C 155 116, 154 122, 158 126 L 166 126 C 168 122, 168 114, 167 102 Z" fill="#a06a2c" />
-      {/* near back leg — slightly thicker (haunch) */}
       <path
         d="M 142 100 C 138 112, 138 122, 144 128 L 156 128 C 160 122, 160 112, 156 100 Z"
         fill="url(#cf-fur)"
       />
-      {/* paws */}
       <ellipse cx="71" cy="128" rx="6" ry="2" fill="#3a1d0a" />
       <ellipse cx="82" cy="126" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
       <ellipse cx="150" cy="128" rx="6.5" ry="2" fill="#3a1d0a" />
       <ellipse cx="162" cy="126" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
 
-      {/* ============================================================
-          HEAD — round skull with triangular ears and a short muzzle.
-          Drawn last so it sits on top of the body cleanly.
-         ============================================================ */}
       <g>
-        {/* ears (outer) */}
         <path d="M 24 50 L 30 22 L 46 44 Z" fill="url(#cf-fur)" />
         <path d="M 76 50 L 70 22 L 54 44 Z" fill="url(#cf-fur)" />
-        {/* ears (inner) */}
         <path d="M 30 46 L 32 30 L 42 44 Z" fill="url(#cf-ear)" />
         <path d="M 70 46 L 68 30 L 58 44 Z" fill="url(#cf-ear)" />
 
-        {/* head — slight oval, wider than tall */}
         <ellipse cx="50" cy="62" rx="28" ry="24" fill="url(#cf-fur)" />
 
-        {/* forehead M-stripe (classic tabby) */}
         <g stroke="#6b3a16" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.6">
           <path d="M 40 44 C 42 50, 44 54, 46 58" />
           <path d="M 50 42 C 50 48, 50 54, 50 58" />
           <path d="M 60 44 C 58 50, 56 54, 54 58" />
         </g>
 
-        {/* muzzle / cheek — cream */}
         <ellipse cx="50" cy="74" rx="16" ry="10" fill="#fbe7c4" opacity="0.85" />
-        {/* chin */}
         <ellipse cx="50" cy="80" rx="9" ry="4" fill="#fff3da" opacity="0.7" />
 
-        {/* eyes */}
         <ellipse cx="40" cy="62" rx="4.2" ry="5" fill="url(#cf-eye)" />
         <ellipse cx="60" cy="62" rx="4.2" ry="5" fill="url(#cf-eye)" />
-        {/* pupils — vertical slits */}
         <ellipse cx="40" cy="62" rx="1.1" ry="4.2" fill="#0a0a0a" />
         <ellipse cx="60" cy="62" rx="1.1" ry="4.2" fill="#0a0a0a" />
-        {/* eye glints */}
         <circle cx="41.4" cy="60" r="1" fill="#ffffff" />
         <circle cx="61.4" cy="60" r="1" fill="#ffffff" />
-        {/* eye outline */}
         <ellipse cx="40" cy="62" rx="4.2" ry="5" fill="none" stroke="#3a1d0a" strokeWidth="0.6" />
         <ellipse cx="60" cy="62" rx="4.2" ry="5" fill="none" stroke="#3a1d0a" strokeWidth="0.6" />
 
-        {/* nose */}
         <path d="M 46 72 L 54 72 L 50 76 Z" fill="#7a3a2a" />
         <path d="M 46 72 L 54 72 L 50 76 Z" fill="none" stroke="#3a1d0a" strokeWidth="0.5" />
-        {/* mouth */}
         <path d="M 50 76 L 50 79" stroke="#3a1d0a" strokeWidth="0.7" strokeLinecap="round" />
         <path d="M 50 79 C 48 81, 45 81, 43.5 79.5" fill="none" stroke="#3a1d0a" strokeWidth="0.7" strokeLinecap="round" />
         <path d="M 50 79 C 52 81, 55 81, 56.5 79.5" fill="none" stroke="#3a1d0a" strokeWidth="0.7" strokeLinecap="round" />
 
-        {/* whiskers */}
         <g stroke="#3a1d0a" strokeWidth="0.6" strokeLinecap="round" opacity="0.75" fill="none">
           <path d="M 42 76 C 30 76, 22 74, 14 72" />
           <path d="M 42 78 C 30 80, 22 82, 14 84" />
@@ -212,5 +161,349 @@ export function CatFigurine({ size = 96 }: Props) {
         </g>
       </g>
     </svg>
+  );
+}
+
+/* ========================================================================
+   PetFigurine — generic CSS figurines for non-cat pets
+   ======================================================================== */
+
+type PetStyle = { body: string; head: string; accent: string };
+
+const STYLES: Record<string, PetStyle> = {
+  cat: { body: "linear-gradient(160deg,#e8b27a,#a8632e)", head: "#f0c79a", accent: "#5a2f10" },
+  dog: { body: "linear-gradient(160deg,#f3a3b3,#b7445e)", head: "#f8c4cf", accent: "#5a1a2a" },
+  dragon: { body: "linear-gradient(160deg,#7fd3b7,#1f7a5e)", head: "#a8e8d0", accent: "#0e3a2c" },
+  phoenix: { body: "linear-gradient(160deg,#f7c2b0,#c95f4a)", head: "#fbd9cc", accent: "#5e1f12" },
+  bird: { body: "linear-gradient(160deg,#9bc28a,#3f7236)", head: "#bcd8ad", accent: "#1f3a18" },
+  hamster: { body: "linear-gradient(160deg,#dec39b,#8a6638)", head: "#ecdcb8", accent: "#3e2a14" },
+};
+
+type PetFigurineProps = { petId: string; size?: number };
+
+export function PetFigurine({ petId, size = 56 }: PetFigurineProps) {
+  const s = STYLES[petId] ?? STYLES.cat;
+  const bodyW = size * 0.78;
+  const bodyH = size * 0.62;
+  const headD = size * 0.42;
+  return (
+    <div
+      className="relative flex flex-col items-center justify-end"
+      style={{ width: size, height: size }}
+      aria-hidden
+    >
+      <div
+        className="relative"
+        style={{
+          width: headD,
+          height: headD,
+          borderRadius: "50%",
+          background: s.body,
+          boxShadow: `inset -2px -3px 4px rgba(0,0,0,0.25), inset 2px 2px 3px rgba(255,255,255,0.35)`,
+          marginBottom: -headD * 0.18,
+          zIndex: 2,
+        }}
+      >
+        <span
+          className="absolute"
+          style={{ top: "45%", left: "30%", width: headD * 0.1, height: headD * 0.1, borderRadius: "50%", background: s.accent }}
+        />
+        <span
+          className="absolute"
+          style={{ top: "45%", right: "30%", width: headD * 0.1, height: headD * 0.1, borderRadius: "50%", background: s.accent }}
+        />
+      </div>
+      <div
+        style={{
+          width: bodyW,
+          height: bodyH,
+          background: s.body,
+          borderRadius: `${bodyW * 0.5}px ${bodyW * 0.5}px ${bodyW * 0.18}px ${bodyW * 0.18}px`,
+          boxShadow: `inset -3px -4px 6px rgba(0,0,0,0.28), inset 3px 3px 5px rgba(255,255,255,0.3), 0 4px 6px -3px rgba(0,0,0,0.4)`,
+        }}
+      />
+      <div
+        className="absolute"
+        style={{ bottom: -2, width: bodyW * 0.9, height: 4, borderRadius: "50%", background: "rgba(0,0,0,0.25)", filter: "blur(2px)" }}
+      />
+    </div>
+  );
+}
+
+/* ========================================================================
+   ShelfPet — the shelf widget slot
+   ======================================================================== */
+
+type ShelfPetProps = {
+  onClick: () => void;
+  height?: number;
+  blank?: boolean;
+};
+
+export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps) {
+  const { petsConfig, setPetConfig } = useSettings();
+  const cfg = petsConfig["shelf"];
+  const pet = !blank && cfg?.pet ? PETS.find((p) => p.id === cfg.pet) : null;
+  const [hover, setHover] = useState(false);
+
+  const slotH = height;
+  const slotW = Math.round(slotH * 0.7);
+  const catSize = Math.round(slotW * 1.05);
+  const genericSize = Math.round(slotW * 0.85);
+
+  return (
+    <div
+      className="relative ml-1 flex flex-col items-center justify-end self-end"
+      style={{ width: slotW, height: slotH }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      <button
+        onClick={onClick}
+        aria-label={pet ? `Change ${pet.label} pet` : "Add a pet — currently empty"}
+        className="group relative flex h-full w-full items-end justify-center overflow-hidden rounded-lg"
+        style={{
+          background: pet
+            ? "transparent"
+            : "repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0 6px, rgba(255,255,255,0.05) 6px 12px)",
+          border: pet ? "1px solid transparent" : "2px dashed rgba(0,0,0,0.32)",
+          boxShadow: pet
+            ? "none"
+            : "inset 0 0 0 1px rgba(255,255,255,0.25), 0 0 0 3px rgba(255,255,255,0.08)",
+        }}
+      >
+        {pet ? (
+          <div className="pb-1">
+            {pet.id === "cat" ? (
+              <CatFigurine size={catSize} />
+            ) : (
+              <PetFigurine petId={pet.id} size={genericSize} />
+            )}
+          </div>
+        ) : (
+          <span
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ color: "var(--ink)", fontSize: Math.round(slotH * 0.35), lineHeight: 1 }}
+          >
+            🐈
+          </span>
+        )}
+      </button>
+      {pet && hover && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setPetConfig("shelf", null);
+          }}
+          aria-label="Remove pet"
+          className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-wood-dark text-[10px] text-paper shadow"
+        >
+          ×
+        </button>
+      )}
+    </div>
+  );
+}
+
+/* ========================================================================
+   PetPopup — the conversation / configuration window
+   ======================================================================== */
+
+type PetPopupProps = {
+  open: boolean;
+  onClose: () => void;
+};
+
+const SHELF_KEY = "shelf";
+
+const SUGGESTED = [
+  "Fresh water",
+  "Small stretch break",
+  "Three slow breaths",
+  "Tidy one little surface",
+  "Send a kind message",
+];
+
+const ASSURANCE = "You can change anything anytime.";
+
+export function PetPopup({ open, onClose }: PetPopupProps) {
+  const { petsConfig, setPetConfig, deletePet } = useSettings();
+  const existing = petsConfig[SHELF_KEY];
+  const [phase, setPhase] = useState<"ask" | "configure">("ask");
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [draft, setDraft] = useState<PetConfig>({
+    pet: null,
+    animations: true,
+    todoEnabled: false,
+    todoItems: [],
+  });
+
+  useEffect(() => {
+    if (!open) return;
+    if (existing) {
+      setDraft(existing);
+      setPhase("configure");
+      setPickerOpen(false);
+    } else {
+      setDraft({ pet: null, animations: true, todoEnabled: false, todoItems: [] });
+      setPhase("ask");
+      setPickerOpen(true);
+    }
+  }, [open, existing]);
+
+  if (!open) return null;
+
+  const save = () => {
+    if (!draft.pet) return;
+    const next: PetConfig = {
+      ...draft,
+      todoItems:
+        draft.todoEnabled && draft.todoItems.length === 0 ? [...SUGGESTED] : draft.todoItems,
+    };
+    setPetConfig(SHELF_KEY, next);
+    onClose();
+  };
+  const declineOrRemove = () => {
+    deletePet(SHELF_KEY);
+    onClose();
+  };
+
+  return (
+    <ConfirmSheet open={open} onClose={onClose} maxWidth={380}>
+      {phase === "ask" ? (
+        <>
+          <p className="mb-5 text-center text-base leading-snug" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>
+            Would you like pet support?
+          </p>
+          <div className="space-y-2">
+            <SheetButton full onClick={() => setPhase("configure")} variant="primary">Yes</SheetButton>
+            <SheetButton full onClick={declineOrRemove} variant="ghost">No</SheetButton>
+          </div>
+          <p className="mt-3 text-center text-[11px] opacity-60">{ASSURANCE}</p>
+          <div className="flex justify-center pt-3">
+            <button
+              onClick={onClose}
+              aria-label="Back"
+              className="text-lg opacity-70 transition hover:-translate-x-0.5 hover:opacity-100"
+              style={{ fontFamily: '"Fraunces", Georgia, serif' }}
+            >
+              ←
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="space-y-4">
+          <p
+            className="text-center text-base leading-snug"
+            style={{ fontFamily: '"Fraunces", Georgia, serif' }}
+          >
+            Which pet would pet like to visit with today?
+          </p>
+          <button
+            onClick={() => setPickerOpen((v) => !v)}
+            aria-expanded={pickerOpen}
+            className="flex w-full items-center justify-center gap-2 text-center text-sm opacity-80 transition hover:opacity-100"
+          >
+            <span>{draft.pet ? PETS.find((p) => p.id === draft.pet)?.label ?? "Choose a friend" : "Choose a friend"}</span>
+            <span
+              className="inline-block transition-transform"
+              style={{ transform: pickerOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+              aria-hidden
+            >
+              ▾
+            </span>
+          </button>
+
+          <div
+            className="grid grid-cols-3 gap-2 overflow-hidden transition-all duration-300"
+            style={{
+              maxHeight: pickerOpen ? 400 : 0,
+              opacity: pickerOpen ? 1 : 0,
+            }}
+          >
+            {PETS.map((p) => {
+              const active = draft.pet === p.id;
+              return (
+                <button
+                  key={p.id}
+                  onClick={() => setDraft({ ...draft, pet: p.id })}
+                  className="flex flex-col items-center gap-1 rounded-xl px-2 py-2 text-center text-[11px] transition"
+                  style={{
+                    backgroundColor: active ? SHEET_FG : "rgba(255,255,255,0.05)",
+                    color: active ? "#2b2b30" : SHEET_FG,
+                    border: `1px solid ${active ? SHEET_FG : "rgba(255,255,255,0.12)"}`,
+                  }}
+                >
+                  {p.id === "cat" ? <CatFigurine size={48} /> : <PetFigurine petId={p.id} size={44} />}
+                  <span className="leading-tight">{p.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {draft.pet && (
+            <>
+              <Row
+                checked={draft.animations}
+                onChange={(v) => setDraft({ ...draft, animations: v })}
+                label="Enable light animations."
+              />
+              <Row
+                checked={draft.todoEnabled}
+                onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
+                label="Enable simple starter pet list."
+              />
+
+              <div className="space-y-2 pt-1">
+                <SheetButton full variant="primary" onClick={save}>
+                  Save for now?
+                </SheetButton>
+              </div>
+            </>
+          )}
+          <p className="text-center text-[11px] opacity-60 whitespace-nowrap">{ASSURANCE}</p>
+          <div className="flex justify-center pt-1">
+            <button
+              onClick={() => setPhase("ask")}
+              aria-label="Back"
+              className="text-lg opacity-70 transition hover:-translate-x-0.5 hover:opacity-100"
+              style={{ fontFamily: '"Fraunces", Georgia, serif' }}
+            >
+              ←
+            </button>
+          </div>
+        </div>
+      )}
+    </ConfirmSheet>
+  );
+}
+
+function Row({
+  checked,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label: string;
+}) {
+  return (
+    <button
+      onClick={() => onChange(!checked)}
+      className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition"
+      style={{ backgroundColor: "rgba(255,255,255,0.04)" }}
+    >
+      <span
+        className="flex h-5 w-5 items-center justify-center rounded-full border text-[11px]"
+        style={{
+          borderColor: "rgba(255,255,255,0.35)",
+          backgroundColor: checked ? SHEET_FG : "transparent",
+          color: "#2b2b30",
+        }}
+      >
+        {checked ? "✓" : ""}
+      </span>
+      <span>{label}</span>
+    </button>
   );
 }
