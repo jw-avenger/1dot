@@ -608,7 +608,7 @@ function Row({
   return (
     <button
       onClick={() => onChange(!checked)}
-      className="flex w-full items-center gap-2 rounded-full px-3 py-1 text-left text-[10px] tracking-[0.04em] transition hover:opacity-100"
+      className="flex w-full items-start gap-2 rounded-full px-2 py-0.5 text-left text-[10px] leading-snug tracking-[0.04em] transition hover:opacity-100"
       style={{
         backgroundColor: "transparent",
         border: "none",
