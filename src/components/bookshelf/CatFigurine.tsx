@@ -392,7 +392,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
           <div className="flex justify-center gap-4">
             <button
               onClick={() => setPhase("configure")}
-              className="w-full rounded-full py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
+              className="rounded-full px-6 py-2 text-[12px] tracking-[0.06em] transition hover:opacity-100"
               style={{
                 color: SHEET_FG,
                 opacity: 0.9,
