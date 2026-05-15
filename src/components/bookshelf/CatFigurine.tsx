@@ -421,25 +421,28 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             };
             return (
               <div
-                className="flex w-full items-center justify-between rounded-lg px-3 py-2"
+                className="flex w-full items-center justify-between rounded-full px-3 py-1.5"
                 style={{
-                  backgroundColor: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.12)",
+                  backgroundColor: "transparent",
+                  border: "1px solid rgba(255,255,255,0.18)",
                   color: SHEET_FG,
+                  opacity: 0.85,
                 }}
               >
                 <button
                   onClick={() => step(-1)}
                   aria-label="Previous pet"
-                  className="px-2 text-base opacity-70 transition hover:opacity-100"
+                  className="px-2 text-xs opacity-70 transition hover:opacity-100"
                 >
                   ▲
                 </button>
-                <span className="flex-1 text-center text-sm">{current?.label ?? "Choose a friend"}</span>
+                <span className="flex-1 text-center text-[11px] uppercase tracking-[0.18em]">
+                  {current?.label ?? "Choose a friend"}
+                </span>
                 <button
                   onClick={() => step(1)}
                   aria-label="Next pet"
-                  className="px-2 text-base opacity-70 transition hover:opacity-100"
+                  className="px-2 text-xs opacity-70 transition hover:opacity-100"
                 >
                   ▼
                 </button>
@@ -461,9 +464,18 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               />
 
               <div className="space-y-2 pt-1">
-                <SheetButton full variant="primary" onClick={save}>
-                  Save for now?
-                </SheetButton>
+                <button
+                  onClick={save}
+                  className="w-full rounded-full py-2 text-[11px] uppercase tracking-[0.22em] transition hover:opacity-100"
+                  style={{
+                    color: SHEET_FG,
+                    opacity: 0.9,
+                    border: "1px solid rgba(255,255,255,0.28)",
+                    backgroundColor: "transparent",
+                  }}
+                >
+                  Save for now
+                </button>
               </div>
             </>
           )}
@@ -496,11 +508,16 @@ function Row({
   return (
     <button
       onClick={() => onChange(!checked)}
-      className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition"
-      style={{ backgroundColor: "rgba(255,255,255,0.04)" }}
+      className="flex w-full items-center gap-3 rounded-full px-4 py-1.5 text-left text-[11px] uppercase tracking-[0.18em] transition hover:opacity-100"
+      style={{
+        backgroundColor: "transparent",
+        border: "1px solid rgba(255,255,255,0.18)",
+        color: SHEET_FG,
+        opacity: 0.8,
+      }}
     >
       <span
-        className="flex h-5 w-5 items-center justify-center rounded-full border text-[11px]"
+        className="flex h-4 w-4 items-center justify-center rounded-full border text-[9px]"
         style={{
           borderColor: "rgba(255,255,255,0.35)",
           backgroundColor: checked ? SHEET_FG : "transparent",
