@@ -1205,9 +1205,10 @@ function SendAwayRow({
   if (active) {
     return (
       <div
-        className="flex w-full items-center justify-center gap-2 rounded-full px-2 py-0 text-[10px] tracking-[0.04em]"
+        className="mt-2 flex w-full items-center justify-center gap-2 rounded-full px-2 py-0 text-[10px] tracking-[0.04em]"
         style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif', opacity: 0.85 }}
       >
+        <span aria-hidden style={{ opacity: 0.55 }}>—</span>
         <span>Away — back in {remainingLabel}.</span>
         <button
           onClick={onRecall}
@@ -1216,6 +1217,7 @@ function SendAwayRow({
         >
           Call back
         </button>
+        <span aria-hidden style={{ opacity: 0.55 }}>—</span>
       </div>
     );
   }
@@ -1227,9 +1229,10 @@ function SendAwayRow({
 
   return (
     <div
-      className="flex w-full items-center justify-center gap-[0.5ch] rounded-full px-2 py-0 text-[10px] leading-snug tracking-[0.04em]"
+      className="mt-2 flex w-full items-center justify-center gap-[0.5ch] rounded-full px-2 py-0 text-[10px] leading-snug tracking-[0.04em]"
       style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif', opacity: 0.75 }}
     >
+      <span aria-hidden style={{ opacity: 0.55 }}>—</span>
       <span>Send cat away for</span>
       <input
         type="number"
@@ -1259,6 +1262,7 @@ function SendAwayRow({
       >
         Send
       </button>
+      <span aria-hidden style={{ opacity: 0.55 }}>—</span>
     </div>
   );
 }
