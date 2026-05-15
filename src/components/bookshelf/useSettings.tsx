@@ -162,6 +162,7 @@ const defaults: State = {
   tone: "cozy",
   mice: "basic",
   sfxEnabled: false,
+  purrsVolume: 0,
   romanticColor: "#c42b2b",
   arrowHidden: false,
   hideSettingsBook: false,
