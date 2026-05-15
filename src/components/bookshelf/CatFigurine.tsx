@@ -38,7 +38,6 @@
  * reliably comes back without losing wiring.
  */
 
-
 import { useEffect, useRef, useState } from "react";
 import { ConfirmSheet, SheetButton, SHEET_FG } from "./ConfirmSheet";
 import { PETS, useSettings, type PetConfig } from "./useSettings";
@@ -134,13 +133,7 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
   }, [travel, onLeft, onArrived]);
 
   return (
-    <svg
-      width={w}
-      height={h}
-      viewBox="0 0 200 140"
-      aria-hidden
-      style={{ display: "block", overflow: "visible" }}
-    >
+    <svg width={w} height={h} viewBox="0 0 200 140" aria-hidden style={{ display: "block", overflow: "visible" }}>
       <defs>
         <linearGradient id={`${ns}-fur`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#f5c98a" />
@@ -172,24 +165,26 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
         {/* Cross-section disc gradient — light upper-left → deep lower-right.
             Reused on every tube segment so the lighting stays consistent. */}
         <radialGradient id={`${ns}-tail-disc`} cx="32%" cy="28%" r="78%">
-          <stop offset="0%"   stopColor="#fff1cc" />
-          <stop offset="22%"  stopColor="#f3bd7a" />
-          <stop offset="55%"  stopColor="#c0823f" />
-          <stop offset="85%"  stopColor="#6a3812" />
+          <stop offset="0%" stopColor="#fff1cc" />
+          <stop offset="22%" stopColor="#f3bd7a" />
+          <stop offset="55%" stopColor="#c0823f" />
+          <stop offset="85%" stopColor="#6a3812" />
           <stop offset="100%" stopColor="#2a1207" />
         </radialGradient>
         {/* Tip pom — slightly more bloomed and softer */}
         <radialGradient id={`${ns}-tailtip-grad`} cx="32%" cy="28%" r="82%">
-          <stop offset="0%"   stopColor="#fff5d8" />
-          <stop offset="30%"  stopColor="#f0b67a" />
-          <stop offset="70%"  stopColor="#9a5a25" />
+          <stop offset="0%" stopColor="#fff5d8" />
+          <stop offset="30%" stopColor="#f0b67a" />
+          <stop offset="70%" stopColor="#9a5a25" />
           <stop offset="100%" stopColor="#2a1207" />
         </radialGradient>
         {/* Soft drop shadow under the tail to lift it off the body */}
         <filter id={`${ns}-tail-shadow`} x="-30%" y="-30%" width="160%" height="160%">
           <feGaussianBlur in="SourceAlpha" stdDeviation="1.6" />
           <feOffset dx="1.6" dy="2.4" result="off" />
-          <feComponentTransfer><feFuncA type="linear" slope="0.55" /></feComponentTransfer>
+          <feComponentTransfer>
+            <feFuncA type="linear" slope="0.55" />
+          </feComponentTransfer>
           <feMerge>
             <feMergeNode />
             <feMergeNode in="SourceGraphic" />
@@ -391,251 +386,290 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           animated && travel === "leaving"
             ? `${ns}-travel-leaving`
             : animated && travel === "arriving"
-            ? `${ns}-travel-arriving`
-            : undefined
+              ? `${ns}-travel-arriving`
+              : undefined
         }
       >
-      <g className={animated && move ? `${ns}-move ${ns}-move-${move}` : undefined}>
-      <g className={animated ? `${ns}-pose ${ns}-pose-${pose}` : undefined}>
-      <g className={`${ns}-rig`}>
-        {/* ground shadow */}
-        <ellipse
-          className={`${ns}-shadow`}
-          cx="105" cy="128" rx="70" ry="3.5"
-          fill="rgba(0,0,0,0.32)" filter={`url(#${ns}-blur)`}
-        />
+        <g className={animated && move ? `${ns}-move ${ns}-move-${move}` : undefined}>
+          <g className={animated ? `${ns}-pose ${ns}-pose-${pose}` : undefined}>
+            <g className={`${ns}-rig`}>
+              {/* ground shadow */}
+              <ellipse
+                className={`${ns}-shadow`}
+                cx="105"
+                cy="128"
+                rx="70"
+                ry="3.5"
+                fill="rgba(0,0,0,0.32)"
+                filter={`url(#${ns}-blur)`}
+              />
 
-        {/* tail — painted with the same fur gradient and stripe language as
+              {/* tail — painted with the same fur gradient and stripe language as
             the body so it reads as the same illustration. A single tapered
             shape with the body's fur gradient, a cream highlight ellipse where
             it joins the body, and the same wavy q-stripes used on the back. */}
-        <g className={`${ns}-tail`}>
-          {/* soft ground/contact shadow under the base */}
-          <ellipse
-            cx="172" cy="104" rx="14" ry="4"
-            fill="rgba(0,0,0,0.22)"
-            filter={`url(#${ns}-blur)`}
-          />
-          {/* main tail body — fur gradient stroke matches body fill */}
-          <path
-            d="M 168 100 C 180 78, 210 58, 200 24 C 196 6, 182 -6, 170 -10"
-            fill="none"
-            stroke={`url(#${ns}-fur)`}
-            strokeWidth="20"
-            strokeLinecap="round"
-          />
-          {/* cream underside near the base — same cream as belly */}
-          <path
-            d="M 170 100 C 178 86, 192 74, 198 58"
-            fill="none"
-            stroke={`url(#${ns}-cream)`}
-            strokeWidth="6"
-            strokeLinecap="round"
-            opacity="0.7"
-          />
-          {/* warm highlight wrap — same hue family as body highlights */}
-          <ellipse cx="184" cy="68" rx="6" ry="14" fill="rgba(255,235,200,0.22)" transform="rotate(-18 184 68)" />
-          {/* tabby stripes — identical q-curve language as the back stripes */}
-          <g fill={`url(#${ns}-stripe)`} opacity="0.6">
-            <path d="M 178 80 q -3 -6 -1 -9 q 5 1 6 7 q -3 3 -5 2 Z" />
-            <path d="M 192 60 q -3 -6 -1 -9 q 5 1 6 7 q -3 3 -5 2 Z" />
-            <path d="M 199 38 q -3 -6 -1 -9 q 5 1 6 7 q -3 3 -5 2 Z" />
-            <path d="M 197 16 q -3 -6 -1 -9 q 5 1 6 7 q -3 3 -5 2 Z" />
-          </g>
+              <g className={`${ns}-tail`}>
+                {/* soft ground/contact shadow under the base */}
+                <ellipse cx="172" cy="104" rx="14" ry="4" fill="rgba(0,0,0,0.22)" filter={`url(#${ns}-blur)`} />
+                {/* main tail body — fur gradient stroke matches body fill */}
+                <path
+                  d="M 168 100 C 180 78, 210 58, 200 24 C 196 6, 182 -6, 170 -10"
+                  fill="none"
+                  stroke={`url(#${ns}-fur)`}
+                  strokeWidth="20"
+                  strokeLinecap="round"
+                />
+                {/* cream underside near the base — same cream as belly */}
+                <path
+                  d="M 170 100 C 178 86, 192 74, 198 58"
+                  fill="none"
+                  stroke={`url(#${ns}-cream)`}
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                  opacity="0.7"
+                />
+                {/* warm highlight wrap — same hue family as body highlights */}
+                <ellipse cx="184" cy="68" rx="6" ry="14" fill="rgba(255,235,200,0.22)" transform="rotate(-18 184 68)" />
+                {/* tabby stripes — identical q-curve language as the back stripes */}
+                <g fill={`url(#${ns}-stripe)`} opacity="0.6">
+                  <path d="M 178 80 q -3 -6 -1 -9 q 5 1 6 7 q -3 3 -5 2 Z" />
+                  <path d="M 192 60 q -3 -6 -1 -9 q 5 1 6 7 q -3 3 -5 2 Z" />
+                  <path d="M 199 38 q -3 -6 -1 -9 q 5 1 6 7 q -3 3 -5 2 Z" />
+                  <path d="M 197 16 q -3 -6 -1 -9 q 5 1 6 7 q -3 3 -5 2 Z" />
+                </g>
 
-          {/* tip — the round stroke cap on the main path provides a natural,
+                {/* tip — the round stroke cap on the main path provides a natural,
               tapered end. A tiny highlight kisses the lit edge so it still
               reads as a fur tip rather than a stub. The empty group preserves
               the rig anchor for the tip-flick animation. */}
-          <g className={`${ns}-tailtip`}>
-            <ellipse cx="167" cy="-12" rx="2.4" ry="1.6" fill="rgba(255,235,200,0.5)" />
-          </g>
-        </g>
+                <g className={`${ns}-tailtip`}>
+                  <ellipse cx="167" cy="-12" rx="2.4" ry="1.6" fill="rgba(255,235,200,0.5)" />
+                </g>
+              </g>
 
-        {/* body — breathes */}
-        <g className={`${ns}-breath`}>
-          <path
-            d="M 60 96 C 50 92, 48 82, 56 74 C 62 68, 72 66, 86 66 L 150 66 C 166 66, 174 76, 174 90 C 174 104, 168 110, 156 110 L 70 110 C 58 110, 56 104, 60 96 Z"
-            fill={`url(#${ns}-fur)`}
-          />
-          <path
-            d="M 70 100 C 90 112, 150 112, 168 100 C 162 110, 80 110, 70 100 Z"
-            fill={`url(#${ns}-cream)`}
-          />
-          <ellipse cx="78" cy="80" rx="14" ry="8" fill="rgba(255,235,200,0.25)" />
-          <ellipse cx="155" cy="78" rx="16" ry="9" fill="rgba(255,235,200,0.18)" />
+              {/* body — breathes */}
+              <g className={`${ns}-breath`}>
+                <path
+                  d="M 60 96 C 50 92, 48 82, 56 74 C 62 68, 72 66, 86 66 L 150 66 C 166 66, 174 76, 174 90 C 174 104, 168 110, 156 110 L 70 110 C 58 110, 56 104, 60 96 Z"
+                  fill={`url(#${ns}-fur)`}
+                />
+                <path d="M 70 100 C 90 112, 150 112, 168 100 C 162 110, 80 110, 70 100 Z" fill={`url(#${ns}-cream)`} />
+                <ellipse cx="78" cy="80" rx="14" ry="8" fill="rgba(255,235,200,0.25)" />
+                <ellipse cx="155" cy="78" rx="16" ry="9" fill="rgba(255,235,200,0.18)" />
 
-          <g fill={`url(#${ns}-stripe)`} opacity="0.65">
-            <path d="M 92 66 q 3 -6 6 0 q -3 6 -6 0 Z" />
-            <path d="M 106 66 q 3 -7 6 0 q -3 7 -6 0 Z" />
-            <path d="M 120 66 q 3 -7 6 0 q -3 7 -6 0 Z" />
-            <path d="M 134 66 q 3 -7 6 0 q -3 7 -6 0 Z" />
-            <path d="M 148 66 q 3 -6 6 0 q -3 6 -6 0 Z" />
-          </g>
-          {/* tabby side wraps — short horizontal arcs that read as fur
+                <g fill={`url(#${ns}-stripe)`} opacity="0.65">
+                  <path d="M 92 66 q 3 -6 6 0 q -3 6 -6 0 Z" />
+                  <path d="M 106 66 q 3 -7 6 0 q -3 7 -6 0 Z" />
+                  <path d="M 120 66 q 3 -7 6 0 q -3 7 -6 0 Z" />
+                  <path d="M 134 66 q 3 -7 6 0 q -3 7 -6 0 Z" />
+                  <path d="M 148 66 q 3 -6 6 0 q -3 6 -6 0 Z" />
+                </g>
+                {/* tabby side wraps — short horizontal arcs that read as fur
               markings, not vertical rib bones. */}
-          <g stroke="#6b3a16" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.4">
-            <path d="M 92 82 q 6 -3 12 0" />
-            <path d="M 110 86 q 7 -3 14 0" />
-            <path d="M 130 82 q 7 -3 14 0" />
-            <path d="M 148 86 q 6 -3 12 0" />
-          </g>
-        </g>
+                <g stroke="#6b3a16" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.4">
+                  <path d="M 92 82 q 6 -3 12 0" />
+                  <path d="M 110 86 q 7 -3 14 0" />
+                  <path d="M 130 82 q 7 -3 14 0" />
+                  <path d="M 148 86 q 6 -3 12 0" />
+                </g>
+              </g>
 
-        {/* back-fur cape — bridges the body's upper back into the haunch top
+              {/* back-fur cape — bridges the body's upper back into the haunch top
             so there's no visible spine seam. Painted in the same fur gradient
             with a subtle stripe wrap for tabby continuity. */}
-        <path
-          d="M 78 68 C 90 60, 130 58, 160 62 C 174 64, 184 70, 182 84 C 180 92, 172 92, 160 88 C 140 82, 110 80, 90 84 C 78 86, 72 80, 78 68 Z"
-          fill={`url(#${ns}-fur)`}
-        />
-        <ellipse cx="120" cy="70" rx="36" ry="6" fill="rgba(255,235,200,0.22)" />
-        <g fill={`url(#${ns}-stripe)`} opacity="0.55">
-          <path d="M 100 64 q 3 -6 6 0 q -3 6 -6 0 Z" />
-          <path d="M 118 62 q 3 -6 6 0 q -3 6 -6 0 Z" />
-          <path d="M 136 62 q 3 -6 6 0 q -3 6 -6 0 Z" />
-          <path d="M 154 64 q 3 -6 6 0 q -3 6 -6 0 Z" />
-        </g>
+              <path
+                d="M 78 68 C 90 60, 130 58, 160 62 C 174 64, 184 70, 182 84 C 180 92, 172 92, 160 88 C 140 82, 110 80, 90 84 C 78 86, 72 80, 78 68 Z"
+                fill={`url(#${ns}-fur)`}
+              />
+              <ellipse cx="120" cy="70" rx="36" ry="6" fill="rgba(255,235,200,0.22)" />
+              <g fill={`url(#${ns}-stripe)`} opacity="0.55">
+                <path d="M 100 64 q 3 -6 6 0 q -3 6 -6 0 Z" />
+                <path d="M 118 62 q 3 -6 6 0 q -3 6 -6 0 Z" />
+                <path d="M 136 62 q 3 -6 6 0 q -3 6 -6 0 Z" />
+                <path d="M 154 64 q 3 -6 6 0 q -3 6 -6 0 Z" />
+              </g>
 
-        {/* back legs (static) */}
-        <path d="M 64 102 C 62 118, 62 124, 66 128 L 76 128 C 78 124, 78 116, 76 102 Z" fill={`url(#${ns}-fur)`} />
-        {/* back legs with proper haunches/thighs.
+              {/* back legs (static) */}
+              <path
+                d="M 64 102 C 62 118, 62 124, 66 128 L 76 128 C 78 124, 78 116, 76 102 Z"
+                fill={`url(#${ns}-fur)`}
+              />
+              {/* back legs with proper haunches/thighs.
             Right rear (the visible "butt"): a rounded haunch bulges up over
             the hip, sweeps down through a muscled thigh, and tapers into the
             paw. Left rear gets a smaller matching haunch hint. Painted under
             the body fur gradient so it reads as one continuous animal. */}
-        {/* right rear haunch + thigh + lower leg — the top of the haunch
+              {/* right rear haunch + thigh + lower leg — the top of the haunch
             sweeps up and back over the tail's attachment point so the tail
             reads as emerging from behind the butt instead of pasted onto
             the body. */}
-        <path
-          d="M 138 86 C 130 90, 128 102, 132 116 C 134 124, 140 130, 150 130 L 164 130 C 174 130, 180 122, 180 108 C 180 92, 184 78, 178 70 C 172 64, 162 70, 156 76 C 150 80, 144 82, 138 86 Z"
-          fill={`url(#${ns}-fur)`}
-        />
-        {/* darker thigh shading along the back of the haunch, hugging the
+              <path
+                d="M 138 86 C 130 90, 128 102, 132 116 C 134 124, 140 130, 150 130 L 164 130 C 174 130, 180 122, 180 108 C 180 92, 184 78, 178 70 C 172 64, 162 70, 156 76 C 150 80, 144 82, 138 86 Z"
+                fill={`url(#${ns}-fur)`}
+              />
+              {/* darker thigh shading along the back of the haunch, hugging the
             curve where the tail tucks in behind */}
-        <path
-          d="M 174 78 C 182 92, 182 116, 172 128 C 178 122, 182 112, 182 100 C 182 90, 180 82, 174 78 Z"
-          fill="#7a4818"
-          opacity="0.6"
-        />
-        {/* soft crease where tail meets butt — sells the tuck */}
-        <path
-          d="M 172 80 C 176 86, 178 92, 178 100"
-          stroke="#5a2f10"
-          strokeWidth="1.4"
-          strokeLinecap="round"
-          fill="none"
-          opacity="0.45"
-        />
-        {/* warm haunch highlight catching light on top */}
-        <ellipse cx="152" cy="88" rx="12" ry="6" fill="rgba(255,235,200,0.3)" transform="rotate(-14 152 88)" />
-        {/* haunch stripe wraps */}
-        <g stroke="#6b3a16" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.45">
-          <path d="M 142 96 C 146 102, 150 106, 152 112" />
-          <path d="M 152 92 C 158 100, 162 106, 164 114" />
-        </g>
-        {/* lower-leg/foot at base */}
-        <path d="M 144 122 C 142 128, 144 132, 150 132 L 164 132 C 168 132, 170 128, 168 122 Z" fill="#a06a2c" />
+              <path
+                d="M 174 78 C 182 92, 182 116, 172 128 C 178 122, 182 112, 182 100 C 182 90, 180 82, 174 78 Z"
+                fill="#7a4818"
+                opacity="0.6"
+              />
+              {/* soft crease where tail meets butt — sells the tuck */}
+              <path
+                d="M 172 80 C 176 86, 178 92, 178 100"
+                stroke="#5a2f10"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                fill="none"
+                opacity="0.45"
+              />
+              {/* warm haunch highlight catching light on top */}
+              <ellipse cx="152" cy="88" rx="12" ry="6" fill="rgba(255,235,200,0.3)" transform="rotate(-14 152 88)" />
+              {/* haunch stripe wraps */}
+              <g stroke="#6b3a16" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.45">
+                <path d="M 142 96 C 146 102, 150 106, 152 112" />
+                <path d="M 152 92 C 158 100, 162 106, 164 114" />
+              </g>
+              {/* lower-leg/foot at base */}
+              <path d="M 144 122 C 142 128, 144 132, 150 132 L 164 132 C 168 132, 170 128, 168 122 Z" fill="#a06a2c" />
 
-        {/* left rear thigh — smaller bulge for the far side */}
-        <path
-          d="M 60 96 C 56 100, 56 112, 60 122 C 62 128, 68 130, 74 130 L 80 130 C 84 128, 84 120, 82 110 C 80 100, 72 94, 60 96 Z"
-          fill={`url(#${ns}-fur)`}
-        />
-        <ellipse cx="68" cy="100" rx="7" ry="4" fill="rgba(255,235,200,0.22)" transform="rotate(-10 68 100)" />
-        <path d="M 64 124 C 62 130, 64 132, 68 132 L 78 132 C 82 132, 82 128, 80 124 Z" fill="#a06a2c" />
+              {/* left rear thigh — smaller bulge for the far side */}
+              <path
+                d="M 60 96 C 56 100, 56 112, 60 122 C 62 128, 68 130, 74 130 L 80 130 C 84 128, 84 120, 82 110 C 80 100, 72 94, 60 96 Z"
+                fill={`url(#${ns}-fur)`}
+              />
+              <ellipse cx="68" cy="100" rx="7" ry="4" fill="rgba(255,235,200,0.22)" transform="rotate(-10 68 100)" />
+              <path d="M 64 124 C 62 130, 64 132, 68 132 L 78 132 C 82 132, 82 128, 80 124 Z" fill="#a06a2c" />
 
-        {/* ankle/wrist cuffs — fur tufts + dark crease above each paw so the
+              {/* ankle/wrist cuffs — fur tufts + dark crease above each paw so the
             joints read clearly on all four limbs. */}
-        <g opacity="0.85">
-          {/* back-left ankle */}
-          <ellipse cx="71" cy="124" rx="9" ry="3" fill={`url(#${ns}-fur)`} />
-          <path d="M 64 125 C 68 127, 74 127, 78 125" stroke="#5a2f10" strokeWidth="0.9" strokeLinecap="round" fill="none" opacity="0.6" />
-          {/* back-right ankle */}
-          <ellipse cx="155" cy="124" rx="11" ry="3.4" fill={`url(#${ns}-fur)`} />
-          <path d="M 145 125 C 150 127, 160 127, 165 125" stroke="#5a2f10" strokeWidth="0.9" strokeLinecap="round" fill="none" opacity="0.6" />
-        </g>
+              <g opacity="0.85">
+                {/* back-left ankle */}
+                <ellipse cx="71" cy="124" rx="9" ry="3" fill={`url(#${ns}-fur)`} />
+                <path
+                  d="M 64 125 C 68 127, 74 127, 78 125"
+                  stroke="#5a2f10"
+                  strokeWidth="0.9"
+                  strokeLinecap="round"
+                  fill="none"
+                  opacity="0.6"
+                />
+                {/* back-right ankle */}
+                <ellipse cx="155" cy="124" rx="11" ry="3.4" fill={`url(#${ns}-fur)`} />
+                <path
+                  d="M 145 125 C 150 127, 160 127, 165 125"
+                  stroke="#5a2f10"
+                  strokeWidth="0.9"
+                  strokeLinecap="round"
+                  fill="none"
+                  opacity="0.6"
+                />
+              </g>
 
-        <ellipse cx="71" cy="132" rx="6" ry="2" fill="#3a1d0a" />
-        <ellipse cx="155" cy="132" rx="6.5" ry="2" fill="#3a1d0a" />
-        <ellipse cx="166" cy="130" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
+              <ellipse cx="71" cy="132" rx="6" ry="2" fill="#3a1d0a" />
+              <ellipse cx="155" cy="132" rx="6.5" ry="2" fill="#3a1d0a" />
+              <ellipse cx="166" cy="130" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
 
-        {/* (no far-side front paw — it's hidden behind the near front paw in this 3/4 view) */}
+              {/* (no far-side front paw — it's hidden behind the near front paw in this 3/4 view) */}
 
-        {/* front-left paw — taps */}
-        <g className={`${ns}-pawFL`}>
-          <path d="M 76 102 C 75 116, 75 122, 78 126 L 86 126 C 88 122, 88 114, 87 102 Z" fill="#a06a2c" />
-          {/* wrist cuff */}
-          <ellipse cx="82" cy="120" rx="7" ry="2.4" fill={`url(#${ns}-fur)`} />
-          <path d="M 76 121 C 80 123, 86 123, 88 121" stroke="#5a2f10" strokeWidth="0.9" strokeLinecap="round" fill="none" opacity="0.6" />
-          <ellipse cx="82" cy="126" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
-        </g>
+              {/* front-left paw — taps */}
+              <g className={`${ns}-pawFL`}>
+                <path d="M 76 102 C 75 116, 75 122, 78 126 L 86 126 C 88 122, 88 114, 87 102 Z" fill="#a06a2c" />
+                {/* wrist cuff */}
+                <ellipse cx="82" cy="120" rx="7" ry="2.4" fill={`url(#${ns}-fur)`} />
+                <path
+                  d="M 76 121 C 80 123, 86 123, 88 121"
+                  stroke="#5a2f10"
+                  strokeWidth="0.9"
+                  strokeLinecap="round"
+                  fill="none"
+                  opacity="0.6"
+                />
+                <ellipse cx="82" cy="126" rx="5" ry="1.6" fill="#3a1d0a" opacity="0.85" />
+              </g>
 
-        {/* head — bobs and tilts */}
-        <g className={`${ns}-head`}>
-          {/* ears */}
-          <g className={`${ns}-earL`}>
-            <path d="M 24 50 L 30 22 L 46 44 Z" fill={`url(#${ns}-fur)`} />
-            <path d="M 30 46 L 32 30 L 42 44 Z" fill={`url(#${ns}-ear)`} />
-          </g>
-          <g className={`${ns}-earR`}>
-            <path d="M 76 50 L 70 22 L 54 44 Z" fill={`url(#${ns}-fur)`} />
-            <path d="M 70 46 L 68 30 L 58 44 Z" fill={`url(#${ns}-ear)`} />
-          </g>
+              {/* head — bobs and tilts */}
+              <g className={`${ns}-head`}>
+                {/* ears */}
+                <g className={`${ns}-earL`}>
+                  <path d="M 24 50 L 30 22 L 46 44 Z" fill={`url(#${ns}-fur)`} />
+                  <path d="M 30 46 L 32 30 L 42 44 Z" fill={`url(#${ns}-ear)`} />
+                </g>
+                <g className={`${ns}-earR`}>
+                  <path d="M 76 50 L 70 22 L 54 44 Z" fill={`url(#${ns}-fur)`} />
+                  <path d="M 70 46 L 68 30 L 58 44 Z" fill={`url(#${ns}-ear)`} />
+                </g>
 
-          <ellipse cx="50" cy="62" rx="28" ry="24" fill={`url(#${ns}-fur)`} />
+                <ellipse cx="50" cy="62" rx="28" ry="24" fill={`url(#${ns}-fur)`} />
 
-          {/* Friendly brows — gentle upward arches above each eye, raised at
+                {/* Friendly brows — gentle upward arches above each eye, raised at
               the inner ends. No central furrow stripe. */}
-          <g stroke="#6b3a16" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.4">
-            <path d="M 33 56 Q 40 52 46 55" />
-            <path d="M 54 55 Q 60 52 67 56" />
-          </g>
+                <g stroke="#6b3a16" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.4">
+                  <path d="M 33 56 Q 40 52 46 55" />
+                  <path d="M 54 55 Q 60 52 67 56" />
+                </g>
 
-          <ellipse cx="50" cy="74" rx="16" ry="10" fill="#fbe7c4" opacity="0.85" />
-          <ellipse cx="50" cy="80" rx="9" ry="4" fill="#fff3da" opacity="0.7" />
+                <ellipse cx="50" cy="74" rx="16" ry="10" fill="#fbe7c4" opacity="0.85" />
+                <ellipse cx="50" cy="80" rx="9" ry="4" fill="#fff3da" opacity="0.7" />
 
-          {/* eyes — sclera + darting pupils + blink lids */}
-          <ellipse cx="40" cy="62" rx="4.2" ry="5" fill={`url(#${ns}-eye)`} />
-          <ellipse cx="60" cy="62" rx="4.2" ry="5" fill={`url(#${ns}-eye)`} />
-          <g className={`${ns}-pupils`}>
-            <ellipse cx="40" cy="62" rx="1.1" ry="4.2" fill="#0a0a0a" />
-            <ellipse cx="60" cy="62" rx="1.1" ry="4.2" fill="#0a0a0a" />
-            <circle cx="41.4" cy="60" r="1" fill="#ffffff" />
-            <circle cx="61.4" cy="60" r="1" fill="#ffffff" />
-          </g>
-          <ellipse cx="40" cy="62" rx="4.2" ry="5" fill="none" stroke="#3a1d0a" strokeWidth="0.6" />
-          <ellipse cx="60" cy="62" rx="4.2" ry="5" fill="none" stroke="#3a1d0a" strokeWidth="0.6" />
-          {/* eyelids — scaleY blink */}
-          <g className={`${ns}-lid`} fill={`url(#${ns}-fur)`}>
-            <ellipse cx="40" cy="62" rx="4.4" ry="5.2" />
-            <ellipse cx="60" cy="62" rx="4.4" ry="5.2" />
-          </g>
+                {/* eyes — sclera + darting pupils + blink lids */}
+                <ellipse cx="40" cy="62" rx="4.2" ry="5" fill={`url(#${ns}-eye)`} />
+                <ellipse cx="60" cy="62" rx="4.2" ry="5" fill={`url(#${ns}-eye)`} />
+                <g className={`${ns}-pupils`}>
+                  <ellipse cx="40" cy="62" rx="1.1" ry="4.2" fill="#0a0a0a" />
+                  <ellipse cx="60" cy="62" rx="1.1" ry="4.2" fill="#0a0a0a" />
+                  <circle cx="41.4" cy="60" r="1" fill="#ffffff" />
+                  <circle cx="61.4" cy="60" r="1" fill="#ffffff" />
+                </g>
+                <ellipse cx="40" cy="62" rx="4.2" ry="5" fill="none" stroke="#3a1d0a" strokeWidth="0.6" />
+                <ellipse cx="60" cy="62" rx="4.2" ry="5" fill="none" stroke="#3a1d0a" strokeWidth="0.6" />
+                {/* eyelids — scaleY blink */}
+                <g className={`${ns}-lid`} fill={`url(#${ns}-fur)`}>
+                  <ellipse cx="40" cy="62" rx="4.4" ry="5.2" />
+                  <ellipse cx="60" cy="62" rx="4.4" ry="5.2" />
+                </g>
 
-          {/* nose + mouth */}
-          <path d="M 46 72 L 54 72 L 50 76 Z" fill="#7a3a2a" />
-          <path d="M 46 72 L 54 72 L 50 76 Z" fill="none" stroke="#3a1d0a" strokeWidth="0.5" />
-          <path d="M 50 76 L 50 79" stroke="#3a1d0a" strokeWidth="0.7" strokeLinecap="round" />
-          <path d="M 50 79 C 48 81, 45 81, 43.5 79.5" fill="none" stroke="#3a1d0a" strokeWidth="0.7" strokeLinecap="round" />
-          <path d="M 50 79 C 52 81, 55 81, 56.5 79.5" fill="none" stroke="#3a1d0a" strokeWidth="0.7" strokeLinecap="round" />
+                {/* nose + mouth */}
+                <path d="M 46 72 L 54 72 L 50 76 Z" fill="#7a3a2a" />
+                <path d="M 46 72 L 54 72 L 50 76 Z" fill="none" stroke="#3a1d0a" strokeWidth="0.5" />
+                <path d="M 50 76 L 50 79" stroke="#3a1d0a" strokeWidth="0.7" strokeLinecap="round" />
+                <path
+                  d="M 50 79 C 48 81, 45 81, 43.5 79.5"
+                  fill="none"
+                  stroke="#3a1d0a"
+                  strokeWidth="0.7"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M 50 79 C 52 81, 55 81, 56.5 79.5"
+                  fill="none"
+                  stroke="#3a1d0a"
+                  strokeWidth="0.7"
+                  strokeLinecap="round"
+                />
 
-          {/* yawn mouth — only visible during the yawn move */}
-          <ellipse className={`${ns}-yawnmouth`} cx="50" cy="80" rx="3.4" ry="3.2" fill="#2a1208" />
-          <ellipse className={`${ns}-yawnmouth`} cx="50" cy="80.5" rx="2" ry="2" fill="#c44a55" opacity="0.85" />
+                {/* yawn mouth — only visible during the yawn move */}
+                <ellipse className={`${ns}-yawnmouth`} cx="50" cy="80" rx="3.4" ry="3.2" fill="#2a1208" />
+                <ellipse className={`${ns}-yawnmouth`} cx="50" cy="80.5" rx="2" ry="2" fill="#c44a55" opacity="0.85" />
 
-          {/* whiskers — quiver */}
-          <g className={`${ns}-whisk`}
-             stroke="#3a1d0a" strokeWidth="0.6" strokeLinecap="round" opacity="0.75" fill="none">
-            <path d="M 42 76 C 30 76, 22 74, 14 72" />
-            <path d="M 42 78 C 30 80, 22 82, 14 84" />
-            <path d="M 58 76 C 70 76, 78 74, 86 72" />
-            <path d="M 58 78 C 70 80, 78 82, 86 84" />
+                {/* whiskers — quiver */}
+                <g
+                  className={`${ns}-whisk`}
+                  stroke="#3a1d0a"
+                  strokeWidth="0.6"
+                  strokeLinecap="round"
+                  opacity="0.75"
+                  fill="none"
+                >
+                  <path d="M 42 76 C 30 76, 22 74, 14 72" />
+                  <path d="M 42 78 C 30 80, 22 82, 14 84" />
+                  <path d="M 58 76 C 70 76, 78 74, 86 72" />
+                  <path d="M 58 78 C 70 80, 78 82, 86 84" />
+                </g>
+              </g>
+            </g>
           </g>
         </g>
-      </g>
-      </g>
-      </g>
       </g>
     </svg>
   );
@@ -648,7 +682,7 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
 type PetStyle = { body: string; head: string; accent: string };
 
 const STYLES: Record<string, PetStyle> = {
-  dog: { body: "linear-gradient(160deg,#f3a3b3,#b7445e)", head: "#f8c4cf", accent: "#5a1a2a" },
+  dog: { body: "linear-gradient(160deg,#f3a3b3,#b7445e)", head: "#ffffff", accent: "#5a1a2a" },
   dragon: { body: "linear-gradient(160deg,#7fd3b7,#1f7a5e)", head: "#a8e8d0", accent: "#0e3a2c" },
   phoenix: { body: "linear-gradient(160deg,#f7c2b0,#c95f4a)", head: "#fbd9cc", accent: "#5e1f12" },
   bird: { body: "linear-gradient(160deg,#9bc28a,#3f7236)", head: "#bcd8ad", accent: "#1f3a18" },
@@ -664,11 +698,7 @@ export function PetFigurine({ petId, size = 56 }: PetFigurineProps) {
   const bodyH = size * 0.62;
   const headD = size * 0.42;
   return (
-    <div
-      className="relative flex flex-col items-center justify-end"
-      style={{ width: size, height: size }}
-      aria-hidden
-    >
+    <div className="relative flex flex-col items-center justify-end" style={{ width: size, height: size }} aria-hidden>
       <div
         className="relative"
         style={{
@@ -683,11 +713,25 @@ export function PetFigurine({ petId, size = 56 }: PetFigurineProps) {
       >
         <span
           className="absolute"
-          style={{ top: "45%", left: "30%", width: headD * 0.1, height: headD * 0.1, borderRadius: "50%", background: s.accent }}
+          style={{
+            top: "45%",
+            left: "30%",
+            width: headD * 0.1,
+            height: headD * 0.1,
+            borderRadius: "50%",
+            background: s.accent,
+          }}
         />
         <span
           className="absolute"
-          style={{ top: "45%", right: "30%", width: headD * 0.1, height: headD * 0.1, borderRadius: "50%", background: s.accent }}
+          style={{
+            top: "45%",
+            right: "30%",
+            width: headD * 0.1,
+            height: headD * 0.1,
+            borderRadius: "50%",
+            background: s.accent,
+          }}
         />
       </div>
       <div
@@ -701,7 +745,14 @@ export function PetFigurine({ petId, size = 56 }: PetFigurineProps) {
       />
       <div
         className="absolute"
-        style={{ bottom: -2, width: bodyW * 0.9, height: 4, borderRadius: "50%", background: "rgba(0,0,0,0.25)", filter: "blur(2px)" }}
+        style={{
+          bottom: -2,
+          width: bodyW * 0.9,
+          height: 4,
+          borderRadius: "50%",
+          background: "rgba(0,0,0,0.25)",
+          filter: "blur(2px)",
+        }}
       />
     </div>
   );
@@ -720,7 +771,7 @@ type ShelfPetProps = {
 export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps) {
   const { petsConfig, deletePet, recallPet } = useSettings();
   const cfg = petsConfig["shelf"];
-  const pet = !blank && cfg?.pet ? PETS.find((p) => p.id === cfg.pet) ?? PETS.find((p) => p.id === "cozy-cat") : null;
+  const pet = !blank && cfg?.pet ? (PETS.find((p) => p.id === cfg.pet) ?? PETS.find((p) => p.id === "cozy-cat")) : null;
   const [hover, setHover] = useState(false);
   const [travel, setTravel] = useState<CatTravel>("none");
   const [pendingDelete, setPendingDelete] = useState(false);
@@ -792,9 +843,7 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
             ? "transparent"
             : "repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0 6px, rgba(255,255,255,0.05) 6px 12px)",
           border: showCat ? "1px solid transparent" : "2px dashed rgba(0,0,0,0.32)",
-          boxShadow: showCat
-            ? "none"
-            : "inset 0 0 0 1px rgba(255,255,255,0.25), 0 0 0 3px rgba(255,255,255,0.08)",
+          boxShadow: showCat ? "none" : "inset 0 0 0 1px rgba(255,255,255,0.25), 0 0 0 3px rgba(255,255,255,0.08)",
         }}
       >
         {showCat && pet ? (
@@ -814,7 +863,12 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
         ) : (
           <span
             className="absolute inset-0 flex items-center justify-center"
-            style={{ color: "var(--ink)", fontSize: Math.round(slotH * 0.35), lineHeight: 1, opacity: awayActive ? 0.4 : 1 }}
+            style={{
+              color: "var(--ink)",
+              fontSize: Math.round(slotH * 0.35),
+              lineHeight: 1,
+              opacity: awayActive ? 0.4 : 1,
+            }}
             title={awayActive ? "Companion is away" : undefined}
           >
             {awayActive ? "💤" : "🐈"}
@@ -889,8 +943,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
     if (!draft.pet) return;
     const next: PetConfig = {
       ...draft,
-      todoItems:
-        draft.todoEnabled && draft.todoItems.length === 0 ? [...SUGGESTED] : draft.todoItems,
+      todoItems: draft.todoEnabled && draft.todoItems.length === 0 ? [...SUGGESTED] : draft.todoItems,
     };
     setPetConfig(SHELF_KEY, next);
     onClose();
@@ -908,7 +961,10 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             Would you like to visit with an animal companion today?
           </p>
           <button
-            onClick={() => { slapToBasic(); onClose(); }}
+            onClick={() => {
+              slapToBasic();
+              onClose();
+            }}
             className="mb-4 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
             style={{
               color: SHEET_FG,
@@ -985,7 +1041,10 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             Choose Companion?
           </p>
           <button
-            onClick={() => { slapToBasic(); onClose(); }}
+            onClick={() => {
+              slapToBasic();
+              onClose();
+            }}
             className="w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
             style={{
               color: SHEET_FG,
@@ -999,7 +1058,10 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
             [ SIMPLE MODE NOW ]
           </button>
           {(() => {
-            const currentIdx = Math.max(0, PETS.findIndex((p) => p.id === draft.pet));
+            const currentIdx = Math.max(
+              0,
+              PETS.findIndex((p) => p.id === draft.pet),
+            );
             const current = PETS[currentIdx];
             const step = (dir: 1 | -1) => {
               const next = PETS[(currentIdx + dir + PETS.length) % PETS.length];
@@ -1156,15 +1218,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
   );
 }
 
-function Row({
-  checked,
-  onChange,
-  label,
-}: {
-  checked: boolean;
-  onChange: (v: boolean) => void;
-  label: string;
-}) {
+function Row({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
   return (
     <button
       onClick={() => onChange(!checked)}
@@ -1231,7 +1285,9 @@ function SendAwayRow({
         className="mt-5 flex w-full items-center justify-center gap-2 rounded-full px-2 py-0 text-[10px] tracking-[0.04em]"
         style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif', opacity: 0.85 }}
       >
-        <span aria-hidden style={{ opacity: 0.55 }}>—</span>
+        <span aria-hidden style={{ opacity: 0.55 }}>
+          —
+        </span>
         <span>Away — back in {remainingLabel}.</span>
         <button
           onClick={onRecall}
@@ -1240,7 +1296,9 @@ function SendAwayRow({
         >
           Call back
         </button>
-        <span aria-hidden style={{ opacity: 0.55 }}>—</span>
+        <span aria-hidden style={{ opacity: 0.55 }}>
+          —
+        </span>
       </div>
     );
   }
@@ -1255,7 +1313,9 @@ function SendAwayRow({
       className="mt-5 flex w-full items-center justify-center gap-[0.5ch] rounded-full px-2 py-0 text-[10px] leading-snug tracking-[0.04em]"
       style={{ color: SHEET_FG, fontFamily: '"Fraunces", Georgia, serif', opacity: 0.75 }}
     >
-      <span aria-hidden style={{ opacity: 0.55 }}>—</span>
+      <span aria-hidden style={{ opacity: 0.55 }}>
+        —
+      </span>
       <span>Send cat away for</span>
       <input
         type="number"
@@ -1285,7 +1345,9 @@ function SendAwayRow({
       >
         Send
       </button>
-      <span aria-hidden style={{ opacity: 0.55 }}>—</span>
+      <span aria-hidden style={{ opacity: 0.55 }}>
+        —
+      </span>
     </div>
   );
 }
