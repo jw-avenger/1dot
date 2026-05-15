@@ -509,21 +509,23 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
 
           {draft.pet && (
             <>
-              <Row
-                checked={draft.animations}
-                onChange={(v) => setDraft({ ...draft, animations: v })}
-                label="Would you like light animations?"
-              />
-              <Row
-                checked={draft.todoEnabled}
-                onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
-                label="Would you like a simple starter companion list?"
-              />
-              <Row
-                checked={!!draft.remindersEnabled}
-                onChange={(v) => setDraft({ ...draft, remindersEnabled: v })}
-                label="Would you like gentle reminders based on your preferences?"
-              />
+              <div className="space-y-0.5">
+                <Row
+                  checked={draft.animations}
+                  onChange={(v) => setDraft({ ...draft, animations: v })}
+                  label="Would you like light animations?"
+                />
+                <Row
+                  checked={draft.todoEnabled}
+                  onChange={(v) => setDraft({ ...draft, todoEnabled: v })}
+                  label="Would you like a simple starter companion list?"
+                />
+                <Row
+                  checked={!!draft.remindersEnabled}
+                  onChange={(v) => setDraft({ ...draft, remindersEnabled: v })}
+                  label="Would you like gentle reminders based on your preferences?"
+                />
+              </div>
 
               <div className="space-y-2 pt-1">
                 <button
