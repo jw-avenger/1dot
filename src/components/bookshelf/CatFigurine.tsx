@@ -117,11 +117,17 @@ export function CatFigurine({ size = 96, animated = true }: CatProps) {
             0%,100% { transform: scaleX(1); opacity: 0.32; }
             50%     { transform: scaleX(0.96); opacity: 0.28; }
           }
-          /* tail — slow S-sway from base */
-          .${ns}-tail { transform-origin: 162px 92px; animation: ${ns}-tail 3.6s ease-in-out infinite; }
+          /* tail — slow sway from base */
+          .${ns}-tail { transform-origin: 168px 94px; animation: ${ns}-tail 3.8s ease-in-out infinite; }
           @keyframes ${ns}-tail {
-            0%,100% { transform: rotate(-6deg); }
-            50%     { transform: rotate(10deg); }
+            0%,100% { transform: rotate(-8deg); }
+            50%     { transform: rotate(12deg); }
+          }
+          /* tail tip — extra curl at the end */
+          .${ns}-tailtip { transform-origin: 186px 50px; animation: ${ns}-tailtip 3.8s ease-in-out infinite; }
+          @keyframes ${ns}-tailtip {
+            0%,100% { transform: rotate(6deg); }
+            50%     { transform: rotate(-10deg); }
           }
           /* head — gentle bob + tilt, syncs with breath */
           .${ns}-head { transform-origin: 50px 78px; animation: ${ns}-head 6.4s ease-in-out infinite; }
