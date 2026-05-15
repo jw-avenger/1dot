@@ -180,7 +180,10 @@ function load() {
   if (typeof window === "undefined") return;
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) state = { ...defaults, ...JSON.parse(raw) };
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state = { ...defaults, ...parsed, petsConfig: normalizePetsConfig(parsed.petsConfig) };
+    }
   } catch {
     // ignore
   }
@@ -192,7 +195,7 @@ function load() {
       state = {
         ...state,
         petsConfig: {
-          shelf: { pet: "cat", animations: true, todoEnabled: false, todoItems: [] },
+          shelf: freshCatConfig(),
         },
         petDismissed: false,
         plantDismissed: false,
@@ -266,9 +269,10 @@ export function useSettings() {
     },
     setPetConfig: (id: string, cfg: PetConfig | null) => {
       const next = { ...state.petsConfig };
-      if (cfg) next[id] = cfg;
+      const normalized = normalizePetConfig(cfg);
+      if (normalized) next[id] = normalized;
       else delete next[id];
-      patch({ petsConfig: next, petDismissed: cfg ? false : state.petDismissed });
+      patch({ petsConfig: next, petDismissed: normalized ? false : state.petDismissed });
     },
     dismissPet: () => patch({ petDismissed: true }),
     deletePet: (id: string) => {
