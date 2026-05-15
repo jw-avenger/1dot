@@ -182,7 +182,7 @@ export function CatFigurine({ size = 96, animated = true }: CatProps) {
             50%     { transform: rotate(0.6deg); }
           }
           @media (prefers-reduced-motion: reduce) {
-            .${ns}-breath, .${ns}-shadow, .${ns}-tail, .${ns}-head,
+            .${ns}-breath, .${ns}-shadow, .${ns}-tail, .${ns}-tailtip, .${ns}-head,
             .${ns}-earL, .${ns}-earR, .${ns}-lid, .${ns}-pupils,
             .${ns}-pawFL, .${ns}-whisk { animation: none; }
           }
