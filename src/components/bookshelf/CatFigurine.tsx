@@ -513,7 +513,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 <Row
                   checked={draft.animations}
                   onChange={(v) => setDraft({ ...draft, animations: v })}
-                  label="Would you like light animations?"
+                  label="Enable light animations."
                 />
                 <Row
                   checked={draft.todoEnabled}
