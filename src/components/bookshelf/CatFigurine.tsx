@@ -373,7 +373,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
       {phase === "ask" ? (
         <>
           <p className="mb-3 text-center text-base leading-snug" style={{ fontFamily: '"Fraunces", Georgia, serif' }}>
-            Would you like a companion?
+            Would you like an animal companion?
           </p>
           <button
             onClick={() => { slapToBasic(); onClose(); }}
