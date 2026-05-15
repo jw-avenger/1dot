@@ -198,7 +198,6 @@ export function CatFigurine({ size = 96 }: CatProps) {
 type PetStyle = { body: string; head: string; accent: string };
 
 const STYLES: Record<string, PetStyle> = {
-  cat: { body: "linear-gradient(160deg,#e8b27a,#a8632e)", head: "#f0c79a", accent: "#5a2f10" },
   dog: { body: "linear-gradient(160deg,#f3a3b3,#b7445e)", head: "#f8c4cf", accent: "#5a1a2a" },
   dragon: { body: "linear-gradient(160deg,#7fd3b7,#1f7a5e)", head: "#a8e8d0", accent: "#0e3a2c" },
   phoenix: { body: "linear-gradient(160deg,#f7c2b0,#c95f4a)", head: "#fbd9cc", accent: "#5e1f12" },
@@ -209,7 +208,8 @@ const STYLES: Record<string, PetStyle> = {
 type PetFigurineProps = { petId: string; size?: number };
 
 export function PetFigurine({ petId, size = 56 }: PetFigurineProps) {
-  const s = STYLES[petId] ?? STYLES.cat;
+  const s = STYLES[petId];
+  if (!s) return <CatFigurine size={Math.round(size * 1.24)} />;
   const bodyW = size * 0.78;
   const bodyH = size * 0.62;
   const headD = size * 0.42;
@@ -270,7 +270,7 @@ type ShelfPetProps = {
 export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps) {
   const { petsConfig, deletePet } = useSettings();
   const cfg = petsConfig["shelf"];
-  const pet = !blank && cfg?.pet ? PETS.find((p) => p.id === cfg.pet) ?? PETS.find((p) => p.id === "cat") : null;
+  const pet = !blank && cfg?.pet ? PETS.find((p) => p.id === cfg.pet) ?? PETS.find((p) => p.id === "cozy-cat") : null;
   const [hover, setHover] = useState(false);
 
   const slotH = height;
@@ -301,7 +301,7 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
       >
         {pet ? (
           <div className="pb-1">
-            {pet.id === "cat" ? (
+            {pet.id === "cozy-cat" ? (
               <CatFigurine size={catSize} />
             ) : (
               <PetFigurine petId={pet.id} size={genericSize} />

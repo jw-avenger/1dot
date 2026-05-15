@@ -56,7 +56,7 @@ export type PetConfig = {
 };
 
 export const PETS: { id: string; label: string; emoji: string }[] = [
-  { id: "cat", label: "Cozy Theme Companion (Cat)", emoji: "🐈" },
+  { id: "cozy-cat", label: "Cozy Theme Companion (Cat)", emoji: "🐈" },
   { id: "dog", label: "Romance Theme Companion (Dog)", emoji: "🐕" },
   { id: "dragon", label: "Whimsical Theme Companion (Dragon)", emoji: "🐉" },
   { id: "phoenix", label: "Spa Theme Companion (Phoenix)", emoji: "🦩" },
@@ -64,7 +64,7 @@ export const PETS: { id: string; label: string; emoji: string }[] = [
   { id: "hamster", label: "Paper Planner Theme Companion (Hamster)", emoji: "🐹" },
 ];
 
-const CANONICAL_CAT_ID = "cat";
+const CANONICAL_CAT_ID = "cozy-cat";
 
 function freshCatConfig(): PetConfig {
   return { pet: CANONICAL_CAT_ID, animations: true, todoEnabled: false, todoItems: [], remindersEnabled: false };
@@ -72,6 +72,7 @@ function freshCatConfig(): PetConfig {
 
 function normalizePetId(pet: string | null | undefined): string | null {
   if (!pet) return null;
+  if (pet === "cat") return CANONICAL_CAT_ID;
   if (PETS.some((p) => p.id === pet)) return pet;
   // Older builds briefly used non-PETS identifiers for the cozy cat model.
   // Unknown saved companion ids are treated as that legacy cat, not as empty.
