@@ -425,10 +425,12 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
             <path d="M 197 16 q -3 -6 -1 -9 q 5 1 6 7 q -3 3 -5 2 Z" />
           </g>
 
-          {/* tip — soft rounded cap painted in the same fur gradient */}
+          {/* tip — the round stroke cap on the main path provides a natural,
+              tapered end. A tiny highlight kisses the lit edge so it still
+              reads as a fur tip rather than a stub. The empty group preserves
+              the rig anchor for the tip-flick animation. */}
           <g className={animated ? `${ns}-tailtip` : undefined}>
-            <ellipse cx="170" cy="-10" rx="11" ry="9" fill={`url(#${ns}-fur)`} />
-            <ellipse cx="167" cy="-14" rx="3.5" ry="2.2" fill="rgba(255,235,200,0.5)" />
+            <ellipse cx="167" cy="-12" rx="2.4" ry="1.6" fill="rgba(255,235,200,0.5)" />
           </g>
         </g>
 
