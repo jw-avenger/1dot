@@ -295,7 +295,7 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
             e.stopPropagation();
             setPetConfig("shelf", null);
           }}
-          aria-label="Remove pet"
+          aria-label="Remove companion"
           className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-wood-dark text-[10px] text-paper shadow"
         >
           ×
