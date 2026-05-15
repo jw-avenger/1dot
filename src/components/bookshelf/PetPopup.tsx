@@ -85,9 +85,28 @@ export function PetPopup({ open, onClose }: Props) {
         </>
       ) : (
         <div className="space-y-4">
-          <p className="text-center text-sm opacity-80">Choose a friend</p>
+          <button
+            onClick={() => setPickerOpen((v) => !v)}
+            aria-expanded={pickerOpen}
+            className="flex w-full items-center justify-center gap-2 text-center text-sm opacity-80 transition hover:opacity-100"
+          >
+            <span>{draft.pet ? PETS.find((p) => p.id === draft.pet)?.label ?? "Choose a friend" : "Choose a friend"}</span>
+            <span
+              className="inline-block transition-transform"
+              style={{ transform: pickerOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+              aria-hidden
+            >
+              ▾
+            </span>
+          </button>
 
-          <div className="grid grid-cols-3 gap-2">
+          <div
+            className="grid grid-cols-3 gap-2 overflow-hidden transition-all duration-300"
+            style={{
+              maxHeight: pickerOpen ? 400 : 0,
+              opacity: pickerOpen ? 1 : 0,
+            }}
+          >
             {PETS.map((p) => {
               const active = draft.pet === p.id;
               return (
