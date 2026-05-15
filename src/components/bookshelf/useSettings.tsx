@@ -52,6 +52,7 @@ export type PetConfig = {
   animations: boolean;
   todoEnabled: boolean;
   todoItems: string[];
+  remindersEnabled?: boolean;
 };
 
 export const PETS: { id: string; label: string; emoji: string }[] = [
