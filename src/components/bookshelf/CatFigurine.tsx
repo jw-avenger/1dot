@@ -618,14 +618,24 @@ function Row({
       onClick={() => onChange(!checked)}
       className="flex w-full justify-center rounded-full px-2 py-0 text-[10px] leading-snug tracking-[0.04em] transition hover:opacity-100"
       style={{
-        backgroundColor: checked ? "rgba(255,255,255,0.10)" : "transparent",
+        backgroundColor: "transparent",
         border: "none",
         color: SHEET_FG,
         opacity: checked ? 1 : 0.6,
         fontFamily: '"Fraunces", Georgia, serif',
       }}
     >
-      <span>{label}</span>
+      <span
+        style={{
+          backgroundColor: checked ? "rgba(255,255,255,0.18)" : "transparent",
+          padding: checked ? "0 0.25em" : 0,
+          borderRadius: "2px",
+          boxDecorationBreak: "clone",
+          WebkitBoxDecorationBreak: "clone",
+        }}
+      >
+        {label}
+      </span>
     </button>
   );
 }
