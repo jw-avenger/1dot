@@ -517,12 +517,19 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 >
                   ▲
                 </button>
-                <span
-                  className="text-center text-[12px] tracking-[0.04em]"
-                  style={{ fontFamily: '"Fraunces", Georgia, serif' }}
+                <button
+                  onClick={() => step(1)}
+                  aria-label="Next companion"
+                  className="group rounded-sm text-center text-[12px] tracking-[0.04em] transition"
+                  style={{ fontFamily: '"Fraunces", Georgia, serif', color: SHEET_FG }}
                 >
-                  {current?.label ?? "Choose a friend"}
-                </span>
+                  <span
+                    className="rounded-sm px-1 transition group-hover:bg-[rgba(255,255,255,0.18)]"
+                    style={{ boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone" }}
+                  >
+                    {current?.label ?? "Choose a friend"}
+                  </span>
+                </button>
                 <button
                   onClick={() => step(1)}
                   aria-label="Next companion"
