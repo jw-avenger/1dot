@@ -103,7 +103,9 @@ const defaults: State = {
   customFont: "",
   bionic: false,
   colors: {},
-  petsConfig: {},
+  petsConfig: {
+    shelf: { pet: "cat", animations: true, todoEnabled: false, todoItems: [] },
+  },
   talkToMe: false,
   lighting: "light",
   lightingCustom: "#fff4d6",
