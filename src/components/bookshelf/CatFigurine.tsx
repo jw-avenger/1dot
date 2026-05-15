@@ -848,7 +848,7 @@ type PetPopupProps = {
 
 const SHELF_KEY = "shelf";
 
-const SUGGESTED = [
+export const SUGGESTED = [
   "Fresh water",
   "Small stretch break",
   "Three slow breaths",
