@@ -493,7 +493,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                     fontFamily: '"Fraunces", Georgia, serif',
                   }}
                 >
-                  Save for now
+                  Save for now?
                 </button>
               </div>
             </>
