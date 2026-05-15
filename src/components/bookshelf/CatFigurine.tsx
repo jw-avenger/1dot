@@ -459,7 +459,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 </span>
                 <button
                   onClick={() => step(1)}
-                  aria-label="Next pet"
+                  aria-label="Next companion"
                   className="px-2 text-xs opacity-70 transition hover:opacity-100"
                 >
                   ▼
