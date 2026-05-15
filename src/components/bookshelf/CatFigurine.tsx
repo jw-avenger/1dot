@@ -268,7 +268,7 @@ type ShelfPetProps = {
 };
 
 export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps) {
-  const { petsConfig, setPetConfig } = useSettings();
+  const { petsConfig, deletePet } = useSettings();
   const cfg = petsConfig["shelf"];
   const pet = !blank && cfg?.pet ? PETS.find((p) => p.id === cfg.pet) ?? PETS.find((p) => p.id === "cat") : null;
   const [hover, setHover] = useState(false);
@@ -320,7 +320,7 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
         <button
           onClick={(e) => {
             e.stopPropagation();
-            setPetConfig("shelf", null);
+            deletePet("shelf");
           }}
           aria-label="Remove companion"
           className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-wood-dark text-[10px] text-paper shadow"
