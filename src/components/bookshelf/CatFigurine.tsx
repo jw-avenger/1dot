@@ -565,15 +565,63 @@ type ShelfPetProps = {
 };
 
 export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps) {
-  const { petsConfig, deletePet } = useSettings();
+  const { petsConfig, deletePet, recallPet } = useSettings();
   const cfg = petsConfig["shelf"];
   const pet = !blank && cfg?.pet ? PETS.find((p) => p.id === cfg.pet) ?? PETS.find((p) => p.id === "cozy-cat") : null;
   const [hover, setHover] = useState(false);
+  const [travel, setTravel] = useState<CatTravel>("none");
+  const [pendingDelete, setPendingDelete] = useState(false);
+
+  const awayActive = !!(cfg?.awayUntil && cfg.awayUntil > Date.now());
+
+  // Detect "pet just appeared" → arriving animation
+  const prevPetRef = useRef<string | null>(pet?.id ?? null);
+  useEffect(() => {
+    const prev = prevPetRef.current;
+    const curr = pet?.id ?? null;
+    if (!prev && curr && !awayActive) setTravel("arriving");
+    prevPetRef.current = curr;
+  }, [pet?.id, awayActive]);
+
+  // Detect away-state transitions
+  const prevAwayRef = useRef<boolean>(awayActive);
+  useEffect(() => {
+    const prev = prevAwayRef.current;
+    if (!prev && awayActive) setTravel("leaving");
+    else if (prev && !awayActive && pet) setTravel("arriving");
+    prevAwayRef.current = awayActive;
+  }, [awayActive, pet]);
+
+  // Auto-recall when the silent timer elapses
+  useEffect(() => {
+    if (!cfg?.awayUntil) return;
+    const remaining = cfg.awayUntil - Date.now();
+    if (remaining <= 0) {
+      recallPet("shelf");
+      return;
+    }
+    const id = window.setTimeout(() => recallPet("shelf"), remaining);
+    return () => window.clearTimeout(id);
+  }, [cfg?.awayUntil, recallPet]);
 
   const slotH = height;
   const slotW = Math.round(slotH * 0.7);
   const catSize = Math.round(slotW * 1.55);
   const genericSize = Math.round(slotW * 0.85);
+
+  const onDelete = () => {
+    if (pendingDelete) return;
+    setPendingDelete(true);
+    setTravel("leaving");
+    window.setTimeout(() => {
+      deletePet("shelf");
+      setPendingDelete(false);
+      setTravel("none");
+    }, 1600);
+  };
+
+  // Cat is visible when present and either not away, or mid-leave animation
+  const showCat = !!pet && (!awayActive || travel === "leaving");
 
   return (
     <div
@@ -585,21 +633,27 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
       <button
         onClick={onClick}
         aria-label={pet ? `Change ${pet.label} companion` : "Add a companion — currently empty"}
-        className="group relative flex h-full w-full items-end justify-center overflow-hidden rounded-lg"
+        className="group relative flex h-full w-full items-end justify-center rounded-lg"
         style={{
-          background: pet
+          background: showCat
             ? "transparent"
             : "repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0 6px, rgba(255,255,255,0.05) 6px 12px)",
-          border: pet ? "1px solid transparent" : "2px dashed rgba(0,0,0,0.32)",
-          boxShadow: pet
+          border: showCat ? "1px solid transparent" : "2px dashed rgba(0,0,0,0.32)",
+          boxShadow: showCat
             ? "none"
             : "inset 0 0 0 1px rgba(255,255,255,0.25), 0 0 0 3px rgba(255,255,255,0.08)",
         }}
       >
-        {pet ? (
+        {showCat && pet ? (
           <div className="pb-1">
             {pet.id === "cozy-cat" ? (
-              <CatFigurine size={catSize} animated={cfg?.animations !== false} />
+              <CatFigurine
+                size={catSize}
+                animated={cfg?.animations !== false}
+                travel={travel}
+                onLeft={() => setTravel("none")}
+                onArrived={() => setTravel("none")}
+              />
             ) : (
               <PetFigurine petId={pet.id} size={genericSize} />
             )}
@@ -607,17 +661,18 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
         ) : (
           <span
             className="absolute inset-0 flex items-center justify-center"
-            style={{ color: "var(--ink)", fontSize: Math.round(slotH * 0.35), lineHeight: 1 }}
+            style={{ color: "var(--ink)", fontSize: Math.round(slotH * 0.35), lineHeight: 1, opacity: awayActive ? 0.4 : 1 }}
+            title={awayActive ? "Companion is away" : undefined}
           >
-            🐈
+            {awayActive ? "💤" : "🐈"}
           </span>
         )}
       </button>
-      {pet && hover && (
+      {pet && hover && !awayActive && !pendingDelete && (
         <button
           onClick={(e) => {
             e.stopPropagation();
-            deletePet("shelf");
+            onDelete();
           }}
           aria-label="Remove companion"
           className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-wood-dark text-[10px] text-paper shadow"
