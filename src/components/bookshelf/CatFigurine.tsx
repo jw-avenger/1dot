@@ -296,6 +296,7 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           .${ns}-move-ears   { animation: ${ns}-earsig 1.6s ease-in-out 1; }
           .${ns}-move-belly  { animation: ${ns}-belly  3.2s cubic-bezier(.4,0,.4,1) 1; }
           .${ns}-move-wince  { animation: ${ns}-wince  1.6s ease-in-out 1; }
+          .${ns}-move-groom  { animation: ${ns}-groom  3.2s ease-in-out 1; }
           @keyframes ${ns}-yawn   { 0%,100%{ transform: none; } 30%{ transform: translateY(-2px) rotate(-2deg); } 60%{ transform: translateY(-2px) rotate(-1deg) scale(1.02); } }
           @keyframes ${ns}-knead  { 0%,100%{ transform: none; } 25%{ transform: translateY(-1px) rotate(-1deg); } 50%{ transform: translateY(0) rotate(1deg); } 75%{ transform: translateY(-1px) rotate(-1deg); } }
           @keyframes ${ns}-pounce { 0%{ transform: scale(1,1); } 25%{ transform: scale(1.04, 0.86) translateY(4px); } 55%{ transform: scale(0.95, 1.08) translateY(-12px); } 80%{ transform: scale(1.02, 0.95) translateY(2px); } 100%{ transform: none; } }
@@ -303,6 +304,25 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           @keyframes ${ns}-earsig { 0%,100%{ transform: none; } 50%{ transform: translateY(-1px); } }
           @keyframes ${ns}-belly  { 0%,100%{ transform: none; } 35%{ transform: rotate(-22deg) translateY(2px); } 65%{ transform: rotate(20deg) translateY(2px); } }
           @keyframes ${ns}-wince  { 0%,100%{ transform: none; } 40%{ transform: scale(0.97) rotate(-1deg); } }
+          @keyframes ${ns}-groom  { 0%,100%{ transform: none; } 50%{ transform: none; } }
+
+          /* Grooming — head bows toward the lifted front-left paw with a few licks. */
+          .${ns}-move-groom .${ns}-head { animation: ${ns}-groomhead 3.2s ease-in-out 1; }
+          .${ns}-move-groom .${ns}-pawFL { animation: ${ns}-groompaw 3.2s ease-in-out 1; }
+          @keyframes ${ns}-groomhead {
+            0%,100% { transform: none; }
+            20%     { transform: translate(-6px, 8px) rotate(-22deg); }
+            40%     { transform: translate(-6px, 6px) rotate(-18deg); }
+            55%     { transform: translate(-6px, 8px) rotate(-22deg); }
+            70%     { transform: translate(-6px, 6px) rotate(-18deg); }
+            85%     { transform: translate(-3px, 3px) rotate(-8deg); }
+          }
+          @keyframes ${ns}-groompaw {
+            0%,100% { transform: none; }
+            25%     { transform: translate(0, -16px) rotate(8deg); }
+            70%     { transform: translate(0, -16px) rotate(8deg); }
+            85%     { transform: translate(0, -6px) rotate(3deg); }
+          }
 
           /* Yawn mouth — hidden by default, opens during yawn move */
           .${ns}-yawnmouth { opacity: 0; transform-box: view-box; transform-origin: 50px 78px; }
