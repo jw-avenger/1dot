@@ -367,66 +367,48 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           fill="rgba(0,0,0,0.32)" filter={`url(#${ns}-blur)`}
         />
 
-        {/* tail — clean, friendly curved tail. A tapered stroked path gives
-            a smooth tube silhouette; a soft cream stroke on the inside edge
-            adds dimension; a few stripe rings hint at the tabby pattern. */}
+        {/* tail — painted with the same fur gradient and stripe language as
+            the body so it reads as the same illustration. A single tapered
+            shape with the body's fur gradient, a cream highlight ellipse where
+            it joins the body, and the same wavy q-stripes used on the back. */}
         <g className={animated ? `${ns}-tail` : undefined}>
-          {/* soft drop shadow */}
-          <path
-            d="M 168 100 C 178 78, 208 58, 200 24 C 196 6, 182 -6, 170 -10"
-            fill="none"
-            stroke="rgba(0,0,0,0.25)"
-            strokeWidth="22"
-            strokeLinecap="round"
-            transform="translate(2,3)"
+          {/* soft ground/contact shadow under the base */}
+          <ellipse
+            cx="172" cy="104" rx="14" ry="4"
+            fill="rgba(0,0,0,0.22)"
             filter={`url(#${ns}-blur)`}
           />
-          {/* tapered tail body — wide base, narrows to tip via successive strokes */}
+          {/* main tail body — fur gradient stroke matches body fill */}
           <path
-            d="M 168 100 C 178 78, 208 58, 200 24 C 196 6, 182 -6, 170 -10"
+            d="M 168 100 C 180 78, 210 58, 200 24 C 196 6, 182 -6, 170 -10"
             fill="none"
-            stroke="#7d4a1e"
-            strokeWidth="22"
+            stroke={`url(#${ns}-fur)`}
+            strokeWidth="20"
             strokeLinecap="round"
           />
+          {/* cream underside near the base — same cream as belly */}
           <path
-            d="M 168 100 C 178 78, 208 58, 200 24 C 196 6, 182 -6, 170 -10"
+            d="M 170 100 C 178 86, 192 74, 198 58"
             fill="none"
-            stroke="#a5621f"
-            strokeWidth="18"
-            strokeLinecap="round"
-          />
-          {/* lit upper edge — adds roundness */}
-          <path
-            d="M 162 96 C 172 76, 200 58, 194 26 C 191 12, 182 0, 172 -4"
-            fill="none"
-            stroke="#e9b774"
+            stroke={`url(#${ns}-cream)`}
             strokeWidth="6"
             strokeLinecap="round"
-            opacity="0.85"
+            opacity="0.7"
           />
-          {/* cream underside hint near base */}
-          <path
-            d="M 172 100 C 180 86, 196 74, 200 56"
-            fill="none"
-            stroke="#f6e0b3"
-            strokeWidth="3"
-            strokeLinecap="round"
-            opacity="0.55"
-          />
-          {/* tabby stripe rings */}
-          <g stroke="#5a2f10" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.55">
-            <path d="M 178 78 q 4 -3 8 1" />
-            <path d="M 196 56 q 4 -2 7 3" />
-            <path d="M 202 34 q 3 -3 6 2" />
-            <path d="M 200 14 q 2 -3 5 1" />
+          {/* warm highlight wrap — same hue family as body highlights */}
+          <ellipse cx="184" cy="68" rx="6" ry="14" fill="rgba(255,235,200,0.22)" transform="rotate(-18 184 68)" />
+          {/* tabby stripes — identical q-curve language as the back stripes */}
+          <g fill={`url(#${ns}-stripe)`} opacity="0.6">
+            <path d="M 178 80 q -3 -6 -1 -9 q 5 1 6 7 q -3 3 -5 2 Z" />
+            <path d="M 192 60 q -3 -6 -1 -9 q 5 1 6 7 q -3 3 -5 2 Z" />
+            <path d="M 199 38 q -3 -6 -1 -9 q 5 1 6 7 q -3 3 -5 2 Z" />
+            <path d="M 197 16 q -3 -6 -1 -9 q 5 1 6 7 q -3 3 -5 2 Z" />
           </g>
 
-          {/* tip — independent flick */}
+          {/* tip — soft rounded cap painted in the same fur gradient */}
           <g className={animated ? `${ns}-tailtip` : undefined}>
-            <circle cx="170" cy="-10" r="10" fill="#7d4a1e" />
-            <circle cx="170" cy="-10" r="8" fill="#a5621f" />
-            <ellipse cx="167" cy="-13" rx="3" ry="2" fill="#e9b774" opacity="0.85" />
+            <ellipse cx="170" cy="-10" rx="11" ry="9" fill={`url(#${ns}-fur)`} />
+            <ellipse cx="167" cy="-14" rx="3.5" ry="2.2" fill="rgba(255,235,200,0.5)" />
           </g>
         </g>
 
