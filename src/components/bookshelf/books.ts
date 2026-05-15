@@ -19,7 +19,31 @@ export type Book = {
 // Scaled down so all books comfortably fit within the shelf on small screens.
 export const BOOKS: Book[] = [
   { id: "dashboard", title: "Dashboard", spine: "var(--spine-forest)", textColor: "var(--spine-gold)", height: 168, width: 34, toc: ["Overview", "Today", "This Week", "Quick Stats"] },
-  { id: "spaces", title: "Spaces", spine: "var(--spine-oxblood)", textColor: "var(--spine-cream)", height: 184, width: 38, toc: ["Home", "Work", "Garden", "Projects", "Kitchen"] },
+  {
+    id: "spaces",
+    title: "Spaces",
+    spine: "var(--spine-oxblood)",
+    textColor: "var(--spine-cream)",
+    height: 184,
+    width: 38,
+    toc: ["House", "Work", "Outside", "Car"],
+    sections: [
+      {
+        title: "House",
+        children: [
+          { title: "Kitchen", children: [{ title: "Pet Care", list: "petcare" }] },
+          { title: "Garden" },
+          { title: "Home Projects" },
+        ],
+      },
+      {
+        title: "Work",
+        children: [{ title: "Work Projects" }],
+      },
+      { title: "Outside" },
+      { title: "Car" },
+    ],
+  },
   { id: "settings", title: "Mood Settings", spine: "var(--spine-dustyblue)", textColor: "var(--spine-cream)", height: 160, width: 32, toc: ["Spine font", "Bionic reading", "Profile", "Notifications", "Theme"] },
   { id: "about", title: "About", spine: "var(--spine-mustard)", textColor: "var(--wood-dark)", height: 174, width: 30, toc: ["Our Story", "How It Works", "Credits"] },
   { id: "donate", title: "Donate", spine: "var(--spine-terracotta)", textColor: "var(--spine-cream)", height: 170, width: 34, toc: ["One-time", "Monthly", "Why Support Us"] },
