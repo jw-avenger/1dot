@@ -372,43 +372,72 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
           fill="rgba(0,0,0,0.32)" filter={`url(#${ns}-blur)`}
         />
 
-        {/* tail — long, solid tapered shape with a curling tip. ~2× the
-            previous length: rises high above the body and hooks back over. */}
-        <g className={animated ? `${ns}-tail` : undefined}>
-          {/* main tail body — closed filled path, wide at base, narrowing
-              along a tall S-curve to a curled tip near (160, 0). */}
+        {/* tail — full 3D rendered volume. Plump cylindrical body with a
+            cylindrical-cross-section gradient, top-edge sheen, ambient
+            shadow underneath, and a furry rounded tip. */}
+        <g className={animated ? `${ns}-tail` : undefined} filter={`url(#${ns}-tail-shadow)`}>
+          {/* Soft contact shadow at the base, bleeding onto the body */}
+          <ellipse cx="170" cy="100" rx="14" ry="3" fill="#2a1408" opacity="0.35" />
+
+          {/* Main tail volume — fat, rounded sausage curling up and over.
+              Outer (lit) edge runs up the left side; inner (shadowed) edge
+              returns down the right. Drawn with no harsh stroke so the
+              cylindrical gradient does the dimensional work. */}
           <path
-            d="M 162 96
-               C 150 70, 198 48, 200 18
-               C 201 0, 184 -10, 170 -2
-               C 158 4, 156 16, 166 20
-               C 180 18, 188 32, 184 52
-               C 180 72, 180 88, 174 100 Z"
-            fill={`url(#${ns}-fur)`}
-            stroke="#5a2f10"
-            strokeWidth="0.8"
-            strokeLinejoin="round"
+            d="M 172 100
+               C 152 78, 214 56, 214 18
+               C 214 -4, 188 -18, 168 -10
+               C 152 -4, 150 12, 162 18
+               C 180 16, 192 32, 188 54
+               C 184 78, 184 92, 162 96 Z"
+            fill={`url(#${ns}-tail3d)`}
           />
-          {/* cream underside highlight — traces the inner edge */}
+
+          {/* Top-lit edge sheen — a thin lighter band hugging the outside curve */}
           <path
             d="M 168 96
-               C 160 76, 188 52, 192 24"
+               C 154 74, 208 54, 206 20
+               C 205 4, 192 -8, 178 -10"
             fill="none"
-            stroke="rgba(255,225,180,0.45)"
-            strokeWidth="3"
+            stroke={`url(#${ns}-tail-sheen)`}
+            strokeWidth="5"
             strokeLinecap="round"
+            opacity="0.9"
           />
-          {/* faint stripe rings spaced along the longer length */}
-          <g stroke="#5a2f10" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" fill="none">
-            <path d="M 165 88 C 169 86, 173 86, 176 90" />
-            <path d="M 173 72 C 178 70, 183 70, 185 74" />
-            <path d="M 184 54 C 189 52, 194 52, 195 56" />
-            <path d="M 192 36 C 196 34, 200 34, 200 38" />
+          {/* Brightest specular pin near the bend — sells the cylindrical form */}
+          <ellipse cx="206" cy="30" rx="3.5" ry="9" fill="#fff3d4" opacity="0.55" transform="rotate(-18 206 30)" />
+
+          {/* Underside core shadow — deepens the shadowed half of the cylinder */}
+          <path
+            d="M 175 96
+               C 178 80, 190 60, 188 36"
+            fill="none"
+            stroke="#3a1d07"
+            strokeWidth="6"
+            strokeLinecap="round"
+            opacity="0.35"
+          />
+
+          {/* Faint tabby stripe wraps — curve around the cylinder, fading on
+              the shadowed side to reinforce the 3D form. */}
+          <g stroke="#3a1d07" strokeWidth="1.4" strokeLinecap="round" opacity="0.45" fill="none">
+            <path d="M 162 86 C 170 80, 180 80, 184 88" />
+            <path d="M 174 64 C 184 58, 196 58, 198 66" />
+            <path d="M 196 40 C 204 36, 212 36, 210 44" />
+            <path d="M 198 14 C 204 8, 212 8, 210 18" />
           </g>
-          {/* tip curl — darker cap with subtle independent flick */}
+
+          {/* Furry 3D tip — overlapping rounded blobs read as a soft pom */}
           <g className={animated ? `${ns}-tailtip` : undefined}>
-            <ellipse cx="172" cy="-2" rx="6" ry="5" fill="#6e3f15" />
-            <ellipse cx="170" cy="-3.5" rx="3.2" ry="2.4" fill="#a5621f" opacity="0.85" />
+            <circle cx="172" cy="-4" r="9.5" fill={`url(#${ns}-tailtip-grad)`} />
+            <ellipse cx="167" cy="-8" rx="4" ry="3" fill="#fbe4b8" opacity="0.55" />
+            <circle cx="166" cy="-9" r="1.4" fill="#ffffff" opacity="0.85" />
+            {/* hint of fur fronds at the very tip */}
+            <g stroke="#3d1e07" strokeWidth="0.7" strokeLinecap="round" opacity="0.6" fill="none">
+              <path d="M 178 -9 C 182 -12, 184 -14, 184 -17" />
+              <path d="M 174 -13 C 175 -16, 175 -18, 173 -20" />
+              <path d="M 168 -13 C 167 -16, 165 -18, 162 -19" />
+            </g>
           </g>
         </g>
 
