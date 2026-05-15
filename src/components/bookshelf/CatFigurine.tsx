@@ -523,7 +523,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 <Row
                   checked={!!draft.remindersEnabled}
                   onChange={(v) => setDraft({ ...draft, remindersEnabled: v })}
-                  label="Would you like gentle reminders based on your preferences?"
+                  label="Would you like gentle reminders based on your choices?"
                 />
               </div>
 
