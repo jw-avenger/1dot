@@ -53,6 +53,9 @@ export type PetConfig = {
   todoEnabled: boolean;
   todoItems: string[];
   remindersEnabled?: boolean;
+  /** Epoch ms — companion is "away" until this time. While set & in the future
+   *  the cat is animated wandering off-screen and hidden. Auto-clears on return. */
+  awayUntil?: number;
 };
 
 export const PETS: { id: string; label: string; emoji: string }[] = [
