@@ -270,7 +270,7 @@ type ShelfPetProps = {
 export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps) {
   const { petsConfig, setPetConfig } = useSettings();
   const cfg = petsConfig["shelf"];
-  const pet = !blank && cfg?.pet ? PETS.find((p) => p.id === cfg.pet) : null;
+  const pet = !blank && cfg?.pet ? PETS.find((p) => p.id === cfg.pet) ?? PETS.find((p) => p.id === "cat") : null;
   const [hover, setHover] = useState(false);
 
   const slotH = height;
