@@ -179,10 +179,10 @@ export function Bookshelf() {
         </div>
 
         {(showShelfPet || showShelfPlant) && (
-          <div className="mt-6 flex items-end justify-center gap-8 px-6 sm:gap-16">
-            {showShelfPlant && <ShelfPlant blank={settings.plantDismissed} />}
+          <div className="mt-8 flex items-end justify-center gap-10 px-6 sm:gap-20">
+            {showShelfPlant && <ShelfPlant size={64} blank={settings.plantDismissed} />}
             {showShelfPet && (
-              <ShelfPet onClick={() => setPetOpen(true)} blank={settings.petDismissed} />
+              <ShelfPet onClick={() => setPetOpen(true)} height={180} blank={settings.petDismissed} />
             )}
           </div>
         )}
