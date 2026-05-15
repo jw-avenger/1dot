@@ -470,19 +470,32 @@ export function CatFigurine({ size = 96, animated = true, travel = "none", onLef
             the hip, sweeps down through a muscled thigh, and tapers into the
             paw. Left rear gets a smaller matching haunch hint. Painted under
             the body fur gradient so it reads as one continuous animal. */}
-        {/* right rear haunch + thigh + lower leg */}
+        {/* right rear haunch + thigh + lower leg — the top of the haunch
+            sweeps up and back over the tail's attachment point so the tail
+            reads as emerging from behind the butt instead of pasted onto
+            the body. */}
         <path
-          d="M 138 86 C 130 90, 128 102, 132 116 C 134 124, 140 130, 150 130 L 164 130 C 172 130, 176 122, 174 110 C 172 96, 166 84, 154 82 C 146 81, 142 84, 138 86 Z"
+          d="M 138 86 C 130 90, 128 102, 132 116 C 134 124, 140 130, 150 130 L 164 130 C 174 130, 180 122, 180 108 C 180 92, 184 78, 178 70 C 172 64, 162 70, 156 76 C 150 80, 144 82, 138 86 Z"
           fill={`url(#${ns}-fur)`}
         />
-        {/* darker thigh shading along the back of the haunch */}
+        {/* darker thigh shading along the back of the haunch, hugging the
+            curve where the tail tucks in behind */}
         <path
-          d="M 168 92 C 174 104, 174 118, 168 126 C 172 122, 174 114, 174 106 C 174 100, 172 95, 168 92 Z"
+          d="M 174 78 C 182 92, 182 116, 172 128 C 178 122, 182 112, 182 100 C 182 90, 180 82, 174 78 Z"
           fill="#7a4818"
-          opacity="0.55"
+          opacity="0.6"
+        />
+        {/* soft crease where tail meets butt — sells the tuck */}
+        <path
+          d="M 172 80 C 176 86, 178 92, 178 100"
+          stroke="#5a2f10"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.45"
         />
         {/* warm haunch highlight catching light on top */}
-        <ellipse cx="148" cy="92" rx="10" ry="5" fill="rgba(255,235,200,0.28)" transform="rotate(-12 148 92)" />
+        <ellipse cx="152" cy="88" rx="12" ry="6" fill="rgba(255,235,200,0.3)" transform="rotate(-14 152 88)" />
         {/* haunch stripe wraps */}
         <g stroke="#6b3a16" strokeWidth="1.2" strokeLinecap="round" fill="none" opacity="0.45">
           <path d="M 142 96 C 146 102, 150 106, 152 112" />
