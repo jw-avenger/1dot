@@ -451,7 +451,10 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
                 >
                   ▲
                 </button>
-                <span className="flex-1 text-center text-[11px] uppercase tracking-[0.18em]">
+                <span
+                  className="flex-1 text-center text-[12px] tracking-[0.04em]"
+                  style={{ fontFamily: '"Fraunces", Georgia, serif' }}
+                >
                   {current?.label ?? "Choose a friend"}
                 </span>
                 <button
