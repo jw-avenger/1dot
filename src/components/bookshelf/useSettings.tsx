@@ -64,6 +64,41 @@ export const PETS: { id: string; label: string; emoji: string }[] = [
   { id: "hamster", label: "Paper Planner Theme Companion (Hamster)", emoji: "🐹" },
 ];
 
+const CANONICAL_CAT_ID = "cat";
+
+function freshCatConfig(): PetConfig {
+  return { pet: CANONICAL_CAT_ID, animations: true, todoEnabled: false, todoItems: [], remindersEnabled: false };
+}
+
+function normalizePetId(pet: string | null | undefined): string | null {
+  if (!pet) return null;
+  if (PETS.some((p) => p.id === pet)) return pet;
+  // Older builds briefly used non-PETS identifiers for the cozy cat model.
+  // Unknown saved companion ids are treated as that legacy cat, not as empty.
+  return CANONICAL_CAT_ID;
+}
+
+function normalizePetConfig(cfg: PetConfig | null | undefined): PetConfig | null {
+  if (!cfg) return null;
+  const pet = normalizePetId(cfg.pet);
+  if (!pet) return null;
+  return {
+    ...freshCatConfig(),
+    ...cfg,
+    pet,
+    todoItems: Array.isArray(cfg.todoItems) ? cfg.todoItems : [],
+  };
+}
+
+function normalizePetsConfig(config: Record<string, PetConfig> | undefined): Record<string, PetConfig> {
+  const next: Record<string, PetConfig> = {};
+  Object.entries(config ?? {}).forEach(([slot, cfg]) => {
+    const normalized = normalizePetConfig(cfg);
+    if (normalized) next[slot] = normalized;
+  });
+  return next;
+}
+
 export type TrashItem = {
   id: string;
   kind: "pet" | "plant";
@@ -105,7 +140,7 @@ const defaults: State = {
   bionic: false,
   colors: {},
   petsConfig: {
-    shelf: { pet: "cat", animations: true, todoEnabled: false, todoItems: [] },
+    shelf: freshCatConfig(),
   },
   talkToMe: false,
   lighting: "light",
