@@ -64,6 +64,41 @@ export const PETS: { id: string; label: string; emoji: string }[] = [
   { id: "hamster", label: "Paper Planner Theme Companion (Hamster)", emoji: "🐹" },
 ];
 
+const CANONICAL_CAT_ID = "cat";
+
+function freshCatConfig(): PetConfig {
+  return { pet: CANONICAL_CAT_ID, animations: true, todoEnabled: false, todoItems: [], remindersEnabled: false };
+}
+
+function normalizePetId(pet: string | null | undefined): string | null {
+  if (!pet) return null;
+  if (PETS.some((p) => p.id === pet)) return pet;
+  // Older builds briefly used non-PETS identifiers for the cozy cat model.
+  // Unknown saved companion ids are treated as that legacy cat, not as empty.
+  return CANONICAL_CAT_ID;
+}
+
+function normalizePetConfig(cfg: PetConfig | null | undefined): PetConfig | null {
+  if (!cfg) return null;
+  const pet = normalizePetId(cfg.pet);
+  if (!pet) return null;
+  return {
+    ...freshCatConfig(),
+    ...cfg,
+    pet,
+    todoItems: Array.isArray(cfg.todoItems) ? cfg.todoItems : [],
+  };
+}
+
+function normalizePetsConfig(config: Record<string, PetConfig> | undefined): Record<string, PetConfig> {
+  const next: Record<string, PetConfig> = {};
+  Object.entries(config ?? {}).forEach(([slot, cfg]) => {
+    const normalized = normalizePetConfig(cfg);
+    if (normalized) next[slot] = normalized;
+  });
+  return next;
+}
+
 export type TrashItem = {
   id: string;
   kind: "pet" | "plant";
@@ -105,7 +140,7 @@ const defaults: State = {
   bionic: false,
   colors: {},
   petsConfig: {
-    shelf: { pet: "cat", animations: true, todoEnabled: false, todoItems: [] },
+    shelf: freshCatConfig(),
   },
   talkToMe: false,
   lighting: "light",
@@ -145,7 +180,14 @@ function load() {
   if (typeof window === "undefined") return;
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) state = { ...defaults, ...JSON.parse(raw) };
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state = { ...defaults, ...parsed, petsConfig: normalizePetsConfig(parsed.petsConfig) };
+    }
+    if (!state.petDismissed && !state.petsConfig.shelf) {
+      state = { ...state, petsConfig: { ...state.petsConfig, shelf: freshCatConfig() } };
+      save();
+    }
   } catch {
     // ignore
   }
@@ -157,7 +199,7 @@ function load() {
       state = {
         ...state,
         petsConfig: {
-          shelf: { pet: "cat", animations: true, todoEnabled: false, todoItems: [] },
+          shelf: freshCatConfig(),
         },
         petDismissed: false,
         plantDismissed: false,
@@ -231,9 +273,10 @@ export function useSettings() {
     },
     setPetConfig: (id: string, cfg: PetConfig | null) => {
       const next = { ...state.petsConfig };
-      if (cfg) next[id] = cfg;
+      const normalized = normalizePetConfig(cfg);
+      if (normalized) next[id] = normalized;
       else delete next[id];
-      patch({ petsConfig: next, petDismissed: cfg ? false : state.petDismissed });
+      patch({ petsConfig: next, petDismissed: normalized ? false : state.petDismissed });
     },
     dismissPet: () => patch({ petDismissed: true }),
     deletePet: (id: string) => {
@@ -244,15 +287,16 @@ export function useSettings() {
       // If a pet is already in the trash, don't add another — just remove the
       // active one and mark dismissed.
       const alreadyInTrash = state.trash.some((t) => t.kind === "pet");
-      if (existing) {
+      const restored = normalizePetConfig(existing);
+      if (restored) {
         delete nextPets[id];
         if (!alreadyInTrash) {
-          const petMeta = PETS.find((p) => p.id === existing.pet);
+          const petMeta = PETS.find((p) => p.id === restored.pet);
           const trashItem: TrashItem = {
             id: `pet-${id}-${Date.now()}`,
             kind: "pet",
             label: petMeta ? `${petMeta.emoji} ${petMeta.label}` : "Companion",
-            data: { slot: id, config: existing },
+            data: { slot: id, config: restored },
             deletedAt: Date.now(),
           };
           nextTrash = [trashItem, ...state.trash];
@@ -270,13 +314,7 @@ export function useSettings() {
       if (item.kind === "pet") {
         const nextPets = { ...state.petsConfig };
         const slot = item.data?.slot ?? "shelf";
-        nextPets[slot] = {
-          pet: "cat",
-          animations: true,
-          todoEnabled: false,
-          todoItems: [],
-          remindersEnabled: false,
-        };
+        nextPets[slot] = normalizePetConfig(item.data?.config) ?? freshCatConfig();
         patch({
           petsConfig: nextPets,
           trash: nextTrash,
