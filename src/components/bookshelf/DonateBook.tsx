@@ -404,24 +404,9 @@ export function DonateBook() {
       </section>
 
       <section className="border-t border-dotted border-ink/25 pt-5">
-        <div className="flex items-center justify-between gap-3">
-          <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-ink/55">
-            Optional community poll
-          </p>
-          <button
-            onClick={submitPollMail}
-            disabled={!poll}
-            title={
-              poll
-                ? "Include this vote in the monthly summary"
-                : "Pick an option first"
-            }
-            aria-label="Send my vote to the monthly summary"
-            className="shrink-0 rounded-full border border-ink/30 px-3 py-1 font-sans text-[10px] uppercase tracking-[0.22em] text-ink/70 transition hover:border-ink hover:bg-ink hover:text-paper disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-ink/70"
-          >
-            ✉ send
-          </button>
-        </div>
+        <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-ink/55">
+          Optional community poll
+        </p>
         <p className="mt-2 font-serif text-sm text-ink">
           Would you enjoy optional low-pressure reward systems someday?
         </p>
@@ -451,9 +436,25 @@ export function DonateBook() {
             </label>
           ))}
         </div>
+        <div className="mt-5 flex justify-center">
+          <button
+            onClick={submitPollMail}
+            disabled={!poll}
+            title={
+              poll
+                ? "Include this vote in the monthly summary"
+                : "Pick an option first"
+            }
+            aria-label="Send my vote to the monthly summary"
+            className="rounded-full px-5 py-2 font-sans text-xs uppercase tracking-[0.22em] text-paper shadow-sm transition disabled:cursor-not-allowed disabled:opacity-40"
+            style={{ backgroundColor: "#5b3a1e" }}
+          >
+            ✉ send vote
+          </button>
+        </div>
         {mailStatus !== "idle" && (
           <p
-            className="mt-2 font-sans text-[11px] italic"
+            className="mt-2 text-center font-sans text-[11px] italic"
             style={{ color: mailStatus === "sent" ? "#3a6b2e" : "#8a3030" }}
           >
             {mailStatus === "sent"
