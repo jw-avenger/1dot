@@ -243,6 +243,8 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
               <ul className="mt-6 space-y-3">
                 {book.sections.map((s, i) => renderNode(s, 0, `s-${i}`))}
               </ul>
+            ) : isDonate ? (
+              <div className="mt-6"><DonateBook /></div>
             ) : (
               <ol className="mt-6 space-y-3">
                 {book.toc.map((item, i) => {
