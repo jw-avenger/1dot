@@ -31,15 +31,7 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
   } = useSettings();
   const [trashOpen, setTrashOpen] = useState(false);
   const [newPetTask, setNewPetTask] = useState("");
-  const [stickies, setStickies] = useState<StickyNote[]>(() => {
-    if (typeof window === "undefined") return DEFAULT_STICKIES;
-    try {
-      const raw = localStorage.getItem("shelf:sticky-notes:v1");
-      return raw ? JSON.parse(raw) : DEFAULT_STICKIES;
-    } catch {
-      return DEFAULT_STICKIES;
-    }
-  });
+
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -88,23 +80,7 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
     }
   };
 
-  const saveStickies = (next: StickyNote[]) => {
-    setStickies(next);
-    try {
-      localStorage.setItem("shelf:sticky-notes:v1", JSON.stringify(next));
-    } catch {
-      /* ignore */
-    }
-  };
-  const updateSticky = (id: number, text: string) => saveStickies(stickies.map((n) => (n.id === id ? { ...n, text } : n)));
-  const addSticky = () => {
-    const colors = ["#fff3a3", "#ffd1dc", "#c9f2d0", "#cde7ff"];
-    saveStickies([
-      ...stickies,
-      { id: Date.now(), text: "", x: 12 + (stickies.length * 11) % 58, y: 16 + (stickies.length * 9) % 54, color: colors[stickies.length % colors.length] },
-    ]);
-  };
-  const removeSticky = (id: number) => saveStickies(stickies.filter((n) => n.id !== id));
+
 
   const renderNode = (node: SpaceNode, depth: number, key: string) => (
     <li key={key} className="space-y-2">
