@@ -208,11 +208,8 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
             }}
           >
             <div>
-              <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
-                Volume
-              </p>
               <h2
-                className="mt-6 font-serif text-5xl font-semibold leading-tight"
+                className="font-serif text-5xl font-semibold leading-tight"
                 style={{ color: book.spine }}
               >
                 {bionicize(book.title, bionic)}
@@ -227,7 +224,6 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
                 </p>
               )}
             </div>
-            <p className="font-sans text-xs text-ink/50">— Library</p>
           </div>
 
           <div
