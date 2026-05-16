@@ -374,20 +374,21 @@ export function DonateBook() {
         </p>
       </div>
 
-      <header className="relative">
-        <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
-          A note from the maker
-        </p>
-        <h2 className="mt-2 font-serif text-3xl text-ink">Help Us Build This Carefully</h2>
+      <header className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
+            A note from the maker
+          </p>
+          <h2 className="mt-2 font-serif text-3xl text-ink">Help Us Build This Carefully</h2>
+        </div>
         <button
           onClick={toggleRead}
           title={reading ? "Stop reading" : "Read this letter aloud"}
           aria-label={reading ? "Stop reading letter" : "Read letter aloud"}
           aria-pressed={reading}
-          className="absolute right-0 top-0 text-lg opacity-50 transition hover:opacity-100"
-          style={{ color: "#3a2410" }}
+          className="shrink-0 rounded-full border border-ink/30 px-3 py-1 font-sans text-[10px] uppercase tracking-[0.22em] text-ink/70 transition hover:border-ink hover:bg-ink hover:text-paper"
         >
-          {reading ? "♫" : "♪"}
+          {reading ? "♫ stop" : "♪ read"}
         </button>
       </header>
 
@@ -424,12 +425,23 @@ export function DonateBook() {
         </p>
       </section>
 
-      <section className="border-t border-dotted border-ink/25 pt-5">
+      <section className="border-t border-dotted border-ink/25 pt-5 space-y-2">
         <p className="font-serif text-sm leading-relaxed text-ink/85">
           <span className="font-sans text-xs uppercase tracking-[0.2em] text-ink/60">P.S. </span>
           I hate choosing between clean apps and whimsical apps — so I made an
           app that doesn't punish me for having changing support needs and
           wishes.
+        </p>
+        <p className="font-serif text-sm leading-relaxed text-ink/85">
+          <span className="font-sans text-xs uppercase tracking-[0.2em] text-ink/60">P.S.S. </span>
+          I'm personally interested in supporting watches, but at this time I
+          know effectively nothing about how possible that is, so I won't
+          comment further on that just yet.
+        </p>
+        <p className="font-serif text-sm leading-relaxed text-ink/85">
+          <span className="font-sans text-xs uppercase tracking-[0.2em] text-ink/60">P.S.S.S. </span>
+          It would be super cool if I weren't in charge of this forever
+          someday.
         </p>
       </section>
 
@@ -447,10 +459,9 @@ export function DonateBook() {
                 : "Pick an option first"
             }
             aria-label="Send my vote to the monthly summary"
-            className="text-base opacity-50 transition hover:opacity-100 disabled:cursor-not-allowed disabled:opacity-25"
-            style={{ color: "#3a2410" }}
+            className="shrink-0 rounded-full border border-ink/30 px-3 py-1 font-sans text-[10px] uppercase tracking-[0.22em] text-ink/70 transition hover:border-ink hover:bg-ink hover:text-paper disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-ink/70"
           >
-            ✉
+            ✉ send
           </button>
         </div>
         <p className="mt-2 font-serif text-sm text-ink">
