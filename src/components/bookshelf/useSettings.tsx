@@ -165,6 +165,7 @@ const defaults: State = {
   mice: "basic",
   sfxEnabled: false,
   purrsVolume: 0,
+  sniffsVolume: 0,
   romanticColor: "#c42b2b",
   arrowHidden: false,
   hideSettingsBook: false,
