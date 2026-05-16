@@ -374,20 +374,21 @@ export function DonateBook() {
         </p>
       </div>
 
-      <header className="relative">
-        <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
-          A note from the maker
-        </p>
-        <h2 className="mt-2 font-serif text-3xl text-ink">Help Us Build This Carefully</h2>
+      <header className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
+            A note from the maker
+          </p>
+          <h2 className="mt-2 font-serif text-3xl text-ink">Help Us Build This Carefully</h2>
+        </div>
         <button
           onClick={toggleRead}
           title={reading ? "Stop reading" : "Read this letter aloud"}
           aria-label={reading ? "Stop reading letter" : "Read letter aloud"}
           aria-pressed={reading}
-          className="absolute right-0 top-0 text-lg opacity-50 transition hover:opacity-100"
-          style={{ color: "#3a2410" }}
+          className="shrink-0 rounded-full border border-ink/30 px-3 py-1 font-sans text-[10px] uppercase tracking-[0.22em] text-ink/70 transition hover:border-ink hover:bg-ink hover:text-paper"
         >
-          {reading ? "♫" : "♪"}
+          {reading ? "♫ stop" : "♪ read"}
         </button>
       </header>
 
