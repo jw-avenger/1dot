@@ -1320,15 +1320,15 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
 
   useEffect(() => {
     if (!open) return;
+    // Always greet with the cozy "ask" phase first, even when a companion is
+    // already chosen — it's a gentle word-choice moment.
     if (existing) {
       setDraft(existing);
-      setPhase("configure");
-      setPickerOpen(false);
     } else {
       setDraft({ pet: null, animations: true, todoEnabled: false, todoItems: [] });
-      setPhase("ask");
-      setPickerOpen(true);
     }
+    setPhase("ask");
+    setPickerOpen(true);
   }, [open, existing]);
 
   if (!open) return null;
