@@ -1318,6 +1318,34 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
           ×
         </button>
       )}
+      {/* gentle digital affection — sparkles drifting above the companion */}
+      {showCat && affection.length > 0 && (
+        <div className="pointer-events-none absolute left-0 right-0 top-2 flex justify-center" aria-hidden>
+          {affection.map((s) => (
+            <span
+              key={s.id}
+              className="absolute select-none"
+              style={{
+                color: "#e8a87c",
+                fontSize: 14,
+                opacity: 0.85,
+                transform: `translateX(${s.dx}px)`,
+                animation: "shelfAffectionFloat 1.8s ease-out forwards",
+                textShadow: "0 0 6px rgba(255,220,180,0.6)",
+              }}
+            >
+              {s.glyph}
+            </span>
+          ))}
+          <style>{`
+            @keyframes shelfAffectionFloat {
+              0%   { opacity: 0; transform: translate(var(--dx,0), 6px) scale(0.6); }
+              25%  { opacity: 0.95; }
+              100% { opacity: 0; transform: translate(var(--dx,0), -40px) scale(1.1); }
+            }
+          `}</style>
+        </div>
+      )}
     </div>
   );
 }
