@@ -759,6 +759,392 @@ export function PetFigurine({ petId, size = 56 }: PetFigurineProps) {
 }
 
 /* ========================================================================
+   CorgiFigurine — high-fidelity SVG Pembroke Welsh Corgi
+   Same rigging vocabulary as CatFigurine: SVG vectors + CSS keyframes for
+   breath, head bob, ear twitch, blink, nub-tail wag, paw tap, pose cycling,
+   special moves, and travel transitions.
+   ======================================================================== */
+
+type CorgiPose = "standing" | "loaf" | "sploot";
+type CorgiMove = "yawn" | "shake" | "bork" | "sniff" | "scratch" | "wag";
+
+const CORGI_SPECIAL: CorgiMove[] = ["yawn", "shake", "bork", "sniff", "scratch", "wag"];
+const CORGI_POSES: CorgiPose[] = ["standing", "standing", "loaf", "standing", "sploot", "standing"];
+const CORGI_MOVE_MS = () => 30000 + Math.random() * 30000;
+const CORGI_POSE_MS = () => 90000 + Math.random() * 90000;
+const CORGI_MOVE_DURATION = 2400;
+
+let __corgiUid = 0;
+
+type CorgiProps = {
+  size?: number;
+  animated?: boolean;
+  travel?: CatTravel;
+  onLeft?: () => void;
+  onArrived?: () => void;
+};
+
+export function CorgiFigurine({ size = 96, animated = true, travel = "none", onLeft, onArrived }: CorgiProps) {
+  const w = size;
+  const h = (size * 140) / 200;
+  const [uid] = useState(() => ++__corgiUid);
+  const ns = `dg${uid}`;
+
+  const [pose, setPose] = useState<CorgiPose>("standing");
+  const [move, setMove] = useState<CorgiMove | null>(null);
+  const idle = animated && travel === "none";
+
+  useEffect(() => {
+    if (!idle) return;
+    let i = 0;
+    const id = window.setInterval(() => {
+      i = (i + 1) % CORGI_POSES.length;
+      setPose(CORGI_POSES[i]);
+    }, CORGI_POSE_MS());
+    return () => window.clearInterval(id);
+  }, [idle]);
+
+  useEffect(() => {
+    if (!idle) return;
+    let cancelled = false;
+    let tid = 0;
+    const schedule = () => {
+      tid = window.setTimeout(() => {
+        if (cancelled) return;
+        const pick = CORGI_SPECIAL[Math.floor(Math.random() * CORGI_SPECIAL.length)];
+        setMove(pick);
+        tid = window.setTimeout(() => {
+          if (cancelled) return;
+          setMove(null);
+          schedule();
+        }, CORGI_MOVE_DURATION);
+      }, CORGI_MOVE_MS());
+    };
+    schedule();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(tid);
+    };
+  }, [idle]);
+
+  useEffect(() => {
+    if (travel === "leaving" && onLeft) {
+      const t = window.setTimeout(onLeft, 1600);
+      return () => window.clearTimeout(t);
+    }
+    if (travel === "arriving" && onArrived) {
+      const t = window.setTimeout(onArrived, 1400);
+      return () => window.clearTimeout(t);
+    }
+  }, [travel, onLeft, onArrived]);
+
+  return (
+    <svg width={w} height={h} viewBox="0 0 200 140" aria-hidden style={{ display: "block", overflow: "visible" }}>
+      <defs>
+        {/* Pembroke red sable — warm fox-orange topcoat fading to deeper russet underside */}
+        <linearGradient id={`${ns}-coat`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f0a25c" />
+          <stop offset="45%" stopColor="#d9742a" />
+          <stop offset="100%" stopColor="#8a3d10" />
+        </linearGradient>
+        {/* White bib / blaze / paws — slightly cream so it doesn't burn out */}
+        <linearGradient id={`${ns}-white`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#fdf6e9" />
+          <stop offset="100%" stopColor="#dccdb1" />
+        </linearGradient>
+        {/* Pink inner ear */}
+        <radialGradient id={`${ns}-ear`} cx="50%" cy="65%" r="65%">
+          <stop offset="0%" stopColor="#f3b3aa" />
+          <stop offset="100%" stopColor="#7a3522" />
+        </radialGradient>
+        {/* Friendly brown eye */}
+        <radialGradient id={`${ns}-eye`} cx="50%" cy="45%" r="60%">
+          <stop offset="0%" stopColor="#6b3a18" />
+          <stop offset="70%" stopColor="#2a1408" />
+          <stop offset="100%" stopColor="#0a0503" />
+        </radialGradient>
+        <filter id={`${ns}-blur`} x="-20%" y="-50%" width="140%" height="200%">
+          <feGaussianBlur stdDeviation="1.6" />
+        </filter>
+      </defs>
+
+      {animated ? (
+        <style>{`
+          .${ns}-rig * { transform-box: view-box; }
+          .${ns}-breath { transform-origin: 110px 105px; animation: ${ns}-breath 4.2s ease-in-out infinite; }
+          @keyframes ${ns}-breath {
+            0%,100% { transform: scaleY(1) translateY(0); }
+            50%     { transform: scaleY(1.025) translateY(-0.6px); }
+          }
+          .${ns}-shadow { transform-origin: 105px 128px; animation: ${ns}-shadowp 4.2s ease-in-out infinite; }
+          @keyframes ${ns}-shadowp {
+            0%,100% { transform: scaleX(1); opacity: 0.34; }
+            50%     { transform: scaleX(0.96); opacity: 0.28; }
+          }
+          /* Head nod — gentle attentive bob */
+          .${ns}-head { transform-origin: 52px 78px; animation: ${ns}-head 6.0s ease-in-out infinite; }
+          @keyframes ${ns}-head {
+            0%,100% { transform: rotate(-2deg) translateY(0); }
+            40%     { transform: rotate(2deg) translateY(-1px); }
+            70%     { transform: rotate(3deg) translateY(-0.4px); }
+          }
+          /* Upright fox ears — quick independent twitches */
+          .${ns}-earL { transform-origin: 42px 55px; animation: ${ns}-earL 7.3s ease-in-out infinite; }
+          .${ns}-earR { transform-origin: 64px 53px; animation: ${ns}-earR 9.1s ease-in-out infinite; }
+          @keyframes ${ns}-earL {
+            0%, 88%, 100% { transform: rotate(0); }
+            91% { transform: rotate(-12deg); }
+            94% { transform: rotate(4deg); }
+            97% { transform: rotate(0); }
+          }
+          @keyframes ${ns}-earR {
+            0%, 70%, 100% { transform: rotate(0); }
+            73% { transform: rotate(10deg); }
+            76% { transform: rotate(-3deg); }
+            79% { transform: rotate(0); }
+          }
+          /* Blink */
+          .${ns}-lid { transform-origin: 52px 70px; transform: scaleY(0); animation: ${ns}-blink 5.7s ease-in-out infinite; }
+          @keyframes ${ns}-blink {
+            0%, 92%, 100% { transform: scaleY(0); }
+            94% { transform: scaleY(1); }
+            96% { transform: scaleY(1); }
+            98% { transform: scaleY(0); }
+          }
+          /* Nub tail wag — small fast happy wiggle */
+          .${ns}-tail { transform-origin: 158px 92px; animation: ${ns}-tail 1.3s ease-in-out infinite; }
+          @keyframes ${ns}-tail {
+            0%,100% { transform: rotate(-14deg); }
+            50%     { transform: rotate(18deg); }
+          }
+          /* Front paw tap */
+          .${ns}-pawFL { transform-origin: 78px 118px; animation: ${ns}-paw 5.1s ease-in-out infinite; }
+          @keyframes ${ns}-paw {
+            0%, 60%, 100% { transform: rotate(0) translateY(0); }
+            68% { transform: rotate(-5deg) translateY(-2px); }
+            76% { transform: rotate(2deg) translateY(0.5px); }
+            84% { transform: rotate(0) translateY(0); }
+          }
+          /* Tongue — gentle slow bob, faint */
+          .${ns}-tongue { transform-origin: 30px 86px; animation: ${ns}-tongue 4.5s ease-in-out infinite; }
+          @keyframes ${ns}-tongue {
+            0%,100% { transform: translateY(0); }
+            50%     { transform: translateY(0.6px); }
+          }
+
+          /* ===================== POSE CYCLING ===================== */
+          .${ns}-pose { transform-origin: 100px 130px; transition: transform 1.4s cubic-bezier(.5,.05,.4,1); }
+          .${ns}-pose-standing { transform: none; }
+          /* Corgi loaf: legs tucked under, body settles down a touch */
+          .${ns}-pose-loaf     { transform: translate(0px, 6px) scale(1.02, 0.92); }
+          /* Sploot: legs out behind, body flattens slightly forward */
+          .${ns}-pose-sploot   { transform: translate(-3px, 10px) scale(1.05, 0.78); }
+
+          /* ===================== SPECIAL MOVES ===================== */
+          .${ns}-move { animation-fill-mode: both; }
+          .${ns}-move-yawn    { animation: ${ns}-yawn    2.4s ease-in-out 1; }
+          .${ns}-move-shake   { animation: ${ns}-shake   1.4s ease-in-out 1; }
+          .${ns}-move-bork    { animation: ${ns}-bork    1.6s ease-in-out 1; }
+          .${ns}-move-sniff   { animation: ${ns}-sniff   2.4s ease-in-out 1; }
+          .${ns}-move-scratch { animation: ${ns}-scratch 2.4s ease-in-out 1; }
+          .${ns}-move-wag     { animation: ${ns}-wagm    2.0s ease-in-out 1; }
+          @keyframes ${ns}-yawn    { 0%,100%{ transform: none; } 50%{ transform: translateY(-1px) rotate(-1deg) scale(1.02); } }
+          @keyframes ${ns}-shake   { 0%,100%{ transform: none; } 20%{ transform: rotate(-5deg); } 40%{ transform: rotate(5deg); } 60%{ transform: rotate(-4deg); } 80%{ transform: rotate(3deg); } }
+          @keyframes ${ns}-bork    { 0%,100%{ transform: none; } 30%{ transform: translateY(-3px) scale(1.03, 0.97); } 60%{ transform: translateY(0) scale(0.99, 1.02); } }
+          @keyframes ${ns}-sniff   { 0%,100%{ transform: none; } 30%{ transform: translate(-2px,2px) rotate(-3deg); } 60%{ transform: translate(2px,2px) rotate(2deg); } }
+          @keyframes ${ns}-scratch { 0%,100%{ transform: none; } 40%{ transform: translate(-2px, 1px) rotate(-3deg); } 70%{ transform: translate(2px, 0) rotate(2deg); } }
+          @keyframes ${ns}-wagm    { 0%,100%{ transform: none; } 50%{ transform: translateY(-1px); } }
+
+          /* Faster tail wag during wag/bork moves */
+          .${ns}-move-wag .${ns}-tail,
+          .${ns}-move-bork .${ns}-tail { animation: ${ns}-tail 0.4s ease-in-out infinite; }
+          /* Scratch: back leg rises and shakes */
+          .${ns}-move-scratch .${ns}-pawBR { animation: ${ns}-scratchpaw 2.4s ease-in-out 1; }
+          @keyframes ${ns}-scratchpaw {
+            0%,100% { transform: none; }
+            20% { transform: translate(2px, -8px) rotate(20deg); }
+            40% { transform: translate(0, -6px) rotate(15deg); }
+            60% { transform: translate(2px, -8px) rotate(20deg); }
+            80% { transform: translate(0, -2px) rotate(8deg); }
+          }
+          /* Bork: mouth opens */
+          .${ns}-borkmouth { opacity: 0; transform-box: view-box; transform-origin: 28px 84px; }
+          .${ns}-move-bork .${ns}-borkmouth { animation: ${ns}-borkm 1.6s ease-in-out 1; }
+          @keyframes ${ns}-borkm { 0%,100%{ opacity:0; transform: scaleY(0.2); } 30%,60%{ opacity:1; transform: scaleY(1); } }
+          /* Yawn mouth */
+          .${ns}-yawnmouth { opacity: 0; transform-box: view-box; transform-origin: 28px 84px; }
+          .${ns}-move-yawn .${ns}-yawnmouth { animation: ${ns}-yawnm 2.4s ease-in-out 1; }
+          @keyframes ${ns}-yawnm { 0%,100%{ opacity:0; transform: scaleY(0.2); } 35%,65%{ opacity:1; transform: scaleY(1); } }
+
+          /* ===================== TRAVEL TRANSITIONS ===================== */
+          .${ns}-travel-leaving  { animation: ${ns}-walkout 1.6s cubic-bezier(.4,0,.7,.4) 1 forwards; }
+          .${ns}-travel-arriving { animation: ${ns}-dropin  1.4s cubic-bezier(.3,1.4,.5,1) 1 backwards; }
+          @keyframes ${ns}-walkout {
+            0%   { transform: none; opacity: 1; }
+            20%  { transform: translate(30px, -1px) rotate(2deg); }
+            55%  { transform: translate(120px, -2px) rotate(-2deg); }
+            100% { transform: translate(280px, 0); opacity: 0; }
+          }
+          @keyframes ${ns}-dropin {
+            0%   { transform: translate(60px, -140px) rotate(-10deg) scale(0.9); opacity: 0; }
+            40%  { transform: translate(30px, -60px) rotate(-6deg) scale(0.96); opacity: 1; }
+            75%  { transform: translate(0, 6px) rotate(0deg) scale(1, 0.92); }
+            100% { transform: none; }
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .${ns}-breath, .${ns}-shadow, .${ns}-head, .${ns}-earL, .${ns}-earR,
+            .${ns}-lid, .${ns}-tail, .${ns}-pawFL, .${ns}-tongue, .${ns}-pose,
+            .${ns}-move, .${ns}-travel-leaving, .${ns}-travel-arriving {
+              animation: none; transition: none;
+            }
+          }
+        `}</style>
+      ) : (
+        <style>{`
+          [class*="${ns}-"], [class*="${ns}-"] * {
+            animation: none !important;
+            animation-name: none !important;
+            animation-duration: 0s !important;
+            animation-iteration-count: 1 !important;
+            transition: none !important;
+          }
+          .${ns}-lid { transform: scaleY(0) !important; transform-box: view-box; transform-origin: 52px 70px; }
+          .${ns}-yawnmouth, .${ns}-borkmouth { opacity: 0 !important; }
+        `}</style>
+      )}
+
+      <g
+        className={
+          animated && travel === "leaving"
+            ? `${ns}-travel-leaving`
+            : animated && travel === "arriving"
+              ? `${ns}-travel-arriving`
+              : undefined
+        }
+      >
+        <g className={animated && move ? `${ns}-move ${ns}-move-${move}` : undefined}>
+          <g className={animated ? `${ns}-pose ${ns}-pose-${pose}` : undefined}>
+            <g className={`${ns}-rig`}>
+              {/* ground shadow — wider for the stocky body */}
+              <ellipse
+                className={`${ns}-shadow`}
+                cx="108"
+                cy="128"
+                rx="78"
+                ry="3.8"
+                fill="rgba(0,0,0,0.34)"
+                filter={`url(#${ns}-blur)`}
+              />
+
+              {/* back legs (behind body) — short pillars with white paws */}
+              <g>
+                <rect x="134" y="108" width="11" height="18" rx="4" fill={`url(#${ns}-coat)`} />
+                <ellipse cx="139.5" cy="125" rx="6.5" ry="3" fill={`url(#${ns}-white)`} />
+                <rect className={`${ns}-pawBR`} x="152" y="108" width="11" height="18" rx="4" fill={`url(#${ns}-coat)`} />
+                <ellipse cx="157.5" cy="125" rx="6.5" ry="3" fill={`url(#${ns}-white)`} />
+              </g>
+
+              {/* nub tail — small fluffy wag behind the rump */}
+              <g className={`${ns}-tail`}>
+                <ellipse cx="162" cy="86" rx="7" ry="9" fill={`url(#${ns}-coat)`} />
+                <ellipse cx="160" cy="83" rx="3.5" ry="5" fill={`url(#${ns}-white)`} opacity="0.55" />
+              </g>
+
+              {/* body — long stocky barrel, low to the ground */}
+              <g className={`${ns}-breath`}>
+                {/* main body */}
+                <ellipse cx="110" cy="100" rx="62" ry="22" fill={`url(#${ns}-coat)`} />
+                {/* white belly + chest bib */}
+                <ellipse cx="100" cy="112" rx="48" ry="11" fill={`url(#${ns}-white)`} />
+                {/* fairy saddle — classic Pembroke marking, a slightly darker
+                    cape across the shoulders */}
+                <path
+                  d="M 70 86 Q 100 70 145 86 Q 150 96 145 102 Q 110 90 70 100 Z"
+                  fill="#9a4416"
+                  opacity="0.35"
+                />
+              </g>
+
+              {/* front legs */}
+              <g>
+                <rect className={`${ns}-pawFL`} x="74" y="108" width="11" height="18" rx="4" fill={`url(#${ns}-coat)`} />
+                <ellipse cx="79.5" cy="125" rx="6.5" ry="3" fill={`url(#${ns}-white)`} />
+                <rect x="92" y="108" width="11" height="18" rx="4" fill={`url(#${ns}-coat)`} />
+                <ellipse cx="97.5" cy="125" rx="6.5" ry="3" fill={`url(#${ns}-white)`} />
+              </g>
+
+              {/* head group — sits in front of the body */}
+              <g className={`${ns}-head`}>
+                {/* ears — tall upright triangles with rounded tips */}
+                <g className={`${ns}-earL`}>
+                  <path
+                    d="M 36 56 Q 33 36 44 30 Q 50 40 48 58 Z"
+                    fill={`url(#${ns}-coat)`}
+                  />
+                  <path
+                    d="M 38 54 Q 38 42 44 36 Q 47 44 46 56 Z"
+                    fill={`url(#${ns}-ear)`}
+                  />
+                </g>
+                <g className={`${ns}-earR`}>
+                  <path
+                    d="M 62 54 Q 62 34 72 30 Q 78 40 74 58 Z"
+                    fill={`url(#${ns}-coat)`}
+                  />
+                  <path
+                    d="M 64 52 Q 65 40 71 36 Q 73 46 71 56 Z"
+                    fill={`url(#${ns}-ear)`}
+                  />
+                </g>
+
+                {/* head — rounded fox-like with broad cheeks */}
+                <ellipse cx="52" cy="76" rx="24" ry="21" fill={`url(#${ns}-coat)`} />
+                {/* white blaze stripe down the center of the face */}
+                <path
+                  d="M 52 56 Q 49 70 50 86 Q 52 90 54 86 Q 55 70 52 56 Z"
+                  fill={`url(#${ns}-white)`}
+                />
+                {/* white muzzle + cheeks */}
+                <ellipse cx="38" cy="86" rx="14" ry="9" fill={`url(#${ns}-white)`} />
+                {/* nose */}
+                <ellipse cx="26" cy="82" rx="3.4" ry="2.6" fill="#1a0a06" />
+                {/* nose highlight */}
+                <ellipse cx="25" cy="81" rx="1" ry="0.7" fill="#fff" opacity="0.7" />
+
+                {/* eyes — friendly, slightly almond */}
+                <ellipse cx="44" cy="70" rx="2.6" ry="3" fill={`url(#${ns}-eye)`} />
+                <ellipse cx="58" cy="68" rx="2.6" ry="3" fill={`url(#${ns}-eye)`} />
+                {/* eye highlights */}
+                <circle cx="43.2" cy="69" r="0.8" fill="#fff" />
+                <circle cx="57.2" cy="67" r="0.8" fill="#fff" />
+                {/* gentle upward brow arcs */}
+                <path d="M 41 64 Q 44 62 47 64" stroke="#6e3a14" strokeWidth="0.9" fill="none" strokeLinecap="round" />
+                <path d="M 55 62 Q 58 60 61 62" stroke="#6e3a14" strokeWidth="0.9" fill="none" strokeLinecap="round" />
+                {/* blink lids */}
+                <ellipse className={`${ns}-lid`} cx="44" cy="70" rx="2.8" ry="3" fill={`url(#${ns}-coat)`} />
+                <ellipse className={`${ns}-lid`} cx="58" cy="68" rx="2.8" ry="3" fill={`url(#${ns}-coat)`} />
+
+                {/* friendly smile — gentle curved line under muzzle */}
+                <path d="M 26 86 Q 32 92 40 89" stroke="#3a1a08" strokeWidth="1.1" fill="none" strokeLinecap="round" />
+                {/* small resting tongue tip */}
+                <g className={`${ns}-tongue`}>
+                  <ellipse cx="34" cy="91" rx="3" ry="1.6" fill="#e87a8a" />
+                </g>
+
+                {/* yawn / bork open mouth — hidden by default */}
+                <ellipse className={`${ns}-yawnmouth`} cx="30" cy="89" rx="5.5" ry="4" fill="#3a1010" />
+                <ellipse className={`${ns}-borkmouth`} cx="30" cy="88" rx="4.5" ry="3" fill="#3a1010" />
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+  );
+}
+
+/* ========================================================================
    ShelfPet — the shelf widget slot
    ======================================================================== */
 
@@ -850,6 +1236,14 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
           <div className="pb-1">
             {pet.id === "cozy-cat" ? (
               <CatFigurine
+                size={catSize}
+                animated={cfg?.animations !== false}
+                travel={travel}
+                onLeft={() => setTravel("none")}
+                onArrived={() => setTravel("none")}
+              />
+            ) : pet.id === "dog" ? (
+              <CorgiFigurine
                 size={catSize}
                 animated={cfg?.animations !== false}
                 travel={travel}
