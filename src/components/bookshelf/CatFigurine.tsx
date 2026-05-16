@@ -685,7 +685,7 @@ const STYLES: Record<string, PetStyle> = {
   dog: { body: "linear-gradient(160deg,#ffffff,#b7445e)", head: "#ffffff", accent: "#5a1a2a" },
   dragon: { body: "linear-gradient(160deg,#7fd3b7,#1f7a5e)", head: "#a8e8d0", accent: "#0e3a2c" },
   phoenix: { body: "linear-gradient(160deg,#f7c2b0,#c95f4a)", head: "#fbd9cc", accent: "#5e1f12" },
-  bird: { body: "linear-gradient(160deg,#9bc28a,#3f7236)", head: "#bcd8ad", accent: "#1f3a18" },
+  bird: { body: "linear-gradient(160deg,#f4a05a,#9c3a14)", head: "#fbd3a8", accent: "#3a1606" },
   hamster: { body: "linear-gradient(160deg,#dec39b,#8a6638)", head: "#ecdcb8", accent: "#3e2a14" },
 };
 
