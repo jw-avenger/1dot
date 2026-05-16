@@ -889,8 +889,8 @@ export function CorgiFigurine({ size = 96, animated = true, travel = "none", onL
             70%     { transform: rotate(3deg) translateY(-0.4px); }
           }
           /* Upright fox ears — quick independent twitches */
-          .${ns}-earL { transform-origin: 42px 55px; animation: ${ns}-earL 7.3s ease-in-out infinite; }
-          .${ns}-earR { transform-origin: 64px 53px; animation: ${ns}-earR 9.1s ease-in-out infinite; }
+          .${ns}-earL { transform-origin: 42px 60px; animation: ${ns}-earL 7.3s ease-in-out infinite; }
+          .${ns}-earR { transform-origin: 68px 58px; animation: ${ns}-earR 9.1s ease-in-out infinite; }
           @keyframes ${ns}-earL {
             0%, 88%, 100% { transform: rotate(0); }
             91% { transform: rotate(-12deg); }
@@ -976,19 +976,39 @@ export function CorgiFigurine({ size = 96, animated = true, travel = "none", onL
           .${ns}-move-yawn .${ns}-yawnmouth { animation: ${ns}-yawnm 2.4s ease-in-out 1; }
           @keyframes ${ns}-yawnm { 0%,100%{ opacity:0; transform: scaleY(0.2); } 35%,65%{ opacity:1; transform: scaleY(1); } }
 
-          /* ===================== TRAVEL TRANSITIONS ===================== */
-          .${ns}-travel-leaving  { animation: ${ns}-walkout 1.6s cubic-bezier(.4,0,.7,.4) 1 forwards; }
-          .${ns}-travel-arriving { animation: ${ns}-dropin  1.4s cubic-bezier(.3,1.4,.5,1) 1 backwards; }
-          @keyframes ${ns}-walkout {
-            0%   { transform: none; opacity: 1; }
-            20%  { transform: translate(30px, -1px) rotate(2deg); }
-            55%  { transform: translate(120px, -2px) rotate(-2deg); }
-            100% { transform: translate(280px, 0); opacity: 0; }
+          /* ===================== TRAVEL TRANSITIONS =====================
+             Corgis don't slink off — they pant, spin a small circle, and
+             gallop with arcing leaps off the right edge. */
+          .${ns}-travel-leaving  { animation: ${ns}-runoff 1.6s cubic-bezier(.3,0,.6,1) 1 forwards; }
+          .${ns}-travel-arriving { animation: ${ns}-runon  1.4s cubic-bezier(.3,1.4,.5,1) 1 backwards; }
+          .${ns}-travel-leaving .${ns}-breath { animation: ${ns}-bounce 0.32s ease-in-out infinite; }
+          .${ns}-travel-leaving .${ns}-tail   { animation: ${ns}-tail 0.18s ease-in-out infinite; }
+          .${ns}-travel-leaving .${ns}-tongue { animation: ${ns}-pant 0.22s ease-in-out infinite; }
+          @keyframes ${ns}-bounce {
+            0%,100% { transform: translateY(0) scaleY(1); }
+            50%     { transform: translateY(-6px) scaleY(0.94); }
           }
-          @keyframes ${ns}-dropin {
-            0%   { transform: translate(60px, -140px) rotate(-10deg) scale(0.9); opacity: 0; }
-            40%  { transform: translate(30px, -60px) rotate(-6deg) scale(0.96); opacity: 1; }
-            75%  { transform: translate(0, 6px) rotate(0deg) scale(1, 0.92); }
+          @keyframes ${ns}-pant {
+            0%,100% { transform: translateY(0) scaleY(1); }
+            50%     { transform: translateY(2px) scaleY(1.18); }
+          }
+          @keyframes ${ns}-runoff {
+            0%   { transform: none; opacity: 1; }
+            10%  { transform: translate(8px, 0) rotate(90deg); }
+            20%  { transform: translate(0, 4px) rotate(180deg); }
+            30%  { transform: translate(-8px, 0) rotate(270deg); }
+            40%  { transform: translate(0, 0) rotate(360deg); }
+            55%  { transform: translate(60px, -22px) rotate(372deg); }
+            70%  { transform: translate(140px, -8px) rotate(360deg); }
+            85%  { transform: translate(220px, -30px) rotate(372deg); opacity: 0.9; }
+            100% { transform: translate(310px, 10px) rotate(360deg); opacity: 0; }
+          }
+          @keyframes ${ns}-runon {
+            0%   { transform: translate(-280px, 10px) rotate(0); opacity: 0; }
+            30%  { transform: translate(-140px, -18px) rotate(2deg); opacity: 1; }
+            55%  { transform: translate(-60px, -28px) rotate(-2deg); }
+            75%  { transform: translate(-10px, -4px) rotate(0); }
+            90%  { transform: translate(0, 6px) scale(1, 0.92); }
             100% { transform: none; }
           }
 
@@ -1076,24 +1096,25 @@ export function CorgiFigurine({ size = 96, animated = true, travel = "none", onL
 
               {/* head group — sits in front of the body */}
               <g className={`${ns}-head`}>
-                {/* ears — tall upright triangles with rounded tips */}
+                {/* ears — tall upright triangles rooted on top of the head
+                    (~y=58 head crown) so they read as attached, not floating */}
                 <g className={`${ns}-earL`}>
                   <path
-                    d="M 36 56 Q 33 36 44 30 Q 50 40 48 58 Z"
+                    d="M 36 60 Q 33 42 44 38 Q 50 48 48 60 Z"
                     fill={`url(#${ns}-coat)`}
                   />
                   <path
-                    d="M 38 54 Q 38 42 44 36 Q 47 44 46 56 Z"
+                    d="M 38 58 Q 38 48 44 44 Q 47 50 46 58 Z"
                     fill={`url(#${ns}-ear)`}
                   />
                 </g>
                 <g className={`${ns}-earR`}>
                   <path
-                    d="M 62 54 Q 62 34 72 30 Q 78 40 74 58 Z"
+                    d="M 62 58 Q 62 40 72 38 Q 78 48 74 60 Z"
                     fill={`url(#${ns}-coat)`}
                   />
                   <path
-                    d="M 64 52 Q 65 40 71 36 Q 73 46 71 56 Z"
+                    d="M 64 56 Q 65 46 71 42 Q 73 50 71 58 Z"
                     fill={`url(#${ns}-ear)`}
                   />
                 </g>
@@ -1161,6 +1182,22 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
   const [hover, setHover] = useState(false);
   const [travel, setTravel] = useState<CatTravel>("none");
   const [pendingDelete, setPendingDelete] = useState(false);
+  // Gentle digital affection: queue of tiny floating sparkles spawned by
+  // focus events from elsewhere in the app (opening a book, finishing a
+  // pet-care item). They drift up and fade — subtle reward, never loud.
+  const [affection, setAffection] = useState<{ id: number; glyph: string; dx: number }[]>([]);
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { kind?: string } | undefined;
+      const glyph = detail?.kind === "task-done" ? "♥" : "✦";
+      const id = Date.now() + Math.random();
+      const dx = (Math.random() - 0.5) * 18;
+      setAffection((q) => [...q, { id, glyph, dx }]);
+      window.setTimeout(() => setAffection((q) => q.filter((s) => s.id !== id)), 1800);
+    };
+    window.addEventListener("shelf:affection", handler);
+    return () => window.removeEventListener("shelf:affection", handler);
+  }, []);
 
   const awayActive = !!(cfg?.awayUntil && cfg.awayUntil > Date.now());
 
@@ -1281,6 +1318,34 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
           ×
         </button>
       )}
+      {/* gentle digital affection — sparkles drifting above the companion */}
+      {showCat && affection.length > 0 && (
+        <div className="pointer-events-none absolute left-0 right-0 top-2 flex justify-center" aria-hidden>
+          {affection.map((s) => (
+            <span
+              key={s.id}
+              className="absolute select-none"
+              style={{
+                color: "#e8a87c",
+                fontSize: 14,
+                opacity: 0.85,
+                transform: `translateX(${s.dx}px)`,
+                animation: "shelfAffectionFloat 1.8s ease-out forwards",
+                textShadow: "0 0 6px rgba(255,220,180,0.6)",
+              }}
+            >
+              {s.glyph}
+            </span>
+          ))}
+          <style>{`
+            @keyframes shelfAffectionFloat {
+              0%   { opacity: 0; transform: translate(var(--dx,0), 6px) scale(0.6); }
+              25%  { opacity: 0.95; }
+              100% { opacity: 0; transform: translate(var(--dx,0), -40px) scale(1.1); }
+            }
+          `}</style>
+        </div>
+      )}
     </div>
   );
 }
@@ -1320,15 +1385,15 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
 
   useEffect(() => {
     if (!open) return;
+    // Always greet with the cozy "ask" phase first, even when a companion is
+    // already chosen — it's a gentle word-choice moment.
     if (existing) {
       setDraft(existing);
-      setPhase("configure");
-      setPickerOpen(false);
     } else {
       setDraft({ pet: null, animations: true, todoEnabled: false, todoItems: [] });
-      setPhase("ask");
-      setPickerOpen(true);
     }
+    setPhase("ask");
+    setPickerOpen(true);
   }, [open, existing]);
 
   if (!open) return null;
@@ -1343,6 +1408,12 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
     onClose();
   };
   const declineOrRemove = () => {
+    // Gentle: if a companion is already saved, just close — never silently
+    // delete on a "No" answer. First-time users with no companion: dismiss.
+    if (existing) {
+      onClose();
+      return;
+    }
     deletePet(SHELF_KEY);
     onClose();
   };
@@ -1710,7 +1781,7 @@ function SendAwayRow({
       <span aria-hidden style={{ opacity: 0.55 }}>
         —
       </span>
-      <span>Send cat away for</span>
+      <span>Send companion away for</span>
       <input
         type="number"
         min={1}

@@ -30,6 +30,13 @@ export function BookOpen({ book, onClose }: Props) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
+    // Gentle digital affection: a tiny sparkle drifts up over the companion
+    // whenever the reader settles into a book — a quiet "well done, focus".
+    try {
+      window.dispatchEvent(new CustomEvent("shelf:affection", { detail: { kind: "open-book" } }));
+    } catch {
+      /* ignore */
+    }
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
@@ -58,6 +65,11 @@ export function BookOpen({ book, onClose }: Props) {
   };
   const removePetTask = (i: number) => {
     updatePetCare(petCareItems.filter((_, idx) => idx !== i));
+    try {
+      window.dispatchEvent(new CustomEvent("shelf:affection", { detail: { kind: "task-done" } }));
+    } catch {
+      /* ignore */
+    }
   };
 
   const renderNode = (node: SpaceNode, depth: number, key: string) => (

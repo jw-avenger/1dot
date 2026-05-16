@@ -160,7 +160,7 @@ export function SidePanel(props: Props) {
         }}
         aria-hidden={!open}
       >
-        {/* Top three priority buttons */}
+        {/* Top three priority buttons — all share the SIMPLE-MODE-NOW pill look */}
         <button
           onClick={() => s.slapToBasic()}
           className="mb-1.5 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
@@ -176,32 +176,35 @@ export function SidePanel(props: Props) {
         </button>
         <button
           onClick={() => s.shutIt()}
-          className="mb-1.5 w-full rounded-lg py-2.5 text-[13px] font-semibold tracking-wide"
-          style={{ backgroundColor: "#3a3a40", color: PANEL_FG, border: "1px solid rgba(255,255,255,0.1)" }}
+          className="mb-1.5 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
+          style={{
+            color: PANEL_FG,
+            opacity: 0.7,
+            border: "1px solid rgba(255,255,255,0.18)",
+            backgroundColor: "transparent",
+          }}
+          title="Silence sound effects"
         >
-          SHUT IT!
+          [ SHUT IT! ]
         </button>
         <button
           onClick={() => s.setTalkToMe(!s.talkToMe)}
-          className="mb-3 w-full rounded-lg py-2.5 text-[13px] font-semibold tracking-wide"
+          className="mb-3 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
           style={{
-            backgroundColor: s.talkToMe ? PANEL_FG : "#3a3a40",
-            color: s.talkToMe ? PANEL_BG : PANEL_FG,
-            border: "1px solid rgba(255,255,255,0.1)",
+            color: PANEL_FG,
+            opacity: s.talkToMe ? 1 : 0.7,
+            border: s.talkToMe ? "1px solid rgba(255,255,255,0.55)" : "1px solid rgba(255,255,255,0.18)",
+            backgroundColor: "transparent",
           }}
+          title="Toggle Talk to Me"
         >
-          TALK TO ME{s.talkToMe ? " · on" : ""}
+          [ TALK TO ME{s.talkToMe ? " · ON" : ""} ]
         </button>
 
         {/* All options visible inline */}
         <Row>
-          <Toggle label="Shelf view" on={viewMode === "shelf"} onChange={() => setViewMode(viewMode === "shelf" ? "simple" : "shelf")} />
+          <Toggle label="Expanded Modes" on={viewMode === "shelf"} onChange={() => setViewMode(viewMode === "shelf" ? "simple" : "shelf")} />
         </Row>
-        {viewMode === "shelf" && (
-          <Row>
-            <Toggle label="Arrange shelf" on={editMode} onChange={() => setEditMode(!editMode)} />
-          </Row>
-        )}
         <Row>
           <Toggle label="Dark theme" on={theme === "dark"} onChange={() => setTheme(theme === "dark" ? "light" : "dark")} />
         </Row>
@@ -327,58 +330,22 @@ export function SidePanel(props: Props) {
           <Toggle label="Social" on={false} onChange={() => {}} />
           <div className="text-[11px]" style={{ color: DIM }}>soon</div>
         </Row>
-        <Row>
-          <button
-            onClick={() => setOpen(false)}
-            className="flex w-full items-center justify-between text-left text-[14px]"
-          >
-            <span>Accessibility</span>
-            <span style={{ color: DIM }}>open book</span>
-          </button>
-        </Row>
-
-        <Row>
-          <div className="mb-1.5 flex items-center justify-between">
-            <Label>Trash</Label>
-            {s.trash.length > 0 && (
-              <button
-                onClick={() => s.clearTrash()}
-                className="text-[10px] uppercase tracking-wider"
-                style={{ color: DIM }}
-              >
-                empty
-              </button>
-            )}
-          </div>
-          {s.trash.length === 0 ? (
-            <div className="text-[12px] italic" style={{ color: DIM }}>Nothing here.</div>
-          ) : (
-            <ul className="space-y-1">
-              {s.trash.map((t) => (
-                <li
-                  key={t.id}
-                  className="flex items-center justify-between gap-2 rounded-md px-2 py-1.5"
-                  style={{ backgroundColor: "rgba(255,255,255,0.04)" }}
-                >
-                  <span className="truncate text-[12px]">{t.label}</span>
-                  <button
-                    onClick={() => s.restoreTrash(t.id)}
-                    aria-label={`Restore ${t.label}`}
-                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[14px]"
-                    style={{
-                      backgroundColor: PANEL_FG,
-                      color: PANEL_BG,
-                    }}
-                  >
-                    +
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Row>
 
         <div className="flex-1" />
+
+        {viewMode === "shelf" && (
+          <button
+            onClick={() => setEditMode(!editMode)}
+            className="mt-3 w-full rounded-lg py-2 text-[12px]"
+            style={{
+              backgroundColor: "transparent",
+              color: PANEL_FG,
+              border: "1px solid rgba(255,255,255,0.18)",
+            }}
+          >
+            {editMode ? "Done arranging shelf" : "Arrange shelf"}
+          </button>
+        )}
 
         <button
           onClick={() => s.setHideSettingsBook(!s.hideSettingsBook)}
