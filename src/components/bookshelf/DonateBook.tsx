@@ -144,6 +144,16 @@ export function DonateBook() {
   const [poll, setPoll] = useState<string | null>(null);
   return (
     <div className="space-y-5">
+      <div className="rounded-md border-2 border-ink/70 bg-ink/5 p-4 text-center">
+        <p className="font-sans text-sm font-bold uppercase tracking-[0.18em] text-ink">
+          🚧 Site under construction
+        </p>
+        <p className="mt-1 font-serif text-sm text-ink/80">
+          None of the payment links below work yet. They're placeholders while
+          the site is being built. Thank you for your patience.
+        </p>
+      </div>
+
       <header>
         <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
           A note from the maker
@@ -156,6 +166,19 @@ export function DonateBook() {
         <p>This app exists because modern life started feeling strangely fragmented.</p>
         <p>Too many apps. Too many notifications. Too many systems scattered across too many places.</p>
         <p>I'm one budget-conscious spouse who was looking for simple support.</p>
+        <p>Not optimization. Not hustle culture. Not another subscription trying to convince me to become a perfectly organized productivity machine.</p>
+        <p>I am not a business. I am not a robot. I do not consent to becoming either in the foreseeable future.</p>
+        <p>I just need realistic support. And honestly? I want this to exist too.</p>
+        <p>I wanted one calm place to:</p>
+        <ul className="ml-5 list-disc space-y-1 text-ink/80">
+          <li>remember groceries,</li>
+          <li>coordinate projects,</li>
+          <li>manage household life,</li>
+          <li>and reduce how much my brain had to carry all at once.</li>
+        </ul>
+        <p>Especially on low-energy days.</p>
+        <p>So instead of waiting for someone else to make it, I decided to start building it myself.</p>
+        <p>We're beginning as a web app because a web app can be added to any device — phone, tablet, or laptop — which makes it the most affordable and inclusive place to start. I paid the web app site forward myself for the first two years. Google Play will come later when we can get there.</p>
         <p>Not optimization. Not hustle culture. Not another subscription trying to convince me to become a perfectly organized productivity machine.</p>
         <p>I am not a business. I am not a robot. I do not consent to becoming either in the foreseeable future.</p>
         <p>I just need realistic support. And honestly? I want this to exist too.</p>
