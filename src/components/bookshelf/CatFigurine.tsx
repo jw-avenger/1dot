@@ -1343,6 +1343,12 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
     onClose();
   };
   const declineOrRemove = () => {
+    // Gentle: if a companion is already saved, just close — never silently
+    // delete on a "No" answer. First-time users with no companion: dismiss.
+    if (existing) {
+      onClose();
+      return;
+    }
     deletePet(SHELF_KEY);
     onClose();
   };
