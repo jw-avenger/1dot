@@ -312,39 +312,7 @@ export const LETTER_PARAGRAPHS: string[] = [
 
 export function DonateBook() {
   const [poll, setPoll] = useState<string | null>(null);
-  const [reading, setReading] = useState(false);
   const [mailStatus, setMailStatus] = useState<"idle" | "sent" | "error">("idle");
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-
-  useEffect(() => {
-    return () => {
-      try {
-        window.speechSynthesis?.cancel();
-      } catch {
-        /* ignore */
-      }
-    };
-  }, []);
-
-  const toggleRead = () => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-    const synth = window.speechSynthesis;
-    if (reading) {
-      synth.cancel();
-      setReading(false);
-      return;
-    }
-    const text = ["Help Us Build This Carefully.", ...LETTER_PARAGRAPHS].join(" ");
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.95;
-    u.pitch = 1;
-    u.onend = () => setReading(false);
-    u.onerror = () => setReading(false);
-    utteranceRef.current = u;
-    synth.cancel();
-    synth.speak(u);
-    setReading(true);
-  };
 
   const submitPollMail = async () => {
     if (!poll) return;
@@ -364,33 +332,23 @@ export function DonateBook() {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-md border-2 border-ink/70 bg-ink/5 p-4 text-center">
-        <p className="font-sans text-sm font-bold uppercase tracking-[0.18em] text-ink">
-          🚧 Site under construction
-        </p>
-        <p className="mt-1 font-serif text-sm text-ink/80">
-          None of the payment links below work yet. They're placeholders while
-          the site is being built. Thank you for your patience.
-        </p>
-      </div>
-
-      <header className="flex items-start justify-between gap-3">
-        <div>
+      <div>
+        <div className="rounded-md border-2 border-ink/70 bg-ink/5 p-4 text-center">
+          <p className="font-sans text-sm font-bold uppercase tracking-[0.18em] text-ink">
+            🚧 Site under construction
+          </p>
+          <p className="mt-1 font-serif text-sm text-ink/80">
+            None of the payment links below work yet. They're placeholders while
+            the site is being built. Thank you for your patience.
+          </p>
+        </div>
+        <header className="mt-2">
           <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
             A note from the maker
           </p>
-          <h2 className="mt-2 font-serif text-3xl text-ink">Help Us Build This Carefully</h2>
-        </div>
-        <button
-          onClick={toggleRead}
-          title={reading ? "Stop reading" : "Read this letter aloud"}
-          aria-label={reading ? "Stop reading letter" : "Read letter aloud"}
-          aria-pressed={reading}
-          className="shrink-0 rounded-full border border-ink/30 px-3 py-1 font-sans text-[10px] uppercase tracking-[0.22em] text-ink/70 transition hover:border-ink hover:bg-ink hover:text-paper"
-        >
-          {reading ? "♫ stop" : "♪ read"}
-        </button>
-      </header>
+          <h2 className="mt-1 font-serif text-3xl text-ink">Help Us Build This Carefully</h2>
+        </header>
+      </div>
 
       <div className="space-y-3 font-serif text-[15px] leading-relaxed text-ink/85">
         {LETTER_PARAGRAPHS.map((p, i) => (
