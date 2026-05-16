@@ -63,7 +63,7 @@ export const PETS: { id: string; label: string; emoji: string }[] = [
   { id: "dog", label: "Romance Theme Companion (Dog)", emoji: "🐕" },
   { id: "dragon", label: "Whimsical Theme Companion (Dragon)", emoji: "🐉" },
   { id: "phoenix", label: "Spa Theme Companion (Phoenix)", emoji: "🦩" },
-  { id: "bird", label: "Nature Theme Companion (Bird)", emoji: "🐦" },
+  { id: "bird", label: "Nature Theme Companion (Fox)", emoji: "🦊" },
   { id: "hamster", label: "Paper Planner Theme Companion (Hamster)", emoji: "🐹" },
 ];
 
