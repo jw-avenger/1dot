@@ -6,9 +6,18 @@ import { SUGGESTED } from "./CatFigurine";
 type Props = {
   book: Book;
   onClose: () => void;
+  basicMode?: boolean;
 };
 
-export function BookOpen({ book, onClose }: Props) {
+type StickyNote = { id: number; text: string; x: number; y: number; color: string };
+
+const DEFAULT_STICKIES: StickyNote[] = [
+  { id: 1, text: "Fresh thought", x: 8, y: 14, color: "#fff3a3" },
+  { id: 2, text: "Tiny task", x: 42, y: 24, color: "#ffd1dc" },
+  { id: 3, text: "Keep close", x: 24, y: 52, color: "#c9f2d0" },
+];
+
+export function BookOpen({ book, onClose, basicMode = false }: Props) {
   const {
     spineFont,
     cycleSpineFont,
@@ -28,6 +37,15 @@ export function BookOpen({ book, onClose }: Props) {
   } = useSettings();
   const [trashOpen, setTrashOpen] = useState(false);
   const [newPetTask, setNewPetTask] = useState("");
+  const [stickies, setStickies] = useState<StickyNote[]>(() => {
+    if (typeof window === "undefined") return DEFAULT_STICKIES;
+    try {
+      const raw = localStorage.getItem("shelf:sticky-notes:v1");
+      return raw ? JSON.parse(raw) : DEFAULT_STICKIES;
+    } catch {
+      return DEFAULT_STICKIES;
+    }
+  });
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -46,6 +64,7 @@ export function BookOpen({ book, onClose }: Props) {
   const isDashboard = book.id === "dashboard";
   const isMusic = book.id === "music";
   const isSpaces = book.id === "spaces";
+  const isStickyNotes = book.id === "stickynotes";
   const currentFontLabel = SPINE_FONTS.find((f) => f.id === spineFont)?.label ?? spineFont;
   const purrsOn = purrsVolume > 0;
   const sniffsOn = sniffsVolume > 0;
@@ -74,6 +93,24 @@ export function BookOpen({ book, onClose }: Props) {
       /* ignore */
     }
   };
+
+  const saveStickies = (next: StickyNote[]) => {
+    setStickies(next);
+    try {
+      localStorage.setItem("shelf:sticky-notes:v1", JSON.stringify(next));
+    } catch {
+      /* ignore */
+    }
+  };
+  const updateSticky = (id: number, text: string) => saveStickies(stickies.map((n) => (n.id === id ? { ...n, text } : n)));
+  const addSticky = () => {
+    const colors = ["#fff3a3", "#ffd1dc", "#c9f2d0", "#cde7ff"];
+    saveStickies([
+      ...stickies,
+      { id: Date.now(), text: "", x: 12 + (stickies.length * 11) % 58, y: 16 + (stickies.length * 9) % 54, color: colors[stickies.length % colors.length] },
+    ]);
+  };
+  const removeSticky = (id: number) => saveStickies(stickies.filter((n) => n.id !== id));
 
   const renderNode = (node: SpaceNode, depth: number, key: string) => (
     <li key={key} className="space-y-2">
@@ -126,6 +163,89 @@ export function BookOpen({ book, onClose }: Props) {
       )}
     </li>
   );
+
+  if (isStickyNotes) {
+    const plain = basicMode;
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8 animate-fade-in"
+        style={{ background: plain ? "#ffffff" : "rgba(26,26,26,0.6)", backdropFilter: plain ? "none" : "blur(6px)" }}
+        onClick={onClose}
+      >
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="relative w-full max-w-5xl overflow-hidden"
+          style={{
+            minHeight: "min(76vh, 680px)",
+            background: plain ? "#ffffff" : "linear-gradient(135deg, #fff8dc 0%, #f3df9b 45%, #d9b84c 100%)",
+            border: plain ? "none" : "1px solid rgba(58,36,16,0.18)",
+            boxShadow: plain ? "none" : "0 30px 90px -24px rgba(0,0,0,0.55), inset 0 0 80px rgba(255,255,255,0.3)",
+            borderRadius: plain ? 0 : 8,
+          }}
+        >
+          {!plain && (
+            <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 20% 10%, rgba(255,255,255,0.45), transparent 32%), repeating-linear-gradient(90deg, rgba(58,36,16,0.035) 0 1px, transparent 1px 34px)" }} />
+          )}
+          <div className="relative flex items-center justify-between px-5 py-4">
+            <h2 className="font-serif text-2xl font-semibold" style={{ color: plain ? "#111" : "#3a2410" }}>
+              {bionicize("Sticky Notes", bionic)}
+            </h2>
+            <button
+              onClick={addSticky}
+              className="font-sans text-xs uppercase tracking-[0.22em]"
+              style={{ color: plain ? "#111" : "#3a2410", opacity: 0.75 }}
+            >
+              + note
+            </button>
+          </div>
+          <div className="relative mx-auto h-[58vh] min-h-[420px] w-full max-w-4xl overflow-auto px-4 pb-6">
+            <div className="relative h-[720px] min-w-[720px]">
+              {stickies.map((note, i) => (
+                <div
+                  key={note.id}
+                  className="absolute"
+                  style={{
+                    left: `${note.x}%`,
+                    top: `${note.y}%`,
+                    width: 168,
+                    minHeight: 132,
+                    transform: plain ? "none" : `rotate(${[-2, 1.5, -1, 2][i % 4]}deg)`,
+                    background: plain ? "#ffffff" : note.color,
+                    border: plain ? "1px solid #d1d1d1" : "1px solid rgba(58,36,16,0.08)",
+                    boxShadow: plain ? "none" : "0 14px 24px -14px rgba(58,36,16,0.5)",
+                  }}
+                >
+                  <textarea
+                    value={note.text}
+                    onChange={(e) => updateSticky(note.id, e.target.value)}
+                    placeholder="Write…"
+                    className="h-28 w-full resize-none bg-transparent p-3 font-serif text-sm outline-none"
+                    style={{ color: plain ? "#111" : "#3a2410" }}
+                  />
+                  <button
+                    onClick={() => removeSticky(note.id)}
+                    aria-label="Remove sticky note"
+                    className="absolute right-2 top-1 text-sm"
+                    style={{ color: plain ? "#111" : "#3a2410", opacity: 0.45 }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Back to library"
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 font-serif text-lg"
+            style={{ color: plain ? "#111" : "#3a2410", opacity: 0.7 }}
+          >
+            ←
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

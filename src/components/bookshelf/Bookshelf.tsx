@@ -117,7 +117,7 @@ export function Bookshelf() {
         <TalkToMe />
         <CatPurr />
         <DogSniff />
-        {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} />}
+        {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} basicMode />}
       </div>
     );
   }
