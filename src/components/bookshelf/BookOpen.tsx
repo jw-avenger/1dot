@@ -21,6 +21,8 @@ export function BookOpen({ book, onClose }: Props) {
     setSfxEnabled,
     purrsVolume,
     setPurrsVolume,
+    sniffsVolume,
+    setSniffsVolume,
     petsConfig,
     setPetConfig,
   } = useSettings();
@@ -46,6 +48,7 @@ export function BookOpen({ book, onClose }: Props) {
   const isSpaces = book.id === "spaces";
   const currentFontLabel = SPINE_FONTS.find((f) => f.id === spineFont)?.label ?? spineFont;
   const purrsOn = purrsVolume > 0;
+  const sniffsOn = sniffsVolume > 0;
 
   const shelfPet = petsConfig["shelf"];
   const petCareItems: string[] =
@@ -390,6 +393,52 @@ export function BookOpen({ book, onClose }: Props) {
                     {purrsOn
                       ? "Slide to the left edge to silence."
                       : "At zero, purrs are off."}
+                  </p>
+                </div>
+
+                {/* Dog sniffing — gentle gated WebAudio sniff loop */}
+                <div className="space-y-2">
+                  <div className="flex items-baseline justify-between">
+                    <label htmlFor="sniffs-volume" className="font-serif text-sm text-ink">
+                      Dog sniffing
+                    </label>
+                    <span
+                      className="font-sans text-[10px] uppercase tracking-[0.25em]"
+                      style={{ color: sniffsOn ? book.spine : "var(--ink)", opacity: sniffsOn ? 1 : 0.5 }}
+                    >
+                      {sniffsOn ? `${Math.round(sniffsVolume * 100)}%` : "Off"}
+                    </span>
+                  </div>
+                  <div className="relative h-6">
+                    <div
+                      className="pointer-events-none absolute left-0 right-0 top-1/2 h-px -translate-y-1/2"
+                      style={{ backgroundColor: "rgba(0,0,0,0.18)" }}
+                    />
+                    <div
+                      className="pointer-events-none absolute left-0 top-1/2 h-px -translate-y-1/2 transition-all"
+                      style={{
+                        width: `${sniffsVolume * 100}%`,
+                        backgroundColor: sniffsOn ? book.spine : "transparent",
+                        opacity: sniffsOn ? 0.85 : 0,
+                      }}
+                    />
+                    <input
+                      id="sniffs-volume"
+                      type="range"
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={Math.round(sniffsVolume * 100)}
+                      onChange={(e) => setSniffsVolume(Number(e.target.value) / 100)}
+                      aria-label="Dog sniffing volume — drag to zero to turn off"
+                      className="purrs-fragile absolute inset-0 w-full appearance-none bg-transparent"
+                      style={{ height: "100%" }}
+                    />
+                  </div>
+                  <p className="font-sans text-[10px] italic text-ink/55">
+                    {sniffsOn
+                      ? "Soft nose-work — slide left to silence."
+                      : "At zero, sniffing is off."}
                   </p>
                 </div>
               </div>

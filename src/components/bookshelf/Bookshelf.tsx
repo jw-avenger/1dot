@@ -9,6 +9,7 @@ import { ShelfPlant } from "./ShelfPlant";
 import { MiceTrails } from "./MiceTrails";
 import { TalkToMe } from "./TalkToMe";
 import { CatPurr } from "./CatPurr";
+import { DogSniff } from "./DogSniff";
 import { useShelfState } from "./useShelfState";
 import { useSettings, BG_VALUES, TEXT_VALUES, LIGHTING_VALUES } from "./useSettings";
 
@@ -115,6 +116,7 @@ export function Bookshelf() {
         <MiceTrails />
         <TalkToMe />
         <CatPurr />
+        <DogSniff />
         {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} />}
       </div>
     );
@@ -223,6 +225,7 @@ export function Bookshelf() {
       <MiceTrails />
       <TalkToMe />
       <CatPurr />
+      <DogSniff />
       <PetPopup open={petOpen} onClose={() => setPetOpen(false)} />
       {openBook && <BookOpen book={openBook} onClose={() => setOpenId(null)} />}
     </div>

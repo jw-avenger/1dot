@@ -63,7 +63,7 @@ export const PETS: { id: string; label: string; emoji: string }[] = [
   { id: "dog", label: "Romance Theme Companion (Dog)", emoji: "🐕" },
   { id: "dragon", label: "Whimsical Theme Companion (Dragon)", emoji: "🐉" },
   { id: "phoenix", label: "Spa Theme Companion (Phoenix)", emoji: "🦩" },
-  { id: "bird", label: "Nature Theme Companion (Bird)", emoji: "🐦" },
+  { id: "bird", label: "Nature Theme Companion (Fox)", emoji: "🦊" },
   { id: "hamster", label: "Paper Planner Theme Companion (Hamster)", emoji: "🐹" },
 ];
 
@@ -133,6 +133,8 @@ type State = {
   /** Cat purr volume, 0–1. When 0 the purr is automatically off (the
    *  fragile-bar slider in the Music book treats 0 as "off"). */
   purrsVolume: number;
+  /** Dog gentle-sniff volume, 0–1. Same off-at-zero contract as purrs. */
+  sniffsVolume: number;
   romanticColor: string; // hex used for romantic accents
   arrowHidden: boolean; // user clicked the arrow twice to hide it
   hideSettingsBook: boolean; // remove Settings book from library
@@ -163,6 +165,7 @@ const defaults: State = {
   mice: "basic",
   sfxEnabled: false,
   purrsVolume: 0,
+  sniffsVolume: 0,
   romanticColor: "#c42b2b",
   arrowHidden: false,
   hideSettingsBook: false,
@@ -364,6 +367,10 @@ export function useSettings() {
     setPurrsVolume: (v: number) => {
       const clamped = Math.max(0, Math.min(1, v));
       set("purrsVolume", clamped);
+    },
+    setSniffsVolume: (v: number) => {
+      const clamped = Math.max(0, Math.min(1, v));
+      set("sniffsVolume", clamped);
     },
     setRomanticColor: (v: string) => set("romanticColor", v),
     setArrowHidden: (v: boolean) => set("arrowHidden", v),
