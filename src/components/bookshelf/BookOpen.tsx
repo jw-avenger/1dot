@@ -3,6 +3,7 @@ import type { Book, SpaceNode } from "./books";
 import { useSettings, SPINE_FONTS, bionicize } from "./useSettings";
 import { SUGGESTED } from "./CatFigurine";
 import { StickyBoard } from "./StickyBoard";
+import { DonateBook } from "./DonateBook";
 
 type Props = {
   book: Book;
@@ -51,6 +52,7 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
   const isMusic = book.id === "music";
   const isSpaces = book.id === "spaces";
   const isStickyNotes = book.id === "stickynotes";
+  const isDonate = book.id === "donate";
   const currentFontLabel = SPINE_FONTS.find((f) => f.id === spineFont)?.label ?? spineFont;
   const purrsOn = purrsVolume > 0;
   const sniffsOn = sniffsVolume > 0;
@@ -241,6 +243,8 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
               <ul className="mt-6 space-y-3">
                 {book.sections.map((s, i) => renderNode(s, 0, `s-${i}`))}
               </ul>
+            ) : isDonate ? (
+              <div className="mt-6"><DonateBook /></div>
             ) : (
               <ol className="mt-6 space-y-3">
                 {book.toc.map((item, i) => {

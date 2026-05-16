@@ -345,13 +345,14 @@ export function StickyBoard({ onClose, basicMode = false }: { onClose: () => voi
           />
         </div>
 
-        {/* Framed satin pinboard */}
+        {/* Framed satin pinboard — portrait rectangle */}
         <div
           className="relative mx-auto"
           style={{
-            width: "min(92%, 880px)",
-            height: "min(64vh, 560px)",
-            minHeight: 420,
+            width: "min(78%, 520px)",
+            height: "min(72vh, 720px)",
+            aspectRatio: "3 / 4",
+            minHeight: 460,
             margin: "0 auto 36px",
             padding: basicMode ? 0 : 4,
             background: basicMode ? "transparent" : frameImage,
@@ -418,20 +419,7 @@ export function StickyBoard({ onClose, basicMode = false }: { onClose: () => voi
                     vectorEffect="non-scaling-stroke"
                   />
                 ))}
-                {/* brass tacks at intersections (approximated grid) */}
-                {Array.from({ length: 6 }).flatMap((_, r) =>
-                  Array.from({ length: 7 }).map((_, c) => (
-                    <circle
-                      key={`t-${r}-${c}`}
-                      cx={(c + 0.5) * (100 / 7)}
-                      cy={(r + 0.5) * (100 / 6)}
-                      r={0.55}
-                      fill="#d6a64a"
-                      stroke="#5e3d11"
-                      strokeWidth={0.18}
-                    />
-                  ))
-                )}
+                {/* No decorative tacks — pins only appear on actual notes. */}
               </svg>
             )}
 
