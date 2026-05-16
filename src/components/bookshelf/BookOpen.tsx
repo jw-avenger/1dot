@@ -3,6 +3,7 @@ import type { Book, SpaceNode } from "./books";
 import { useSettings, SPINE_FONTS, bionicize } from "./useSettings";
 import { SUGGESTED } from "./CatFigurine";
 import { StickyBoard } from "./StickyBoard";
+import { DonateBook } from "./DonateBook";
 
 type Props = {
   book: Book;
