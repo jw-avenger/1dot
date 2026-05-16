@@ -889,8 +889,8 @@ export function CorgiFigurine({ size = 96, animated = true, travel = "none", onL
             70%     { transform: rotate(3deg) translateY(-0.4px); }
           }
           /* Upright fox ears — quick independent twitches */
-          .${ns}-earL { transform-origin: 42px 55px; animation: ${ns}-earL 7.3s ease-in-out infinite; }
-          .${ns}-earR { transform-origin: 64px 53px; animation: ${ns}-earR 9.1s ease-in-out infinite; }
+          .${ns}-earL { transform-origin: 42px 60px; animation: ${ns}-earL 7.3s ease-in-out infinite; }
+          .${ns}-earR { transform-origin: 68px 58px; animation: ${ns}-earR 9.1s ease-in-out infinite; }
           @keyframes ${ns}-earL {
             0%, 88%, 100% { transform: rotate(0); }
             91% { transform: rotate(-12deg); }
