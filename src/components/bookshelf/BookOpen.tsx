@@ -221,9 +221,11 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
                 className="mt-6 h-px w-20"
                 style={{ backgroundColor: book.spine }}
               />
-              <p className="mt-6 max-w-xs font-serif text-sm italic text-ink/70">
-                {bionicize("A small chapter of your home, opened with care.", bionic)}
-              </p>
+              {!isDonate && (
+                <p className="mt-6 max-w-xs font-serif text-sm italic text-ink/70">
+                  {bionicize("A small chapter of your home, opened with care.", bionic)}
+                </p>
+              )}
             </div>
             <p className="font-sans text-xs text-ink/50">— Library</p>
           </div>

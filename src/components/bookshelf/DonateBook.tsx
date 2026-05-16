@@ -19,12 +19,30 @@ type Goal = {
 
 const GOALS: Goal[] = [
   {
+    id: "site",
+    title: "Personal Web App Site",
+    cadence: "Yearly cost",
+    blurb:
+      "The web app lives at its own address so it can be added to any device — phone, tablet, laptop. I paid this forward for two years up front ($34/year). If you'd like to help keep the site online for future years, you can here.",
+    raised: 0,
+    target: 34,
+  },
+  {
+    id: "dev",
+    title: "Ongoing Development",
+    cadence: "Ongoing cost",
+    blurb:
+      "Honestly, most of what this project has cost so far has been development — and that's ongoing. I'll pay that forward too. I'll update this goal with a real number once I have one.",
+    raised: 0,
+    target: 0,
+  },
+  {
     id: "play",
     title: "Google Play Release",
     cadence: "One-time cost",
     blurb:
-      "I paid this forward upfront so the project could begin. If you'd like to help reimburse that starting cost and support future development, you can here.",
-    raised: 11,
+      "Google Play has a one-time developer fee for Android publishing. I haven't paid this one forward yet — the web app came first because it works on any device.",
+    raised: 0,
     target: 25,
   },
   {
@@ -33,7 +51,7 @@ const GOALS: Goal[] = [
     cadence: "Yearly cost",
     blurb:
       "Apple requires a yearly developer fee to publish on iPhone and iPad. We'd genuinely love to support Apple users too — we're just starting where we can realistically afford to begin.",
-    raised: 43,
+    raised: 0,
     target: 99,
   },
   {
@@ -42,14 +60,14 @@ const GOALS: Goal[] = [
     cadence: "Monthly cost",
     blurb:
       "Helping keep shared spaces, syncing, and backups sustainable.",
-    raised: 112,
+    raised: 0,
     target: 250,
   },
 ];
 
 function GoalCard({ goal }: { goal: Goal }) {
   const [custom, setCustom] = useState("");
-  const pct = Math.min(100, Math.round((goal.raised / goal.target) * 100));
+  const pct = goal.target > 0 ? Math.min(100, Math.round((goal.raised / goal.target) * 100)) : 0;
   const send = (amount: number | "custom") => {
     const value = amount === "custom" ? Number(custom) || 0 : amount;
     try {
@@ -126,6 +144,16 @@ export function DonateBook() {
   const [poll, setPoll] = useState<string | null>(null);
   return (
     <div className="space-y-5">
+      <div className="rounded-md border-2 border-ink/70 bg-ink/5 p-4 text-center">
+        <p className="font-sans text-sm font-bold uppercase tracking-[0.18em] text-ink">
+          🚧 Site under construction
+        </p>
+        <p className="mt-1 font-serif text-sm text-ink/80">
+          None of the payment links below work yet. They're placeholders while
+          the site is being built. Thank you for your patience.
+        </p>
+      </div>
+
       <header>
         <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
           A note from the maker
@@ -150,7 +178,7 @@ export function DonateBook() {
         </ul>
         <p>Especially on low-energy days.</p>
         <p>So instead of waiting for someone else to make it, I decided to start building it myself.</p>
-        <p>We're beginning with a simple Google / web release because it's the most affordable place to start.</p>
+        <p>We're beginning as a web app because a web app can be added to any device — phone, tablet, or laptop — which makes it the most affordable and inclusive place to start. I paid the web app site forward myself for the first two years. Google Play will come later when we can get there.</p>
         <p>Future goals include:</p>
         <ul className="ml-5 list-disc space-y-1 text-ink/80">
           <li>Apple release</li>
@@ -196,7 +224,16 @@ export function DonateBook() {
           If the app's basic needs are already covered and you'd simply like to be
           kind anyway, you can also send me a banana at{" "}
           <span className="font-mono text-xs text-ink/60">[xyz]</span>. A banana
-          is about 20 cents at Walmart. 🍌
+          is about 20 cents at my grocery store of choice. 🍌
+        </p>
+      </section>
+
+      <section className="border-t border-dotted border-ink/25 pt-5">
+        <p className="font-serif text-sm leading-relaxed text-ink/85">
+          <span className="font-sans text-xs uppercase tracking-[0.2em] text-ink/60">P.S. </span>
+          I hate choosing between clean apps and whimsical apps — so I made an
+          app that doesn't punish me for having changing support needs and
+          wishes.
         </p>
       </section>
 
