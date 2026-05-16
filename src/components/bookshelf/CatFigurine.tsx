@@ -1710,7 +1710,7 @@ function SendAwayRow({
       <span aria-hidden style={{ opacity: 0.55 }}>
         —
       </span>
-      <span>Send cat away for</span>
+      <span>Send companion away for</span>
       <input
         type="number"
         min={1}
