@@ -133,6 +133,8 @@ type State = {
   /** Cat purr volume, 0–1. When 0 the purr is automatically off (the
    *  fragile-bar slider in the Music book treats 0 as "off"). */
   purrsVolume: number;
+  /** Dog gentle-sniff volume, 0–1. Same off-at-zero contract as purrs. */
+  sniffsVolume: number;
   romanticColor: string; // hex used for romantic accents
   arrowHidden: boolean; // user clicked the arrow twice to hide it
   hideSettingsBook: boolean; // remove Settings book from library
