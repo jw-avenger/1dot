@@ -1109,21 +1109,21 @@ export function CorgiFigurine({ size = 96, animated = true, travel = "none", onL
                     (~y=58 head crown) so they read as attached, not floating */}
                 <g className={`${ns}-earL`}>
                   <path
-                    d="M 36 60 Q 36 50 44 46 Q 49 52 48 60 Z"
+                    d="M 36 61 Q 38 52 45 49 Q 50 54 48 62 Z"
                     fill={`url(#${ns}-coat)`}
                   />
                   <path
-                    d="M 38 58 Q 39 52 44 49 Q 46 53 46 58 Z"
+                    d="M 39 59 Q 41 53 45 51 Q 47 55 46 60 Z"
                     fill={`url(#${ns}-ear)`}
                   />
                 </g>
                 <g className={`${ns}-earR`}>
                   <path
-                    d="M 62 58 Q 63 50 72 46 Q 77 52 74 60 Z"
+                    d="M 62 60 Q 65 52 72 50 Q 77 55 74 62 Z"
                     fill={`url(#${ns}-coat)`}
                   />
                   <path
-                    d="M 64 56 Q 66 50 71 48 Q 73 53 71 58 Z"
+                    d="M 65 58 Q 67 53 72 52 Q 73 56 71 60 Z"
                     fill={`url(#${ns}-ear)`}
                   />
                 </g>
