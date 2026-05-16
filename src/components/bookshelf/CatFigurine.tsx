@@ -939,6 +939,20 @@ export function CorgiFigurine({ size = 96, animated = true, travel = "none", onL
           .${ns}-pose-loaf     { transform: translate(0px, 6px) scale(1.02, 0.92); }
           /* Sploot: legs out behind, body flattens slightly forward */
           .${ns}-pose-sploot   { transform: translate(-3px, 10px) scale(1.05, 0.78); }
+          /* Sleep: curls down low with a small head tilt; breath slows */
+          .${ns}-pose-sleep    { transform: translate(2px, 14px) scale(1.04, 0.7) rotate(-2deg); }
+          .${ns}-pose-sleep .${ns}-breath { animation-duration: 7s; }
+          .${ns}-pose-sleep .${ns}-head   { animation-duration: 9s; }
+          .${ns}-pose-sleep .${ns}-tail   { animation: none; transform: rotate(-6deg); }
+          .${ns}-pose-sleep .${ns}-lid    { animation: none; transform: scaleY(1); }
+          .${ns}-pose-sleep .${ns}-snore  { opacity: 1; animation: ${ns}-snore 3.4s ease-in-out infinite; }
+          .${ns}-snore { opacity: 0; transform-box: view-box; transform-origin: 30px 56px; }
+          @keyframes ${ns}-snore {
+            0%   { opacity: 0; transform: translate(0, 0) scale(0.6); }
+            30%  { opacity: 0.8; transform: translate(-4px, -6px) scale(0.9); }
+            70%  { opacity: 0.6; transform: translate(-10px, -16px) scale(1.1); }
+            100% { opacity: 0; transform: translate(-14px, -22px) scale(1.2); }
+          }
 
           /* ===================== SPECIAL MOVES ===================== */
           .${ns}-move { animation-fill-mode: both; }
@@ -977,10 +991,10 @@ export function CorgiFigurine({ size = 96, animated = true, travel = "none", onL
           @keyframes ${ns}-yawnm { 0%,100%{ opacity:0; transform: scaleY(0.2); } 35%,65%{ opacity:1; transform: scaleY(1); } }
 
           /* ===================== TRAVEL TRANSITIONS =====================
-             Corgis don't slink off — they pant, spin a small circle, and
-             gallop with arcing leaps off the right edge. */
-          .${ns}-travel-leaving  { animation: ${ns}-runoff 1.6s cubic-bezier(.3,0,.6,1) 1 forwards; }
-          .${ns}-travel-arriving { animation: ${ns}-runon  1.4s cubic-bezier(.3,1.4,.5,1) 1 backwards; }
+             Corgi gallops forward off the right edge with a happy leap arc;
+             returns from the left with the same energy. No backwards motion. */
+          .${ns}-travel-leaving  { animation: ${ns}-runoff 1.6s cubic-bezier(.3,0,.5,1) 1 forwards; }
+          .${ns}-travel-arriving { animation: ${ns}-runon  1.4s cubic-bezier(.3,1.2,.5,1) 1 backwards; }
           .${ns}-travel-leaving .${ns}-breath { animation: ${ns}-bounce 0.32s ease-in-out infinite; }
           .${ns}-travel-leaving .${ns}-tail   { animation: ${ns}-tail 0.18s ease-in-out infinite; }
           .${ns}-travel-leaving .${ns}-tongue { animation: ${ns}-pant 0.22s ease-in-out infinite; }
@@ -993,22 +1007,17 @@ export function CorgiFigurine({ size = 96, animated = true, travel = "none", onL
             50%     { transform: translateY(2px) scaleY(1.18); }
           }
           @keyframes ${ns}-runoff {
-            0%   { transform: none; opacity: 1; }
-            10%  { transform: translate(8px, 0) rotate(90deg); }
-            20%  { transform: translate(0, 4px) rotate(180deg); }
-            30%  { transform: translate(-8px, 0) rotate(270deg); }
-            40%  { transform: translate(0, 0) rotate(360deg); }
-            55%  { transform: translate(60px, -22px) rotate(372deg); }
-            70%  { transform: translate(140px, -8px) rotate(360deg); }
-            85%  { transform: translate(220px, -30px) rotate(372deg); opacity: 0.9; }
-            100% { transform: translate(310px, 10px) rotate(360deg); opacity: 0; }
+            0%   { transform: translate(0, 0); opacity: 1; }
+            25%  { transform: translate(60px, -18px); }
+            50%  { transform: translate(150px, -4px); }
+            75%  { transform: translate(240px, -22px); opacity: 0.95; }
+            100% { transform: translate(340px, 6px); opacity: 0; }
           }
           @keyframes ${ns}-runon {
-            0%   { transform: translate(-280px, 10px) rotate(0); opacity: 0; }
-            30%  { transform: translate(-140px, -18px) rotate(2deg); opacity: 1; }
-            55%  { transform: translate(-60px, -28px) rotate(-2deg); }
-            75%  { transform: translate(-10px, -4px) rotate(0); }
-            90%  { transform: translate(0, 6px) scale(1, 0.92); }
+            0%   { transform: translate(-320px, 6px); opacity: 0; }
+            30%  { transform: translate(-200px, -20px); opacity: 1; }
+            60%  { transform: translate(-80px, -4px); }
+            85%  { transform: translate(-10px, -14px); }
             100% { transform: none; }
           }
 
