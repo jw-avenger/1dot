@@ -1588,6 +1588,22 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
                 onLeft={() => setTravel("none")}
                 onArrived={() => setTravel("none")}
               />
+            ) : pet.id === "bird" ? (
+              <FoxFigurine
+                size={catSize}
+                animated={cfg?.animations !== false}
+                travel={travel}
+                onLeft={() => setTravel("none")}
+                onArrived={() => setTravel("none")}
+              />
+            ) : pet.id === "hamster" ? (
+              <HamsterFigurine
+                size={catSize}
+                animated={cfg?.animations !== false}
+                travel={travel}
+                onLeft={() => setTravel("none")}
+                onArrived={() => setTravel("none")}
+              />
             ) : (
               <PetFigurine petId={pet.id} size={genericSize} />
             )}
