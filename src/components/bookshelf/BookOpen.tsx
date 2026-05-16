@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Book, SpaceNode } from "./books";
 import { useSettings, SPINE_FONTS, bionicize } from "./useSettings";
 import { SUGGESTED } from "./CatFigurine";
+import { StickyBoard } from "./StickyBoard";
 
 type Props = {
   book: Book;
@@ -165,86 +166,7 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
   );
 
   if (isStickyNotes) {
-    const plain = basicMode;
-    return (
-      <div
-        className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8 animate-fade-in"
-        style={{ background: plain ? "#ffffff" : "rgba(26,26,26,0.6)", backdropFilter: plain ? "none" : "blur(6px)" }}
-        onClick={onClose}
-      >
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-5xl overflow-hidden"
-          style={{
-            minHeight: "min(76vh, 680px)",
-            background: plain ? "#ffffff" : "linear-gradient(135deg, #fff8dc 0%, #f3df9b 45%, #d9b84c 100%)",
-            border: plain ? "none" : "1px solid rgba(58,36,16,0.18)",
-            boxShadow: plain ? "none" : "0 30px 90px -24px rgba(0,0,0,0.55), inset 0 0 80px rgba(255,255,255,0.3)",
-            borderRadius: plain ? 0 : 8,
-          }}
-        >
-          {!plain && (
-            <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 20% 10%, rgba(255,255,255,0.45), transparent 32%), repeating-linear-gradient(90deg, rgba(58,36,16,0.035) 0 1px, transparent 1px 34px)" }} />
-          )}
-          <div className="relative flex items-center justify-between px-5 py-4">
-            <h2 className="font-serif text-2xl font-semibold" style={{ color: plain ? "#111" : "#3a2410" }}>
-              {bionicize("Sticky Notes", bionic)}
-            </h2>
-            <button
-              onClick={addSticky}
-              className="font-sans text-xs uppercase tracking-[0.22em]"
-              style={{ color: plain ? "#111" : "#3a2410", opacity: 0.75 }}
-            >
-              + note
-            </button>
-          </div>
-          <div className="relative mx-auto h-[58vh] min-h-[420px] w-full max-w-4xl overflow-auto px-4 pb-6">
-            <div className="relative h-[720px] min-w-[720px]">
-              {stickies.map((note, i) => (
-                <div
-                  key={note.id}
-                  className="absolute"
-                  style={{
-                    left: `${note.x}%`,
-                    top: `${note.y}%`,
-                    width: 168,
-                    minHeight: 132,
-                    transform: plain ? "none" : `rotate(${[-2, 1.5, -1, 2][i % 4]}deg)`,
-                    background: plain ? "#ffffff" : note.color,
-                    border: plain ? "1px solid #d1d1d1" : "1px solid rgba(58,36,16,0.08)",
-                    boxShadow: plain ? "none" : "0 14px 24px -14px rgba(58,36,16,0.5)",
-                  }}
-                >
-                  <textarea
-                    value={note.text}
-                    onChange={(e) => updateSticky(note.id, e.target.value)}
-                    placeholder="Write…"
-                    className="h-28 w-full resize-none bg-transparent p-3 font-serif text-sm outline-none"
-                    style={{ color: plain ? "#111" : "#3a2410" }}
-                  />
-                  <button
-                    onClick={() => removeSticky(note.id)}
-                    aria-label="Remove sticky note"
-                    className="absolute right-2 top-1 text-sm"
-                    style={{ color: plain ? "#111" : "#3a2410", opacity: 0.45 }}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            aria-label="Back to library"
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 font-serif text-lg"
-            style={{ color: plain ? "#111" : "#3a2410", opacity: 0.7 }}
-          >
-            ←
-          </button>
-        </div>
-      </div>
-    );
+    return <StickyBoard onClose={onClose} basicMode={basicMode} />;
   }
 
   return (
