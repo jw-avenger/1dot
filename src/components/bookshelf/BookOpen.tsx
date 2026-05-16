@@ -6,9 +6,18 @@ import { SUGGESTED } from "./CatFigurine";
 type Props = {
   book: Book;
   onClose: () => void;
+  basicMode?: boolean;
 };
 
-export function BookOpen({ book, onClose }: Props) {
+type StickyNote = { id: number; text: string; x: number; y: number; color: string };
+
+const DEFAULT_STICKIES: StickyNote[] = [
+  { id: 1, text: "Fresh thought", x: 8, y: 14, color: "#fff3a3" },
+  { id: 2, text: "Tiny task", x: 42, y: 24, color: "#ffd1dc" },
+  { id: 3, text: "Keep close", x: 24, y: 52, color: "#c9f2d0" },
+];
+
+export function BookOpen({ book, onClose, basicMode = false }: Props) {
   const {
     spineFont,
     cycleSpineFont,
@@ -28,6 +37,15 @@ export function BookOpen({ book, onClose }: Props) {
   } = useSettings();
   const [trashOpen, setTrashOpen] = useState(false);
   const [newPetTask, setNewPetTask] = useState("");
+  const [stickies, setStickies] = useState<StickyNote[]>(() => {
+    if (typeof window === "undefined") return DEFAULT_STICKIES;
+    try {
+      const raw = localStorage.getItem("shelf:sticky-notes:v1");
+      return raw ? JSON.parse(raw) : DEFAULT_STICKIES;
+    } catch {
+      return DEFAULT_STICKIES;
+    }
+  });
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -46,6 +64,7 @@ export function BookOpen({ book, onClose }: Props) {
   const isDashboard = book.id === "dashboard";
   const isMusic = book.id === "music";
   const isSpaces = book.id === "spaces";
+  const isStickyNotes = book.id === "stickynotes";
   const currentFontLabel = SPINE_FONTS.find((f) => f.id === spineFont)?.label ?? spineFont;
   const purrsOn = purrsVolume > 0;
   const sniffsOn = sniffsVolume > 0;
@@ -74,6 +93,24 @@ export function BookOpen({ book, onClose }: Props) {
       /* ignore */
     }
   };
+
+  const saveStickies = (next: StickyNote[]) => {
+    setStickies(next);
+    try {
+      localStorage.setItem("shelf:sticky-notes:v1", JSON.stringify(next));
+    } catch {
+      /* ignore */
+    }
+  };
+  const updateSticky = (id: number, text: string) => saveStickies(stickies.map((n) => (n.id === id ? { ...n, text } : n)));
+  const addSticky = () => {
+    const colors = ["#fff3a3", "#ffd1dc", "#c9f2d0", "#cde7ff"];
+    saveStickies([
+      ...stickies,
+      { id: Date.now(), text: "", x: 12 + (stickies.length * 11) % 58, y: 16 + (stickies.length * 9) % 54, color: colors[stickies.length % colors.length] },
+    ]);
+  };
+  const removeSticky = (id: number) => saveStickies(stickies.filter((n) => n.id !== id));
 
   const renderNode = (node: SpaceNode, depth: number, key: string) => (
     <li key={key} className="space-y-2">
