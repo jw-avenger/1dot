@@ -224,7 +224,16 @@ export function DonateBook() {
           If the app's basic needs are already covered and you'd simply like to be
           kind anyway, you can also send me a banana at{" "}
           <span className="font-mono text-xs text-ink/60">[xyz]</span>. A banana
-          is about 20 cents at Walmart. 🍌
+          is about 20 cents at my grocery store of choice. 🍌
+        </p>
+      </section>
+
+      <section className="border-t border-dotted border-ink/25 pt-5">
+        <p className="font-serif text-sm leading-relaxed text-ink/85">
+          <span className="font-sans text-xs uppercase tracking-[0.2em] text-ink/60">P.S. </span>
+          I hate choosing between clean apps and whimsical apps — so I made an
+          app that doesn't punish me for having changing support needs and
+          wishes.
         </p>
       </section>
 
