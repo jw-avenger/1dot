@@ -48,6 +48,7 @@ export function BookOpen({ book, onClose }: Props) {
   const isSpaces = book.id === "spaces";
   const currentFontLabel = SPINE_FONTS.find((f) => f.id === spineFont)?.label ?? spineFont;
   const purrsOn = purrsVolume > 0;
+  const sniffsOn = sniffsVolume > 0;
 
   const shelfPet = petsConfig["shelf"];
   const petCareItems: string[] =
