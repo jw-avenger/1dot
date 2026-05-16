@@ -208,11 +208,8 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
             }}
           >
             <div>
-              <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
-                Volume
-              </p>
               <h2
-                className="mt-6 font-serif text-5xl font-semibold leading-tight"
+                className="font-serif text-5xl font-semibold leading-tight"
                 style={{ color: book.spine }}
               >
                 {bionicize(book.title, bionic)}
@@ -227,7 +224,6 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
                 </p>
               )}
             </div>
-            <p className="font-sans text-xs text-ink/50">— Library</p>
           </div>
 
           <div
@@ -238,9 +234,6 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
                 "radial-gradient(ellipse at top right, rgba(0,0,0,0.04), transparent 60%)",
             }}
           >
-            <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
-              Table of Contents
-            </p>
             {isSpaces && book.sections ? (
               <ul className="mt-6 space-y-3">
                 {book.sections.map((s, i) => renderNode(s, 0, `s-${i}`))}
@@ -513,9 +506,10 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
 
         <button
           onClick={onClose}
-          className="absolute -top-3 -right-3 rounded-full bg-wood-dark px-4 py-2 font-sans text-sm text-paper shadow-lg transition hover:bg-wood"
+          aria-label="Close book"
+          className="absolute -top-3 -right-3 flex h-9 w-9 items-center justify-center rounded-full bg-wood-dark font-sans text-lg leading-none text-paper shadow-lg transition hover:bg-wood"
         >
-          Close book
+          ×
         </button>
       </div>
     </div>
