@@ -67,7 +67,7 @@ const GOALS: Goal[] = [
 
 function GoalCard({ goal }: { goal: Goal }) {
   const [custom, setCustom] = useState("");
-  const pct = Math.min(100, Math.round((goal.raised / goal.target) * 100));
+  const pct = goal.target > 0 ? Math.min(100, Math.round((goal.raised / goal.target) * 100)) : 0;
   const send = (amount: number | "custom") => {
     const value = amount === "custom" ? Number(custom) || 0 : amount;
     try {
