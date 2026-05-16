@@ -65,6 +65,11 @@ export function BookOpen({ book, onClose }: Props) {
   };
   const removePetTask = (i: number) => {
     updatePetCare(petCareItems.filter((_, idx) => idx !== i));
+    try {
+      window.dispatchEvent(new CustomEvent("shelf:affection", { detail: { kind: "task-done" } }));
+    } catch {
+      /* ignore */
+    }
   };
 
   const renderNode = (node: SpaceNode, depth: number, key: string) => (
