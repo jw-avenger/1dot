@@ -19,12 +19,30 @@ type Goal = {
 
 const GOALS: Goal[] = [
   {
+    id: "site",
+    title: "Personal Web App Site",
+    cadence: "Yearly cost",
+    blurb:
+      "The web app lives at its own address so it can be added to any device — phone, tablet, laptop. I paid this forward for two years up front ($34/year). If you'd like to help keep the site online for future years, you can here.",
+    raised: 0,
+    target: 34,
+  },
+  {
+    id: "dev",
+    title: "Ongoing Development",
+    cadence: "Ongoing cost",
+    blurb:
+      "Honestly, most of what this project has cost so far has been development — and that's ongoing. I'll pay that forward too. I'll update this goal with a real number once I have one.",
+    raised: 0,
+    target: 0,
+  },
+  {
     id: "play",
     title: "Google Play Release",
     cadence: "One-time cost",
     blurb:
-      "I paid this forward upfront so the project could begin. If you'd like to help reimburse that starting cost and support future development, you can here.",
-    raised: 11,
+      "Google Play has a one-time developer fee for Android publishing. I haven't paid this one forward yet — the web app came first because it works on any device.",
+    raised: 0,
     target: 25,
   },
   {
@@ -33,7 +51,7 @@ const GOALS: Goal[] = [
     cadence: "Yearly cost",
     blurb:
       "Apple requires a yearly developer fee to publish on iPhone and iPad. We'd genuinely love to support Apple users too — we're just starting where we can realistically afford to begin.",
-    raised: 43,
+    raised: 0,
     target: 99,
   },
   {
@@ -42,7 +60,7 @@ const GOALS: Goal[] = [
     cadence: "Monthly cost",
     blurb:
       "Helping keep shared spaces, syncing, and backups sustainable.",
-    raised: 112,
+    raised: 0,
     target: 250,
   },
 ];
