@@ -506,9 +506,10 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
 
         <button
           onClick={onClose}
-          className="absolute -top-3 -right-3 rounded-full bg-wood-dark px-4 py-2 font-sans text-sm text-paper shadow-lg transition hover:bg-wood"
+          aria-label="Close book"
+          className="absolute -top-3 -right-3 flex h-9 w-9 items-center justify-center rounded-full bg-wood-dark font-sans text-lg leading-none text-paper shadow-lg transition hover:bg-wood"
         >
-          Close book
+          ×
         </button>
       </div>
     </div>
