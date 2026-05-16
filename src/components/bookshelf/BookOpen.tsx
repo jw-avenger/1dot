@@ -3,7 +3,7 @@ import type { Book, SpaceNode } from "./books";
 import { useSettings, SPINE_FONTS, bionicize } from "./useSettings";
 import { SUGGESTED } from "./CatFigurine";
 import { StickyBoard } from "./StickyBoard";
-import { DonateBook } from "./DonateBook";
+import { DonateBook, LETTER_PARAGRAPHS } from "./DonateBook";
 
 type Props = {
   book: Book;
@@ -32,6 +32,85 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
   } = useSettings();
   const [trashOpen, setTrashOpen] = useState(false);
   const [newPetTask, setNewPetTask] = useState("");
+  const [reading, setReading] = useState(false);
+
+  // Warm, cheerful voice picker for the read-aloud feature.
+  // Browsers expose voices asynchronously, so we resolve at speak-time and
+  // prefer well-known friendly female English voices, then fall back gently.
+  const pickWarmVoice = (synth: SpeechSynthesis): SpeechSynthesisVoice | null => {
+    const voices = synth.getVoices();
+    if (!voices.length) return null;
+    const preferred = [
+      "Samantha",
+      "Karen",
+      "Moira",
+      "Tessa",
+      "Victoria",
+      "Allison",
+      "Ava",
+      "Google UK English Female",
+      "Google US English",
+      "Microsoft Aria",
+      "Microsoft Jenny",
+      "Microsoft Zira",
+    ];
+    for (const name of preferred) {
+      const v = voices.find((x) => x.name.includes(name));
+      if (v) return v;
+    }
+    return (
+      voices.find((v) => /female/i.test(v.name) && v.lang.startsWith("en")) ||
+      voices.find((v) => v.lang.startsWith("en-US")) ||
+      voices.find((v) => v.lang.startsWith("en")) ||
+      null
+    );
+  };
+
+  useEffect(() => {
+    return () => {
+      try { window.speechSynthesis?.cancel(); } catch { /* ignore */ }
+    };
+  }, []);
+
+  const toggleReadLetter = () => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    const synth = window.speechSynthesis;
+    if (reading) {
+      synth.cancel();
+      setReading(false);
+      return;
+    }
+    const text = ["Help Us Build This Carefully.", ...LETTER_PARAGRAPHS].join(" ");
+    const speakNow = () => {
+      const u = new SpeechSynthesisUtterance(text);
+      const v = pickWarmVoice(synth);
+      if (v) u.voice = v;
+      // Warm + cheerful: slightly higher pitch, a touch quicker, full volume.
+      u.pitch = 1.2;
+      u.rate = 1.02;
+      u.volume = 1;
+      u.onend = () => setReading(false);
+      u.onerror = () => setReading(false);
+      synth.cancel();
+      synth.speak(u);
+      setReading(true);
+    };
+    if (!synth.getVoices().length) {
+      const handler = () => {
+        synth.removeEventListener("voiceschanged", handler);
+        speakNow();
+      };
+      synth.addEventListener("voiceschanged", handler);
+      // Some browsers need a kick to populate voices.
+      synth.getVoices();
+      // Fallback: try anyway after a beat.
+      window.setTimeout(() => {
+        if (!reading) speakNow();
+      }, 250);
+    } else {
+      speakNow();
+    }
+  };
 
 
   useEffect(() => {
@@ -504,13 +583,26 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
           </div>
         </div>
 
-        <button
-          onClick={onClose}
-          aria-label="Close book"
-          className="absolute -top-3 -right-3 flex h-9 w-9 items-center justify-center rounded-full bg-wood-dark font-sans text-lg leading-none text-paper shadow-lg transition hover:bg-wood"
-        >
-          ×
-        </button>
+        <div className="absolute -top-1 right-1 z-10 flex items-center gap-3">
+          {isDonate && (
+            <button
+              onClick={toggleReadLetter}
+              aria-label={reading ? "Stop reading letter" : "Read letter aloud"}
+              aria-pressed={reading}
+              title={reading ? "Stop reading" : "Read this letter aloud"}
+              className="font-sans text-sm leading-none text-ink/50 transition hover:text-ink"
+            >
+              {reading ? "♫" : "♪"}
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            aria-label="Close book"
+            className="font-sans text-xl leading-none text-ink/40 transition hover:text-ink"
+          >
+            ×
+          </button>
+        </div>
       </div>
     </div>
   );

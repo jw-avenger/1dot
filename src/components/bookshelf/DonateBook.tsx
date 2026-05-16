@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 /**
  * Donate book interior. Long-form letter from the maker, funding goals
@@ -288,7 +288,7 @@ const POLL_OPTIONS = [
   "Nourishment / self-care focused ideas",
 ];
 
-const LETTER_PARAGRAPHS: string[] = [
+export const LETTER_PARAGRAPHS: string[] = [
   "Hi.",
   "This app exists because modern life started feeling strangely fragmented.",
   "Too many apps. Too many notifications. Too many systems scattered across too many places.",
@@ -312,39 +312,7 @@ const LETTER_PARAGRAPHS: string[] = [
 
 export function DonateBook() {
   const [poll, setPoll] = useState<string | null>(null);
-  const [reading, setReading] = useState(false);
   const [mailStatus, setMailStatus] = useState<"idle" | "sent" | "error">("idle");
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-
-  useEffect(() => {
-    return () => {
-      try {
-        window.speechSynthesis?.cancel();
-      } catch {
-        /* ignore */
-      }
-    };
-  }, []);
-
-  const toggleRead = () => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-    const synth = window.speechSynthesis;
-    if (reading) {
-      synth.cancel();
-      setReading(false);
-      return;
-    }
-    const text = ["Help Us Build This Carefully.", ...LETTER_PARAGRAPHS].join(" ");
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.95;
-    u.pitch = 1;
-    u.onend = () => setReading(false);
-    u.onerror = () => setReading(false);
-    utteranceRef.current = u;
-    synth.cancel();
-    synth.speak(u);
-    setReading(true);
-  };
 
   const submitPollMail = async () => {
     if (!poll) return;
@@ -364,33 +332,23 @@ export function DonateBook() {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-md border-2 border-ink/70 bg-ink/5 p-4 text-center">
-        <p className="font-sans text-sm font-bold uppercase tracking-[0.18em] text-ink">
-          🚧 Site under construction
-        </p>
-        <p className="mt-1 font-serif text-sm text-ink/80">
-          None of the payment links below work yet. They're placeholders while
-          the site is being built. Thank you for your patience.
-        </p>
-      </div>
-
-      <header className="flex items-start justify-between gap-3">
-        <div>
+      <div>
+        <div className="rounded-md border-2 border-ink/70 bg-ink/5 p-4 text-center">
+          <p className="font-sans text-sm font-bold uppercase tracking-[0.18em] text-ink">
+            🚧 Site under construction
+          </p>
+          <p className="mt-1 font-serif text-sm text-ink/80">
+            None of the payment links below work yet. They're placeholders while
+            the site is being built. Thank you for your patience.
+          </p>
+        </div>
+        <header className="mt-2">
           <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
             A note from the maker
           </p>
-          <h2 className="mt-2 font-serif text-3xl text-ink">Help Us Build This Carefully</h2>
-        </div>
-        <button
-          onClick={toggleRead}
-          title={reading ? "Stop reading" : "Read this letter aloud"}
-          aria-label={reading ? "Stop reading letter" : "Read letter aloud"}
-          aria-pressed={reading}
-          className="shrink-0 rounded-full border border-ink/30 px-3 py-1 font-sans text-[10px] uppercase tracking-[0.22em] text-ink/70 transition hover:border-ink hover:bg-ink hover:text-paper"
-        >
-          {reading ? "♫ stop" : "♪ read"}
-        </button>
-      </header>
+          <h2 className="mt-1 font-serif text-3xl text-ink">Help Us Build This Carefully</h2>
+        </header>
+      </div>
 
       <div className="space-y-3 font-serif text-[15px] leading-relaxed text-ink/85">
         {LETTER_PARAGRAPHS.map((p, i) => (
@@ -446,24 +404,9 @@ export function DonateBook() {
       </section>
 
       <section className="border-t border-dotted border-ink/25 pt-5">
-        <div className="flex items-center justify-between gap-3">
-          <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-ink/55">
-            Optional community poll
-          </p>
-          <button
-            onClick={submitPollMail}
-            disabled={!poll}
-            title={
-              poll
-                ? "Include this vote in the monthly summary"
-                : "Pick an option first"
-            }
-            aria-label="Send my vote to the monthly summary"
-            className="shrink-0 rounded-full border border-ink/30 px-3 py-1 font-sans text-[10px] uppercase tracking-[0.22em] text-ink/70 transition hover:border-ink hover:bg-ink hover:text-paper disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-ink/70"
-          >
-            ✉ send
-          </button>
-        </div>
+        <p className="font-sans text-[10px] uppercase tracking-[0.3em] text-ink/55">
+          Optional community poll
+        </p>
         <p className="mt-2 font-serif text-sm text-ink">
           Would you enjoy optional low-pressure reward systems someday?
         </p>
@@ -493,9 +436,25 @@ export function DonateBook() {
             </label>
           ))}
         </div>
+        <div className="mt-5 flex justify-center">
+          <button
+            onClick={submitPollMail}
+            disabled={!poll}
+            title={
+              poll
+                ? "Include this vote in the monthly summary"
+                : "Pick an option first"
+            }
+            aria-label="Send my vote to the monthly summary"
+            className="rounded-full px-5 py-2 font-sans text-xs uppercase tracking-[0.22em] text-paper shadow-sm transition disabled:cursor-not-allowed disabled:opacity-40"
+            style={{ backgroundColor: "#5b3a1e" }}
+          >
+            ✉ send vote
+          </button>
+        </div>
         {mailStatus !== "idle" && (
           <p
-            className="mt-2 font-sans text-[11px] italic"
+            className="mt-2 text-center font-sans text-[11px] italic"
             style={{ color: mailStatus === "sent" ? "#3a6b2e" : "#8a3030" }}
           >
             {mailStatus === "sent"

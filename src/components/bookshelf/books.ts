@@ -45,7 +45,7 @@ export const BOOKS: Book[] = [
     ],
   },
   { id: "settings", title: "Mood Settings", spine: "var(--spine-dustyblue)", textColor: "var(--spine-cream)", height: 160, width: 32, toc: ["Spine font", "Bionic reading", "Profile", "Notifications", "Theme"] },
-  { id: "donate", title: "About / Donate", spine: "var(--spine-terracotta)", textColor: "var(--spine-cream)", height: 172, width: 36, toc: ["A note from the maker", "Google Play release", "Apple developer license", "Hosting & sync", "Community poll"] },
+  { id: "donate", title: "About / DONATING", spine: "var(--spine-terracotta)", textColor: "var(--spine-cream)", height: 172, width: 36, toc: ["A note from the maker", "Google Play release", "Apple developer license", "Hosting & sync", "Community poll"] },
   { id: "accessibility", title: "Accessibility", spine: "#3a5a6e", textColor: "var(--spine-gold)", height: 178, width: 34, toc: ["Text size", "Contrast", "Motion", "Screen reader"] },
   { id: "music", title: "Music", spine: "#4a2c5a", textColor: "var(--spine-gold)", height: 162, width: 30, toc: ["Ambience", "Playlists", "Focus", "Sleep"] },
   { id: "stickynotes", title: "Sticky Notes", spine: "#c9a227", textColor: "#3a2410", height: 152, width: 36, toc: ["Pinned", "All notes", "Archive"] },
