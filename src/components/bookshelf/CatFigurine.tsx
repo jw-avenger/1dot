@@ -991,8 +991,8 @@ export function CorgiFigurine({ size = 96, animated = true, travel = "none", onL
           @keyframes ${ns}-yawnm { 0%,100%{ opacity:0; transform: scaleY(0.2); } 35%,65%{ opacity:1; transform: scaleY(1); } }
 
           /* ===================== TRAVEL TRANSITIONS =====================
-             Corgi gallops forward off the right edge with a happy leap arc;
-             returns from the left with the same energy. No backwards motion. */
+             Corgi faces left, so forward means negative X: head leads off the
+             left edge and returns from the right into place. No backwards slide. */
           .${ns}-travel-leaving  { animation: ${ns}-runoff 1.6s cubic-bezier(.3,0,.5,1) 1 forwards; }
           .${ns}-travel-arriving { animation: ${ns}-runon  1.4s cubic-bezier(.3,1.2,.5,1) 1 backwards; }
           .${ns}-travel-leaving .${ns}-breath { animation: ${ns}-bounce 0.32s ease-in-out infinite; }
@@ -1008,16 +1008,16 @@ export function CorgiFigurine({ size = 96, animated = true, travel = "none", onL
           }
           @keyframes ${ns}-runoff {
             0%   { transform: translate(0, 0); opacity: 1; }
-            25%  { transform: translate(60px, -18px); }
-            50%  { transform: translate(150px, -4px); }
-            75%  { transform: translate(240px, -22px); opacity: 0.95; }
-            100% { transform: translate(340px, 6px); opacity: 0; }
+            22%  { transform: translate(-56px, -16px); }
+            48%  { transform: translate(-132px, -2px); }
+            74%  { transform: translate(-224px, -24px); opacity: 0.95; }
+            100% { transform: translate(-340px, 6px); opacity: 0; }
           }
           @keyframes ${ns}-runon {
-            0%   { transform: translate(-320px, 6px); opacity: 0; }
-            30%  { transform: translate(-200px, -20px); opacity: 1; }
-            60%  { transform: translate(-80px, -4px); }
-            85%  { transform: translate(-10px, -14px); }
+            0%   { transform: translate(320px, 6px); opacity: 0; }
+            30%  { transform: translate(210px, -22px); opacity: 1; }
+            60%  { transform: translate(92px, -3px); }
+            84%  { transform: translate(18px, -15px); }
             100% { transform: none; }
           }
 
