@@ -1076,24 +1076,25 @@ export function CorgiFigurine({ size = 96, animated = true, travel = "none", onL
 
               {/* head group — sits in front of the body */}
               <g className={`${ns}-head`}>
-                {/* ears — tall upright triangles with rounded tips */}
+                {/* ears — tall upright triangles rooted on top of the head
+                    (~y=58 head crown) so they read as attached, not floating */}
                 <g className={`${ns}-earL`}>
                   <path
-                    d="M 36 56 Q 33 36 44 30 Q 50 40 48 58 Z"
+                    d="M 36 60 Q 33 42 44 38 Q 50 48 48 60 Z"
                     fill={`url(#${ns}-coat)`}
                   />
                   <path
-                    d="M 38 54 Q 38 42 44 36 Q 47 44 46 56 Z"
+                    d="M 38 58 Q 38 48 44 44 Q 47 50 46 58 Z"
                     fill={`url(#${ns}-ear)`}
                   />
                 </g>
                 <g className={`${ns}-earR`}>
                   <path
-                    d="M 62 54 Q 62 34 72 30 Q 78 40 74 58 Z"
+                    d="M 62 58 Q 62 40 72 38 Q 78 48 74 60 Z"
                     fill={`url(#${ns}-coat)`}
                   />
                   <path
-                    d="M 64 52 Q 65 40 71 36 Q 73 46 71 56 Z"
+                    d="M 64 56 Q 65 46 71 42 Q 73 50 71 58 Z"
                     fill={`url(#${ns}-ear)`}
                   />
                 </g>
