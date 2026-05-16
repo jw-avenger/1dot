@@ -765,11 +765,11 @@ export function PetFigurine({ petId, size = 56 }: PetFigurineProps) {
    special moves, and travel transitions.
    ======================================================================== */
 
-type CorgiPose = "standing" | "loaf" | "sploot";
+type CorgiPose = "standing" | "loaf" | "sploot" | "sleep";
 type CorgiMove = "yawn" | "shake" | "bork" | "sniff" | "scratch" | "wag";
 
 const CORGI_SPECIAL: CorgiMove[] = ["yawn", "shake", "bork", "sniff", "scratch", "wag"];
-const CORGI_POSES: CorgiPose[] = ["standing", "standing", "loaf", "standing", "sploot", "standing"];
+const CORGI_POSES: CorgiPose[] = ["standing", "standing", "loaf", "standing", "sploot", "sleep", "standing", "sleep"];
 const CORGI_MOVE_MS = () => 30000 + Math.random() * 30000;
 const CORGI_POSE_MS = () => 90000 + Math.random() * 90000;
 const CORGI_MOVE_DURATION = 2400;
