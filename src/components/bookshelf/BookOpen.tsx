@@ -138,6 +138,31 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
     return <StickyBoard onClose={onClose} basicMode={basicMode} />;
   }
 
+  const [textScale, setTextScale] = useState(1);
+  const pinchRef = useRef<{ baseDist: number; baseScale: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      pinchRef.current = { baseDist: Math.hypot(dx, dy), baseScale: textScale };
+    }
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && pinchRef.current) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      const next = Math.max(0.7, Math.min(2.4, pinchRef.current.baseScale * (dist / pinchRef.current.baseDist)));
+      setTextScale(next);
+    }
+  };
+  const onTouchEnd = () => { pinchRef.current = null; };
+  const onWheel = (e: React.WheelEvent) => {
+    if (!(e.ctrlKey || e.metaKey)) return;
+    e.preventDefault();
+    setTextScale((s) => Math.max(0.7, Math.min(2.4, s - e.deltaY * 0.002)));
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 px-4 py-8 backdrop-blur-sm animate-fade-in"
@@ -147,15 +172,28 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-3xl animate-scale-in"
         style={{ perspective: "2000px" }}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        onWheel={onWheel}
       >
+        <div className="absolute -top-3 left-2 z-10 flex items-center gap-1 rounded-full bg-paper/90 px-2 py-1 text-xs text-ink/60 shadow-sm">
+          <button aria-label="Shrink text" onClick={() => setTextScale((s) => Math.max(0.7, s - 0.1))} className="px-1 hover:text-ink">A−</button>
+          <span className="tabular-nums">{Math.round(textScale * 100)}%</span>
+          <button aria-label="Grow text" onClick={() => setTextScale((s) => Math.min(2.4, s + 0.1))} className="px-1 hover:text-ink">A+</button>
+        </div>
         <div
-          className="relative grid grid-cols-1 overflow-hidden rounded-md shadow-2xl md:grid-cols-2"
+          className="relative grid grid-cols-1 overflow-auto rounded-md shadow-2xl md:grid-cols-2"
           style={{
             background: "var(--paper)",
             boxShadow: "var(--shadow-warm), 0 30px 80px -20px rgba(0,0,0,0.5)",
             minHeight: 480,
+            maxHeight: "85vh",
+            fontSize: `${textScale}em`,
+            touchAction: "pan-y pinch-zoom",
           }}
         >
+
           <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-ink/25 to-transparent md:block" />
           <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-12 -translate-x-1/2 bg-gradient-to-r from-ink/10 via-transparent to-ink/10 md:block" />
 
