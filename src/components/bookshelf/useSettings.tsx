@@ -368,6 +368,10 @@ export function useSettings() {
       const clamped = Math.max(0, Math.min(1, v));
       set("purrsVolume", clamped);
     },
+    setSniffsVolume: (v: number) => {
+      const clamped = Math.max(0, Math.min(1, v));
+      set("sniffsVolume", clamped);
+    },
     setRomanticColor: (v: string) => set("romanticColor", v),
     setArrowHidden: (v: boolean) => set("arrowHidden", v),
     setHideSettingsBook: (v: boolean) => set("hideSettingsBook", v),
