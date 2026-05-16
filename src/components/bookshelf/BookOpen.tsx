@@ -52,6 +52,7 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
   const isMusic = book.id === "music";
   const isSpaces = book.id === "spaces";
   const isStickyNotes = book.id === "stickynotes";
+  const isDonate = book.id === "donate";
   const currentFontLabel = SPINE_FONTS.find((f) => f.id === spineFont)?.label ?? spineFont;
   const purrsOn = purrsVolume > 0;
   const sniffsOn = sniffsVolume > 0;
