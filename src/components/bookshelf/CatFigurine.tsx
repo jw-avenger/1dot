@@ -1182,6 +1182,22 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
   const [hover, setHover] = useState(false);
   const [travel, setTravel] = useState<CatTravel>("none");
   const [pendingDelete, setPendingDelete] = useState(false);
+  // Gentle digital affection: queue of tiny floating sparkles spawned by
+  // focus events from elsewhere in the app (opening a book, finishing a
+  // pet-care item). They drift up and fade — subtle reward, never loud.
+  const [affection, setAffection] = useState<{ id: number; glyph: string; dx: number }[]>([]);
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as { kind?: string } | undefined;
+      const glyph = detail?.kind === "task-done" ? "♥" : "✦";
+      const id = Date.now() + Math.random();
+      const dx = (Math.random() - 0.5) * 18;
+      setAffection((q) => [...q, { id, glyph, dx }]);
+      window.setTimeout(() => setAffection((q) => q.filter((s) => s.id !== id)), 1800);
+    };
+    window.addEventListener("shelf:affection", handler);
+    return () => window.removeEventListener("shelf:affection", handler);
+  }, []);
 
   const awayActive = !!(cfg?.awayUntil && cfg.awayUntil > Date.now());
 
