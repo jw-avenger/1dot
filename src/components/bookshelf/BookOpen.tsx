@@ -234,9 +234,6 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
                 "radial-gradient(ellipse at top right, rgba(0,0,0,0.04), transparent 60%)",
             }}
           >
-            <p className="font-sans text-xs uppercase tracking-[0.3em] text-ink/50">
-              Table of Contents
-            </p>
             {isSpaces && book.sections ? (
               <ul className="mt-6 space-y-3">
                 {book.sections.map((s, i) => renderNode(s, 0, `s-${i}`))}
