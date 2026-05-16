@@ -288,7 +288,7 @@ const POLL_OPTIONS = [
   "Nourishment / self-care focused ideas",
 ];
 
-const LETTER_PARAGRAPHS: string[] = [
+export const LETTER_PARAGRAPHS: string[] = [
   "Hi.",
   "This app exists because modern life started feeling strangely fragmented.",
   "Too many apps. Too many notifications. Too many systems scattered across too many places.",
