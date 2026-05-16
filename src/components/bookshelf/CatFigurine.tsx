@@ -1109,24 +1109,33 @@ export function CorgiFigurine({ size = 96, animated = true, travel = "none", onL
                     (~y=58 head crown) so they read as attached, not floating */}
                 <g className={`${ns}-earL`}>
                   <path
-                    d="M 36 60 Q 33 42 44 38 Q 50 48 48 60 Z"
+                    d="M 36 60 Q 36 50 44 46 Q 49 52 48 60 Z"
                     fill={`url(#${ns}-coat)`}
                   />
                   <path
-                    d="M 38 58 Q 38 48 44 44 Q 47 50 46 58 Z"
+                    d="M 38 58 Q 39 52 44 49 Q 46 53 46 58 Z"
                     fill={`url(#${ns}-ear)`}
                   />
                 </g>
                 <g className={`${ns}-earR`}>
                   <path
-                    d="M 62 58 Q 62 40 72 38 Q 78 48 74 60 Z"
+                    d="M 62 58 Q 63 50 72 46 Q 77 52 74 60 Z"
                     fill={`url(#${ns}-coat)`}
                   />
                   <path
-                    d="M 64 56 Q 65 46 71 42 Q 73 50 71 58 Z"
+                    d="M 64 56 Q 66 50 71 48 Q 73 53 71 58 Z"
                     fill={`url(#${ns}-ear)`}
                   />
                 </g>
+                {/* Snore puff — only visible while sleeping */}
+                <text
+                  className={`${ns}-snore`}
+                  x="22"
+                  y="56"
+                  fontSize="10"
+                  fill="#7a5a32"
+                  fontFamily="serif"
+                >z</text>
 
                 {/* head — rounded fox-like with broad cheeks */}
                 <ellipse cx="52" cy="76" rx="24" ry="21" fill={`url(#${ns}-coat)`} />
