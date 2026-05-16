@@ -1597,8 +1597,9 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
                 onArrived={() => setTravel("none")}
               />
             ) : pet.id === "hamster" ? (
+              // Hamster renders at a quarter size — true to scale next to the cat/corgi.
               <HamsterFigurine
-                size={catSize}
+                size={Math.round(catSize / 4)}
                 animated={cfg?.animations !== false}
                 travel={travel}
                 onLeft={() => setTravel("none")}

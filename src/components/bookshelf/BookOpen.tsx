@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Book, SpaceNode } from "./books";
 import { useSettings, SPINE_FONTS, bionicize } from "./useSettings";
 import { SUGGESTED } from "./CatFigurine";
+import { StickyBoard } from "./StickyBoard";
 
 type Props = {
   book: Book;
@@ -9,13 +10,6 @@ type Props = {
   basicMode?: boolean;
 };
 
-type StickyNote = { id: number; text: string; x: number; y: number; color: string };
-
-const DEFAULT_STICKIES: StickyNote[] = [
-  { id: 1, text: "Fresh thought", x: 8, y: 14, color: "#fff3a3" },
-  { id: 2, text: "Tiny task", x: 42, y: 24, color: "#ffd1dc" },
-  { id: 3, text: "Keep close", x: 24, y: 52, color: "#c9f2d0" },
-];
 
 export function BookOpen({ book, onClose, basicMode = false }: Props) {
   const {
@@ -37,15 +31,7 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
   } = useSettings();
   const [trashOpen, setTrashOpen] = useState(false);
   const [newPetTask, setNewPetTask] = useState("");
-  const [stickies, setStickies] = useState<StickyNote[]>(() => {
-    if (typeof window === "undefined") return DEFAULT_STICKIES;
-    try {
-      const raw = localStorage.getItem("shelf:sticky-notes:v1");
-      return raw ? JSON.parse(raw) : DEFAULT_STICKIES;
-    } catch {
-      return DEFAULT_STICKIES;
-    }
-  });
+
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -94,23 +80,7 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
     }
   };
 
-  const saveStickies = (next: StickyNote[]) => {
-    setStickies(next);
-    try {
-      localStorage.setItem("shelf:sticky-notes:v1", JSON.stringify(next));
-    } catch {
-      /* ignore */
-    }
-  };
-  const updateSticky = (id: number, text: string) => saveStickies(stickies.map((n) => (n.id === id ? { ...n, text } : n)));
-  const addSticky = () => {
-    const colors = ["#fff3a3", "#ffd1dc", "#c9f2d0", "#cde7ff"];
-    saveStickies([
-      ...stickies,
-      { id: Date.now(), text: "", x: 12 + (stickies.length * 11) % 58, y: 16 + (stickies.length * 9) % 54, color: colors[stickies.length % colors.length] },
-    ]);
-  };
-  const removeSticky = (id: number) => saveStickies(stickies.filter((n) => n.id !== id));
+
 
   const renderNode = (node: SpaceNode, depth: number, key: string) => (
     <li key={key} className="space-y-2">
@@ -165,87 +135,33 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
   );
 
   if (isStickyNotes) {
-    const plain = basicMode;
-    return (
-      <div
-        className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8 animate-fade-in"
-        style={{ background: plain ? "#ffffff" : "rgba(26,26,26,0.6)", backdropFilter: plain ? "none" : "blur(6px)" }}
-        onClick={onClose}
-      >
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-5xl overflow-hidden"
-          style={{
-            minHeight: "min(76vh, 680px)",
-            background: plain ? "#ffffff" : "linear-gradient(135deg, #fff8dc 0%, #f3df9b 45%, #d9b84c 100%)",
-            border: plain ? "none" : "1px solid rgba(58,36,16,0.18)",
-            boxShadow: plain ? "none" : "0 30px 90px -24px rgba(0,0,0,0.55), inset 0 0 80px rgba(255,255,255,0.3)",
-            borderRadius: plain ? 0 : 8,
-          }}
-        >
-          {!plain && (
-            <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 20% 10%, rgba(255,255,255,0.45), transparent 32%), repeating-linear-gradient(90deg, rgba(58,36,16,0.035) 0 1px, transparent 1px 34px)" }} />
-          )}
-          <div className="relative flex items-center justify-between px-5 py-4">
-            <h2 className="font-serif text-2xl font-semibold" style={{ color: plain ? "#111" : "#3a2410" }}>
-              {bionicize("Sticky Notes", bionic)}
-            </h2>
-            <button
-              onClick={addSticky}
-              className="font-sans text-xs uppercase tracking-[0.22em]"
-              style={{ color: plain ? "#111" : "#3a2410", opacity: 0.75 }}
-            >
-              + note
-            </button>
-          </div>
-          <div className="relative mx-auto h-[58vh] min-h-[420px] w-full max-w-4xl overflow-auto px-4 pb-6">
-            <div className="relative h-[720px] min-w-[720px]">
-              {stickies.map((note, i) => (
-                <div
-                  key={note.id}
-                  className="absolute"
-                  style={{
-                    left: `${note.x}%`,
-                    top: `${note.y}%`,
-                    width: 168,
-                    minHeight: 132,
-                    transform: plain ? "none" : `rotate(${[-2, 1.5, -1, 2][i % 4]}deg)`,
-                    background: plain ? "#ffffff" : note.color,
-                    border: plain ? "1px solid #d1d1d1" : "1px solid rgba(58,36,16,0.08)",
-                    boxShadow: plain ? "none" : "0 14px 24px -14px rgba(58,36,16,0.5)",
-                  }}
-                >
-                  <textarea
-                    value={note.text}
-                    onChange={(e) => updateSticky(note.id, e.target.value)}
-                    placeholder="Write…"
-                    className="h-28 w-full resize-none bg-transparent p-3 font-serif text-sm outline-none"
-                    style={{ color: plain ? "#111" : "#3a2410" }}
-                  />
-                  <button
-                    onClick={() => removeSticky(note.id)}
-                    aria-label="Remove sticky note"
-                    className="absolute right-2 top-1 text-sm"
-                    style={{ color: plain ? "#111" : "#3a2410", opacity: 0.45 }}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            aria-label="Back to library"
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 font-serif text-lg"
-            style={{ color: plain ? "#111" : "#3a2410", opacity: 0.7 }}
-          >
-            ←
-          </button>
-        </div>
-      </div>
-    );
+    return <StickyBoard onClose={onClose} basicMode={basicMode} />;
   }
+
+  const [textScale, setTextScale] = useState(1);
+  const pinchRef = useRef<{ baseDist: number; baseScale: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      pinchRef.current = { baseDist: Math.hypot(dx, dy), baseScale: textScale };
+    }
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && pinchRef.current) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      const next = Math.max(0.7, Math.min(2.4, pinchRef.current.baseScale * (dist / pinchRef.current.baseDist)));
+      setTextScale(next);
+    }
+  };
+  const onTouchEnd = () => { pinchRef.current = null; };
+  const onWheel = (e: React.WheelEvent) => {
+    if (!(e.ctrlKey || e.metaKey)) return;
+    e.preventDefault();
+    setTextScale((s) => Math.max(0.7, Math.min(2.4, s - e.deltaY * 0.002)));
+  };
 
   return (
     <div
@@ -256,15 +172,28 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-3xl animate-scale-in"
         style={{ perspective: "2000px" }}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+        onWheel={onWheel}
       >
+        <div className="absolute -top-3 left-2 z-10 flex items-center gap-1 rounded-full bg-paper/90 px-2 py-1 text-xs text-ink/60 shadow-sm">
+          <button aria-label="Shrink text" onClick={() => setTextScale((s) => Math.max(0.7, s - 0.1))} className="px-1 hover:text-ink">A−</button>
+          <span className="tabular-nums">{Math.round(textScale * 100)}%</span>
+          <button aria-label="Grow text" onClick={() => setTextScale((s) => Math.min(2.4, s + 0.1))} className="px-1 hover:text-ink">A+</button>
+        </div>
         <div
-          className="relative grid grid-cols-1 overflow-hidden rounded-md shadow-2xl md:grid-cols-2"
+          className="relative grid grid-cols-1 overflow-auto rounded-md shadow-2xl md:grid-cols-2"
           style={{
             background: "var(--paper)",
             boxShadow: "var(--shadow-warm), 0 30px 80px -20px rgba(0,0,0,0.5)",
             minHeight: 480,
+            maxHeight: "85vh",
+            fontSize: `${textScale}em`,
+            touchAction: "pan-y pinch-zoom",
           }}
         >
+
           <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-ink/25 to-transparent md:block" />
           <div className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-12 -translate-x-1/2 bg-gradient-to-r from-ink/10 via-transparent to-ink/10 md:block" />
 

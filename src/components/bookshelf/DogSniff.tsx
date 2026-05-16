@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useSettings } from "./useSettings";
+import { registerAudioContext } from "./audioUnlock";
 
 /**
  * Synthesized gentle dog sniffing loop. Plays whenever:
@@ -36,6 +37,7 @@ export function DogSniff() {
     if (!AC) return;
     const ctx = ctxRef.current ?? new AC();
     ctxRef.current = ctx;
+    registerAudioContext(ctx);
     if (ctx.state === "suspended") ctx.resume().catch(() => {});
 
     let cancelled = false;
