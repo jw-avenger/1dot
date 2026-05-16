@@ -21,6 +21,8 @@ export function BookOpen({ book, onClose }: Props) {
     setSfxEnabled,
     purrsVolume,
     setPurrsVolume,
+    sniffsVolume,
+    setSniffsVolume,
     petsConfig,
     setPetConfig,
   } = useSettings();
