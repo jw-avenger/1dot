@@ -1197,6 +1197,8 @@ const SMALL_POSE_MS = () => 85000 + Math.random() * 90000;
 const SMALL_MOVE_MS = () => 28000 + Math.random() * 34000;
 let __foxUid = 0;
 let __hamUid = 0;
+let __drgUid = 0;
+let __phxUid = 0;
 
 function useSmallAnimalRig(animated: boolean, travel: CatTravel) {
   const [pose, setPose] = useState<SmallPose>("standing");
@@ -1467,6 +1469,271 @@ export function HamsterFigurine({ size = 96, animated = true, travel = "none", o
 }
 
 /* ========================================================================
+   DragonFigurine — small jade dragon (whimsical companion)
+   ======================================================================== */
+
+export function DragonFigurine({ size = 96, animated = true, travel = "none", onLeft, onArrived }: SmallAnimalProps) {
+  const w = size;
+  const h = (size * 140) / 200;
+  const [uid] = useState(() => ++__drgUid);
+  const ns = `drg${uid}`;
+  const { pose, move } = useSmallAnimalRig(animated, travel);
+
+  useEffect(() => {
+    if (travel === "leaving" && onLeft) {
+      const t = window.setTimeout(onLeft, 1500);
+      return () => window.clearTimeout(t);
+    }
+    if (travel === "arriving" && onArrived) {
+      const t = window.setTimeout(onArrived, 1300);
+      return () => window.clearTimeout(t);
+    }
+  }, [travel, onLeft, onArrived]);
+
+  return (
+    <svg width={w} height={h} viewBox="0 0 200 140" aria-hidden style={{ display: "block", overflow: "visible" }}>
+      <defs>
+        <linearGradient id={`${ns}-scale`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#9be3c4" />
+          <stop offset="55%" stopColor="#2f9a73" />
+          <stop offset="100%" stopColor="#0e3a2c" />
+        </linearGradient>
+        <linearGradient id={`${ns}-belly`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f3e7b7" />
+          <stop offset="100%" stopColor="#b88f3e" />
+        </linearGradient>
+        <radialGradient id={`${ns}-wing`} cx="40%" cy="40%" r="70%">
+          <stop offset="0%" stopColor="#bff0d8" />
+          <stop offset="100%" stopColor="#1f6f54" />
+        </radialGradient>
+        <filter id={`${ns}-blur`} x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="1.5" /></filter>
+      </defs>
+      {animated ? <style>{`
+        .${ns}-rig * { transform-box:view-box; }
+        .${ns}-breath { transform-origin:108px 105px; animation:${ns}-breath 5s ease-in-out infinite; }
+        @keyframes ${ns}-breath { 0%,100%{ transform:scaleY(1); } 50%{ transform:scaleY(1.03) translateY(-.5px); } }
+        .${ns}-shadow { transform-origin:108px 130px; animation:${ns}-shadow 5s ease-in-out infinite; }
+        @keyframes ${ns}-shadow { 0%,100%{ opacity:.3; transform:scaleX(1); } 50%{ opacity:.22; transform:scaleX(.94); } }
+        .${ns}-head { transform-origin:62px 78px; animation:${ns}-head 6.6s ease-in-out infinite; }
+        @keyframes ${ns}-head { 0%,100%{ transform:rotate(-1deg); } 50%{ transform:rotate(2.5deg) translateY(-1px); } }
+        .${ns}-wing { transform-origin:108px 90px; animation:${ns}-wing 4.4s ease-in-out infinite; }
+        @keyframes ${ns}-wing { 0%,100%{ transform:rotate(-6deg) scaleY(1); } 50%{ transform:rotate(8deg) scaleY(.92); } }
+        .${ns}-tail { transform-origin:148px 108px; animation:${ns}-tail 5.6s ease-in-out infinite; }
+        @keyframes ${ns}-tail { 0%,100%{ transform:rotate(-4deg); } 50%{ transform:rotate(7deg); } }
+        .${ns}-lid { transform-origin:54px 73px; transform:scaleY(0); animation:${ns}-blink 6.3s ease-in-out infinite; }
+        @keyframes ${ns}-blink { 0%,92%,100%{ transform:scaleY(0); } 94%,96%{ transform:scaleY(1); } 98%{ transform:scaleY(0); } }
+        .${ns}-puff { opacity:0; transform-origin:30px 80px; }
+        .${ns}-pose { transform-origin:100px 130px; transition:transform 1.4s cubic-bezier(.5,.05,.4,1); }
+        .${ns}-pose-standing { transform:none; }
+        .${ns}-pose-loaf { transform:translate(2px,8px) scale(1.03,.88); }
+        .${ns}-pose-sleep { transform:translate(3px,15px) scale(1.05,.66) rotate(-2deg); }
+        .${ns}-pose-sleep .${ns}-lid { animation:none; transform:scaleY(1); }
+        .${ns}-pose-sleep .${ns}-wing { animation:none; transform:rotate(-2deg) scaleY(.6); }
+        .${ns}-pose-sleep .${ns}-tail { animation:none; transform:rotate(-12deg); }
+        .${ns}-move-sniff .${ns}-puff { animation:${ns}-puff 2.2s ease-out 1; }
+        @keyframes ${ns}-puff { 0%{ opacity:0; transform:translate(0,0) scale(.4); } 30%{ opacity:.8; transform:translate(-10px,-6px) scale(1); } 100%{ opacity:0; transform:translate(-22px,-18px) scale(1.6); } }
+        .${ns}-move-stretch { animation:${ns}-stretch 2.4s ease-in-out 1; }
+        @keyframes ${ns}-stretch { 0%,100%{ transform:none; } 50%{ transform:translate(-3px,4px) scale(1.06,.9); } }
+        .${ns}-move-ears .${ns}-wing { animation:${ns}-wingflap .5s ease-in-out 5; }
+        @keyframes ${ns}-wingflap { 0%,100%{ transform:rotate(-6deg) scaleY(1); } 50%{ transform:rotate(20deg) scaleY(.7); } }
+        .${ns}-travel-leaving { animation:${ns}-leave 1.5s cubic-bezier(.35,0,.55,1) forwards; }
+        .${ns}-travel-arriving { animation:${ns}-arrive 1.3s cubic-bezier(.25,1.25,.55,1) backwards; }
+        @keyframes ${ns}-leave { 0%{ transform:none; opacity:1; } 60%{ transform:translate(-160px,-20px) rotate(-6deg); opacity:.9; } 100%{ transform:translate(-330px,-40px) rotate(-12deg); opacity:0; } }
+        @keyframes ${ns}-arrive { 0%{ transform:translate(280px,-40px) rotate(8deg); opacity:0; } 100%{ transform:none; opacity:1; } }
+        @media (prefers-reduced-motion: reduce) { .${ns}-rig *, .${ns}-pose, .${ns}-travel-leaving, .${ns}-travel-arriving { animation:none; transition:none; } }
+      `}</style> : null}
+      <g className={animated && travel === "leaving" ? `${ns}-travel-leaving` : animated && travel === "arriving" ? `${ns}-travel-arriving` : undefined}>
+        <g className={animated && move ? `${ns}-move-${move}` : undefined}>
+          <g className={animated ? `${ns}-pose ${ns}-pose-${pose}` : undefined}>
+            <g className={`${ns}-rig`}>
+              <ellipse className={`${ns}-shadow`} cx="108" cy="130" rx="68" ry="3.5" fill="rgba(0,0,0,.32)" filter={`url(#${ns}-blur)`} />
+              {/* Tail with spikes */}
+              <g className={`${ns}-tail`}>
+                <path d="M 145 108 C 172 104, 185 80, 178 56 C 168 72, 158 90, 150 104" fill={`url(#${ns}-scale)`} />
+                <path d="M 174 60 L 180 52 L 184 60 Z M 168 74 L 174 67 L 177 75 Z M 161 88 L 166 82 L 169 90 Z" fill="#0d3326" />
+              </g>
+              {/* Wing */}
+              <g className={`${ns}-wing`}>
+                <path d="M 92 78 Q 80 40 132 50 Q 138 70 124 92 Q 110 88 92 78 Z" fill={`url(#${ns}-wing)`} stroke="#0e3a2c" strokeWidth=".8" />
+                <path d="M 96 78 Q 102 60 116 56 M 102 84 Q 110 68 122 64 M 108 88 Q 116 76 126 74" stroke="#0e3a2c" strokeWidth=".7" fill="none" opacity=".6" />
+              </g>
+              {/* Body */}
+              <g className={`${ns}-breath`}>
+                <ellipse cx="108" cy="102" rx="52" ry="22" fill={`url(#${ns}-scale)`} />
+                <ellipse cx="98" cy="113" rx="34" ry="9" fill={`url(#${ns}-belly)`} />
+                {/* Dorsal spikes */}
+                <path d="M 78 82 L 84 74 L 88 84 Z M 92 78 L 98 70 L 102 80 Z M 108 76 L 114 68 L 118 78 Z M 124 78 L 130 70 L 134 80 Z" fill="#0d3326" />
+              </g>
+              {/* Legs */}
+              <g>
+                <rect x="76" y="112" width="11" height="15" rx="4" fill={`url(#${ns}-scale)`} />
+                <rect x="100" y="113" width="11" height="14" rx="4" fill={`url(#${ns}-scale)`} />
+                <rect x="132" y="112" width="11" height="15" rx="4" fill={`url(#${ns}-scale)`} />
+                <path d="M 76 127 L 78 125 L 80 127 L 82 125 L 84 127 M 100 127 L 102 125 L 104 127 L 106 125 L 108 127 M 132 127 L 134 125 L 136 127 L 138 125 L 140 127" stroke="#f3e7b7" strokeWidth="1" fill="none" />
+              </g>
+              {/* Head */}
+              <g className={`${ns}-head`}>
+                {/* Horns */}
+                <path d="M 50 50 L 46 36 L 54 44 Z M 68 48 L 70 34 L 74 46 Z" fill="#e6d399" stroke="#6b4f1c" strokeWidth=".5" />
+                {/* Smoke puff */}
+                <g className={`${ns}-puff`}>
+                  <circle cx="22" cy="82" r="4" fill="#dfeee5" opacity=".7" />
+                  <circle cx="16" cy="78" r="2.5" fill="#dfeee5" opacity=".5" />
+                </g>
+                <ellipse cx="58" cy="78" rx="22" ry="19" fill={`url(#${ns}-scale)`} />
+                {/* Snout */}
+                <path d="M 38 80 Q 28 82 28 88 Q 36 92 46 88 Z" fill={`url(#${ns}-belly)`} />
+                <circle cx="30" cy="84" r="1.2" fill="#1a0d05" />
+                <circle cx="32" cy="88" r="1.2" fill="#1a0d05" />
+                {/* Eye */}
+                <ellipse cx="54" cy="73" rx="3" ry="3.5" fill="#fff" />
+                <ellipse cx="54" cy="73.5" rx="1.6" ry="2.6" fill="#0a1a10" />
+                <ellipse className={`${ns}-lid`} cx="54" cy="73" rx="3.2" ry="3.6" fill={`url(#${ns}-scale)`} />
+                {/* Whisker fronds */}
+                <path d="M 36 92 Q 30 96 26 100 M 40 94 Q 36 100 34 105" stroke="#0e3a2c" strokeWidth=".9" fill="none" strokeLinecap="round" />
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+  );
+}
+
+/* ========================================================================
+   PhoenixFigurine — small flame phoenix (spa companion)
+   ======================================================================== */
+
+export function PhoenixFigurine({ size = 96, animated = true, travel = "none", onLeft, onArrived }: SmallAnimalProps) {
+  const w = size;
+  const h = (size * 140) / 200;
+  const [uid] = useState(() => ++__phxUid);
+  const ns = `phx${uid}`;
+  const { pose, move } = useSmallAnimalRig(animated, travel);
+
+  useEffect(() => {
+    if (travel === "leaving" && onLeft) {
+      const t = window.setTimeout(onLeft, 1500);
+      return () => window.clearTimeout(t);
+    }
+    if (travel === "arriving" && onArrived) {
+      const t = window.setTimeout(onArrived, 1300);
+      return () => window.clearTimeout(t);
+    }
+  }, [travel, onLeft, onArrived]);
+
+  return (
+    <svg width={w} height={h} viewBox="0 0 200 140" aria-hidden style={{ display: "block", overflow: "visible" }}>
+      <defs>
+        <linearGradient id={`${ns}-plume`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#ffe27a" />
+          <stop offset="45%" stopColor="#ff8a3d" />
+          <stop offset="100%" stopColor="#a0260e" />
+        </linearGradient>
+        <linearGradient id={`${ns}-belly`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#fff1c4" />
+          <stop offset="100%" stopColor="#e3a13a" />
+        </linearGradient>
+        <radialGradient id={`${ns}-wing`} cx="40%" cy="40%" r="70%">
+          <stop offset="0%" stopColor="#ffd58a" />
+          <stop offset="60%" stopColor="#e8541d" />
+          <stop offset="100%" stopColor="#5e1808" />
+        </radialGradient>
+        <filter id={`${ns}-blur`} x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="1.5" /></filter>
+        <filter id={`${ns}-glow`} x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2" /></filter>
+      </defs>
+      {animated ? <style>{`
+        .${ns}-rig * { transform-box:view-box; }
+        .${ns}-breath { transform-origin:104px 100px; animation:${ns}-breath 4.6s ease-in-out infinite; }
+        @keyframes ${ns}-breath { 0%,100%{ transform:scaleY(1); } 50%{ transform:scaleY(1.03) translateY(-.6px); } }
+        .${ns}-shadow { transform-origin:104px 130px; animation:${ns}-shadow 4.6s ease-in-out infinite; }
+        @keyframes ${ns}-shadow { 0%,100%{ opacity:.28; transform:scaleX(1); } 50%{ opacity:.2; transform:scaleX(.94); } }
+        .${ns}-head { transform-origin:60px 70px; animation:${ns}-head 6.4s ease-in-out infinite; }
+        @keyframes ${ns}-head { 0%,100%{ transform:rotate(0); } 50%{ transform:rotate(2deg) translateY(-1px); } }
+        .${ns}-crest { transform-origin:54px 50px; animation:${ns}-crest 3.6s ease-in-out infinite; }
+        @keyframes ${ns}-crest { 0%,100%{ transform:rotate(-2deg) scaleY(1); } 50%{ transform:rotate(3deg) scaleY(1.08); } }
+        .${ns}-wing { transform-origin:108px 88px; animation:${ns}-wing 3.8s ease-in-out infinite; }
+        @keyframes ${ns}-wing { 0%,100%{ transform:rotate(-8deg); } 50%{ transform:rotate(12deg) scaleY(.9); } }
+        .${ns}-tail { transform-origin:150px 105px; animation:${ns}-tail 5s ease-in-out infinite; }
+        @keyframes ${ns}-tail { 0%,100%{ transform:rotate(-4deg) scaleX(1); } 50%{ transform:rotate(8deg) scaleX(1.05); } }
+        .${ns}-lid { transform-origin:54px 68px; transform:scaleY(0); animation:${ns}-blink 6.1s ease-in-out infinite; }
+        @keyframes ${ns}-blink { 0%,92%,100%{ transform:scaleY(0); } 94%,96%{ transform:scaleY(1); } 98%{ transform:scaleY(0); } }
+        .${ns}-ember { transform-origin:108px 92px; animation:${ns}-ember 3.2s ease-in-out infinite; }
+        @keyframes ${ns}-ember { 0%,100%{ opacity:.45; } 50%{ opacity:.85; } }
+        .${ns}-pose { transform-origin:100px 130px; transition:transform 1.4s cubic-bezier(.5,.05,.4,1); }
+        .${ns}-pose-standing { transform:none; }
+        .${ns}-pose-loaf { transform:translate(2px,9px) scale(1.03,.86); }
+        .${ns}-pose-sleep { transform:translate(3px,16px) scale(1.05,.68) rotate(-1deg); }
+        .${ns}-pose-sleep .${ns}-lid { animation:none; transform:scaleY(1); }
+        .${ns}-pose-sleep .${ns}-wing { animation:none; transform:rotate(-2deg) scaleY(.5); }
+        .${ns}-pose-sleep .${ns}-crest { animation:none; transform:rotate(0) scaleY(.7); }
+        .${ns}-pose-sleep .${ns}-tail { animation:none; transform:rotate(-8deg); }
+        .${ns}-move-ears .${ns}-wing { animation:${ns}-flap .42s ease-in-out 5; }
+        @keyframes ${ns}-flap { 0%,100%{ transform:rotate(-8deg); } 50%{ transform:rotate(28deg) scaleY(.65); } }
+        .${ns}-move-stretch { animation:${ns}-stretch 2.3s ease-in-out 1; }
+        @keyframes ${ns}-stretch { 0%,100%{ transform:none; } 50%{ transform:translate(-2px,4px) scale(1.06,.9); } }
+        .${ns}-move-sniff .${ns}-crest { animation:${ns}-crestup 2s ease-in-out 1; }
+        @keyframes ${ns}-crestup { 0%,100%{ transform:rotate(0) scaleY(1); } 50%{ transform:rotate(0) scaleY(1.3); } }
+        .${ns}-travel-leaving { animation:${ns}-leave 1.5s cubic-bezier(.35,0,.55,1) forwards; }
+        .${ns}-travel-arriving { animation:${ns}-arrive 1.3s cubic-bezier(.25,1.25,.55,1) backwards; }
+        @keyframes ${ns}-leave { 0%{ transform:none; opacity:1; } 60%{ transform:translate(-150px,-28px) rotate(-4deg); opacity:.9; } 100%{ transform:translate(-330px,-50px) rotate(-10deg); opacity:0; } }
+        @keyframes ${ns}-arrive { 0%{ transform:translate(280px,-50px) rotate(6deg); opacity:0; } 100%{ transform:none; opacity:1; } }
+        @media (prefers-reduced-motion: reduce) { .${ns}-rig *, .${ns}-pose, .${ns}-travel-leaving, .${ns}-travel-arriving { animation:none; transition:none; } }
+      `}</style> : null}
+      <g className={animated && travel === "leaving" ? `${ns}-travel-leaving` : animated && travel === "arriving" ? `${ns}-travel-arriving` : undefined}>
+        <g className={animated && move ? `${ns}-move-${move}` : undefined}>
+          <g className={animated ? `${ns}-pose ${ns}-pose-${pose}` : undefined}>
+            <g className={`${ns}-rig`}>
+              <ellipse className={`${ns}-shadow`} cx="104" cy="130" rx="64" ry="3.5" fill="rgba(0,0,0,.3)" filter={`url(#${ns}-blur)`} />
+              {/* Tail plumes (long flame fronds) */}
+              <g className={`${ns}-tail`}>
+                <path d="M 142 105 Q 178 102 188 78 Q 178 92 158 100" fill={`url(#${ns}-plume)`} />
+                <path d="M 142 110 Q 184 116 196 96 Q 180 108 158 108" fill={`url(#${ns}-plume)`} opacity=".85" />
+                <path d="M 142 114 Q 174 124 184 116 Q 172 118 156 114" fill={`url(#${ns}-plume)`} opacity=".7" />
+              </g>
+              {/* Wing */}
+              <g className={`${ns}-wing`}>
+                <path d="M 92 78 Q 78 42 136 50 Q 142 74 126 96 Q 108 92 92 78 Z" fill={`url(#${ns}-wing)`} stroke="#5e1808" strokeWidth=".6" />
+                <path d="M 100 80 Q 110 64 126 60 M 106 88 Q 118 72 130 70" stroke="#5e1808" strokeWidth=".6" fill="none" opacity=".55" />
+              </g>
+              {/* Body */}
+              <g className={`${ns}-breath`}>
+                <ellipse cx="104" cy="100" rx="48" ry="22" fill={`url(#${ns}-plume)`} />
+                <ellipse cx="94" cy="112" rx="32" ry="9" fill={`url(#${ns}-belly)`} />
+                <ellipse className={`${ns}-ember`} cx="108" cy="92" rx="20" ry="8" fill="#ffd58a" opacity=".5" filter={`url(#${ns}-glow)`} />
+              </g>
+              {/* Legs */}
+              <g>
+                <rect x="86" y="113" width="6" height="14" rx="2" fill="#7a3a14" />
+                <rect x="112" y="113" width="6" height="14" rx="2" fill="#7a3a14" />
+                <path d="M 84 127 L 88 130 L 92 127 M 86 127 L 89 128 M 110 127 L 114 130 L 118 127 M 112 127 L 115 128" stroke="#7a3a14" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+              </g>
+              {/* Head */}
+              <g className={`${ns}-head`}>
+                {/* Crest plume */}
+                <g className={`${ns}-crest`}>
+                  <path d="M 50 56 L 44 36 L 52 48 L 54 30 L 58 48 L 64 38 L 62 56 Z" fill={`url(#${ns}-plume)`} stroke="#7a2008" strokeWidth=".5" />
+                </g>
+                <ellipse cx="58" cy="72" rx="20" ry="18" fill={`url(#${ns}-plume)`} />
+                {/* Beak */}
+                <path d="M 38 72 L 26 75 L 38 79 Z" fill="#f0c14a" stroke="#7a4f0e" strokeWidth=".5" />
+                <path d="M 38 75 L 30 76 L 38 78" stroke="#7a4f0e" strokeWidth=".4" fill="none" />
+                {/* Eye */}
+                <ellipse cx="54" cy="68" rx="3" ry="3.2" fill="#fff" />
+                <ellipse cx="53.5" cy="68.5" rx="1.7" ry="2.4" fill="#1a0a04" />
+                <ellipse className={`${ns}-lid`} cx="54" cy="68" rx="3.2" ry="3.4" fill={`url(#${ns}-plume)`} />
+                {/* Cheek feathers */}
+                <path d="M 46 82 Q 42 86 40 92 M 50 84 Q 48 90 48 96" stroke="#7a2008" strokeWidth=".8" fill="none" strokeLinecap="round" opacity=".7" />
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+  );
+}
+
+/* ========================================================================
    ShelfPet — the shelf widget slot
    ======================================================================== */
 
@@ -1582,6 +1849,22 @@ export function ShelfPet({ onClick, height = 150, blank = false }: ShelfPetProps
               />
             ) : pet.id === "dog" ? (
               <CorgiFigurine
+                size={catSize}
+                animated={cfg?.animations !== false}
+                travel={travel}
+                onLeft={() => setTravel("none")}
+                onArrived={() => setTravel("none")}
+              />
+            ) : pet.id === "dragon" ? (
+              <DragonFigurine
+                size={catSize}
+                animated={cfg?.animations !== false}
+                travel={travel}
+                onLeft={() => setTravel("none")}
+                onArrived={() => setTravel("none")}
+              />
+            ) : pet.id === "phoenix" ? (
+              <PhoenixFigurine
                 size={catSize}
                 animated={cfg?.animations !== false}
                 travel={travel}
