@@ -10,13 +10,6 @@ type Props = {
   basicMode?: boolean;
 };
 
-type StickyNote = { id: number; text: string; x: number; y: number; color: string };
-
-const DEFAULT_STICKIES: StickyNote[] = [
-  { id: 1, text: "Fresh thought", x: 8, y: 14, color: "#fff3a3" },
-  { id: 2, text: "Tiny task", x: 42, y: 24, color: "#ffd1dc" },
-  { id: 3, text: "Keep close", x: 24, y: 52, color: "#c9f2d0" },
-];
 
 export function BookOpen({ book, onClose, basicMode = false }: Props) {
   const {
