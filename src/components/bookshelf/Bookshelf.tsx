@@ -9,6 +9,7 @@ import { ShelfPlant } from "./ShelfPlant";
 import { MiceTrails } from "./MiceTrails";
 import { TalkToMe } from "./TalkToMe";
 import { CatPurr } from "./CatPurr";
+import { DogSniff } from "./DogSniff";
 import { useShelfState } from "./useShelfState";
 import { useSettings, BG_VALUES, TEXT_VALUES, LIGHTING_VALUES } from "./useSettings";
 
