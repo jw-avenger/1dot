@@ -976,19 +976,39 @@ export function CorgiFigurine({ size = 96, animated = true, travel = "none", onL
           .${ns}-move-yawn .${ns}-yawnmouth { animation: ${ns}-yawnm 2.4s ease-in-out 1; }
           @keyframes ${ns}-yawnm { 0%,100%{ opacity:0; transform: scaleY(0.2); } 35%,65%{ opacity:1; transform: scaleY(1); } }
 
-          /* ===================== TRAVEL TRANSITIONS ===================== */
-          .${ns}-travel-leaving  { animation: ${ns}-walkout 1.6s cubic-bezier(.4,0,.7,.4) 1 forwards; }
-          .${ns}-travel-arriving { animation: ${ns}-dropin  1.4s cubic-bezier(.3,1.4,.5,1) 1 backwards; }
-          @keyframes ${ns}-walkout {
-            0%   { transform: none; opacity: 1; }
-            20%  { transform: translate(30px, -1px) rotate(2deg); }
-            55%  { transform: translate(120px, -2px) rotate(-2deg); }
-            100% { transform: translate(280px, 0); opacity: 0; }
+          /* ===================== TRAVEL TRANSITIONS =====================
+             Corgis don't slink off — they pant, spin a small circle, and
+             gallop with arcing leaps off the right edge. */
+          .${ns}-travel-leaving  { animation: ${ns}-runoff 1.6s cubic-bezier(.3,0,.6,1) 1 forwards; }
+          .${ns}-travel-arriving { animation: ${ns}-runon  1.4s cubic-bezier(.3,1.4,.5,1) 1 backwards; }
+          .${ns}-travel-leaving .${ns}-breath { animation: ${ns}-bounce 0.32s ease-in-out infinite; }
+          .${ns}-travel-leaving .${ns}-tail   { animation: ${ns}-tail 0.18s ease-in-out infinite; }
+          .${ns}-travel-leaving .${ns}-tongue { animation: ${ns}-pant 0.22s ease-in-out infinite; }
+          @keyframes ${ns}-bounce {
+            0%,100% { transform: translateY(0) scaleY(1); }
+            50%     { transform: translateY(-6px) scaleY(0.94); }
           }
-          @keyframes ${ns}-dropin {
-            0%   { transform: translate(60px, -140px) rotate(-10deg) scale(0.9); opacity: 0; }
-            40%  { transform: translate(30px, -60px) rotate(-6deg) scale(0.96); opacity: 1; }
-            75%  { transform: translate(0, 6px) rotate(0deg) scale(1, 0.92); }
+          @keyframes ${ns}-pant {
+            0%,100% { transform: translateY(0) scaleY(1); }
+            50%     { transform: translateY(2px) scaleY(1.18); }
+          }
+          @keyframes ${ns}-runoff {
+            0%   { transform: none; opacity: 1; }
+            10%  { transform: translate(8px, 0) rotate(90deg); }
+            20%  { transform: translate(0, 4px) rotate(180deg); }
+            30%  { transform: translate(-8px, 0) rotate(270deg); }
+            40%  { transform: translate(0, 0) rotate(360deg); }
+            55%  { transform: translate(60px, -22px) rotate(372deg); }
+            70%  { transform: translate(140px, -8px) rotate(360deg); }
+            85%  { transform: translate(220px, -30px) rotate(372deg); opacity: 0.9; }
+            100% { transform: translate(310px, 10px) rotate(360deg); opacity: 0; }
+          }
+          @keyframes ${ns}-runon {
+            0%   { transform: translate(-280px, 10px) rotate(0); opacity: 0; }
+            30%  { transform: translate(-140px, -18px) rotate(2deg); opacity: 1; }
+            55%  { transform: translate(-60px, -28px) rotate(-2deg); }
+            75%  { transform: translate(-10px, -4px) rotate(0); }
+            90%  { transform: translate(0, 6px) scale(1, 0.92); }
             100% { transform: none; }
           }
 
