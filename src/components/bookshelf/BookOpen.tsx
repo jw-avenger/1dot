@@ -583,13 +583,26 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
           </div>
         </div>
 
-        <button
-          onClick={onClose}
-          aria-label="Close book"
-          className="absolute -top-3 -right-3 flex h-9 w-9 items-center justify-center rounded-full bg-wood-dark font-sans text-lg leading-none text-paper shadow-lg transition hover:bg-wood"
-        >
-          ×
-        </button>
+        <div className="absolute -top-1 right-1 z-10 flex items-center gap-3">
+          {isDonate && (
+            <button
+              onClick={toggleReadLetter}
+              aria-label={reading ? "Stop reading letter" : "Read letter aloud"}
+              aria-pressed={reading}
+              title={reading ? "Stop reading" : "Read this letter aloud"}
+              className="font-sans text-sm leading-none text-ink/50 transition hover:text-ink"
+            >
+              {reading ? "♫" : "♪"}
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            aria-label="Close book"
+            className="font-sans text-xl leading-none text-ink/40 transition hover:text-ink"
+          >
+            ×
+          </button>
+        </div>
       </div>
     </div>
   );
