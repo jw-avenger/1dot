@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useSettings } from "./useSettings";
+import { registerAudioContext } from "./audioUnlock";
 
 /**
  * Synthesized cat purr loop. Plays whenever:
@@ -31,6 +32,7 @@ export function CatPurr() {
 
     const ctx = ctxRef.current ?? new AC();
     ctxRef.current = ctx;
+    registerAudioContext(ctx);
     if (ctx.state === "suspended") ctx.resume().catch(() => {});
 
     // Carriers: warm body rumble plus upper harmonics that small speakers can reproduce.
