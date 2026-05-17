@@ -200,6 +200,23 @@ export function SidePanel(props: Props) {
         >
           [ TALK TO ME{s.talkToMe ? " · ON" : ""} ]
         </button>
+        <button
+          onClick={() => s.togglePersistMode()}
+          className="mb-3 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
+          style={{
+            color: PANEL_FG,
+            opacity: s.persistMode === "24h" ? 1 : 0.7,
+            border: s.persistMode === "24h" ? "1px solid rgba(255,255,255,0.55)" : "1px solid rgba(255,255,255,0.18)",
+            backgroundColor: "transparent",
+          }}
+          title={
+            s.persistMode === "24h"
+              ? "Settings will reset to defaults after 24h of no changes. Tap to save indefinitely."
+              : "Settings are saved indefinitely. Tap to switch to 24h default mode."
+          }
+        >
+          {s.persistMode === "24h" ? "[ 24H DEFAULT · ON ]" : "[ SAVE INDEFINITELY ]"}
+        </button>
 
         {/* Expanded/Simple mode toggle is unified into the top [ SIMPLE MODE NOW ] / [ EXPANDED MODE NOW ] button above. */}
         <Row>
@@ -413,17 +430,34 @@ export function SidePanel(props: Props) {
           </button>
         )}
 
-        <button
-          onClick={() => s.setHideSettingsBook(!s.hideSettingsBook)}
-          className="mt-3 w-full rounded-lg py-2 text-[12px]"
-          style={{
-            backgroundColor: "transparent",
-            color: PANEL_FG,
-            border: "1px solid rgba(255,255,255,0.18)",
-          }}
-        >
-          {s.hideSettingsBook ? "Add Settings book to shelf" : "Remove Settings book from shelf"}
-        </button>
+        <div className="mt-3 flex items-center gap-1.5">
+          <button
+            onClick={() => s.setHideSettingsBook(!s.hideSettingsBook)}
+            className="flex-1 rounded-lg py-2 text-[12px]"
+            style={{
+              backgroundColor: "transparent",
+              color: PANEL_FG,
+              border: "1px solid rgba(255,255,255,0.18)",
+            }}
+          >
+            {s.hideSettingsBook ? "Replace Settings book on shelf" : "Remove Settings book from shelf"}
+          </button>
+          {s.hideSettingsBook && (
+            <button
+              onClick={() => s.trashSettingsBook()}
+              aria-label="Send Settings book to trash"
+              title="Send Settings book to trash — restore from Dashboard › Trash"
+              className="rounded-lg px-2 py-2 text-[12px]"
+              style={{
+                backgroundColor: "transparent",
+                color: DIM,
+                border: "1px solid rgba(255,255,255,0.12)",
+              }}
+            >
+              ×
+            </button>
+          )}
+        </div>
 
         <button
           onClick={() => s.undo()}
