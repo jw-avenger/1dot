@@ -370,6 +370,14 @@ export function useSettings() {
         });
       } else if (item.kind === "plant") {
         patch({ trash: nextTrash, plantDismissed: false });
+      } else if (item.kind === "book") {
+        // Restoring the Settings book brings it back to the shelf with all
+        // its original linked content/behavior — we simply un-hide it.
+        if (item.data?.bookId === "settings") {
+          patch({ trash: nextTrash, hideSettingsBook: false });
+        } else {
+          patch({ trash: nextTrash });
+        }
       } else {
         patch({ trash: nextTrash });
       }
@@ -399,6 +407,29 @@ export function useSettings() {
     setRomanticColor: (v: string) => set("romanticColor", v),
     setArrowHidden: (v: boolean) => set("arrowHidden", v),
     setHideSettingsBook: (v: boolean) => set("hideSettingsBook", v),
+    setShelfColor: (v: string | null) => set("shelfColor", v),
+    setBgImage: (v: string | null) => set("bgImage", v),
+    setPersistMode: (v: PersistMode) => set("persistMode", v),
+    togglePersistMode: () =>
+      set("persistMode", state.persistMode === "24h" ? "indefinite" : "24h"),
+    /** Send the Settings book to the trash. Keeps a "book" trash item so it
+     *  can be fully restored later with all linked behavior intact. */
+    trashSettingsBook: () => {
+      const alreadyInTrash = state.trash.some((t) => t.kind === "book" && t.data?.bookId === "settings");
+      const nextTrash = alreadyInTrash
+        ? state.trash
+        : [
+            {
+              id: `book-settings-${Date.now()}`,
+              kind: "book" as const,
+              label: "📘 Mood Settings book",
+              data: { bookId: "settings" },
+              deletedAt: Date.now(),
+            },
+            ...state.trash,
+          ];
+      patch({ hideSettingsBook: true, trash: nextTrash });
+    },
 
     // High-level resets
     slapToBasic: () => {
