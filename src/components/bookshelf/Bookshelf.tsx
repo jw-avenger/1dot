@@ -137,12 +137,9 @@ export function Bookshelf() {
   return (
     <div
       className="relative min-h-screen overflow-hidden font-sans"
-      style={{
-        backgroundColor: "var(--wall)",
-        backgroundImage:
-          "radial-gradient(ellipse 80% 50% at 50% 20%, var(--lamp-glow) 0%, transparent 60%), repeating-linear-gradient(135deg, rgba(0,0,0,0.015) 0 2px, transparent 2px 6px)",
-      }}
+      style={{ backgroundColor: "var(--wall)", ...wallpaperStyle }}
     >
+
       <header className="relative z-10 px-6 pt-8 md:px-12">
         <h1 className="font-serif text-2xl font-semibold" style={{ color: "var(--ink)" }}>Library</h1>
       </header>
