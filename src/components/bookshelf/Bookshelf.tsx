@@ -71,10 +71,22 @@ export function Bookshelf() {
     root.style.setProperty("--ink", fg);
     root.style.setProperty("--lamp-glow", lamp);
     root.style.fontSize = `${settings.textSize}px`;
+    // Custom shelf color: override the whole wood family so spine, edge,
+    // and feet all read as one finish. We derive light/dark by mixing.
+    if (settings.shelfColor) {
+      const c = settings.shelfColor;
+      root.style.setProperty("--wood", c);
+      root.style.setProperty("--wood-light", `color-mix(in oklab, ${c} 75%, white)`);
+      root.style.setProperty("--wood-dark", `color-mix(in oklab, ${c} 75%, black)`);
+    } else {
+      root.style.removeProperty("--wood");
+      root.style.removeProperty("--wood-light");
+      root.style.removeProperty("--wood-dark");
+    }
     return () => {
       root.style.removeProperty("font-size");
     };
-  }, [settings.bgMode, settings.bgCustom, settings.textColorMode, settings.textCustom, settings.lighting, settings.lightingCustom, settings.textSize]);
+  }, [settings.bgMode, settings.bgCustom, settings.textColorMode, settings.textCustom, settings.lighting, settings.lightingCustom, settings.textSize, settings.shelfColor]);
 
   // Filter out hidden books (e.g. Settings removed from library)
   const visibleBooks = BOOKS.filter((b) => !(settings.hideSettingsBook && b.id === "settings"));
