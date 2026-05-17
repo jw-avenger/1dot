@@ -2030,7 +2030,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
           </p>
           <button
             onClick={() => {
-              slapToBasic();
+              if (isSimple) expandModes(); else slapToBasic();
               onClose();
             }}
             className="mb-4 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
@@ -2041,9 +2041,9 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               backgroundColor: "transparent",
               fontFamily: '"Fraunces", Georgia, serif',
             }}
-            title="Take everything to simple mode"
+            title={isSimple ? "Re-enable expanded modes everywhere" : "Take everything to simple mode"}
           >
-            [ SIMPLE MODE NOW ]
+            {isSimple ? "[ EXPANDED MODE NOW ]" : "[ SIMPLE MODE NOW ]"}
           </button>
           <div className="flex items-center justify-center gap-2">
             <button
