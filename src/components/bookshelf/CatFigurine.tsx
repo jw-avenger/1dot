@@ -1973,7 +1973,9 @@ export const SUGGESTED = [
 const ASSURANCE = "You can change anything anytime.";
 
 export function PetPopup({ open, onClose }: PetPopupProps) {
-  const { petsConfig, setPetConfig, deletePet, slapToBasic, sendPetAway, recallPet } = useSettings();
+  const { petsConfig, setPetConfig, deletePet, slapToBasic, expandModes, sendPetAway, recallPet } = useSettings();
+  const viewMode = useViewMode();
+  const isSimple = viewMode === "simple";
   const existing = petsConfig[SHELF_KEY];
   const [phase, setPhase] = useState<"ask" | "configure">("ask");
   const [pickerOpen, setPickerOpen] = useState(false);
