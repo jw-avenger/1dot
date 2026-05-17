@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSettings } from "./useSettings";
+import { useSettings, useViewMode } from "./useSettings";
 
 type Props = {
   open: boolean;
