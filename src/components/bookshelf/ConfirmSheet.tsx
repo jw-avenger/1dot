@@ -14,7 +14,9 @@ export const SHEET_BG = "#2b2b30";
 export const SHEET_FG = "#e6e3da";
 
 export function ConfirmSheet({ open, onClose, title, children, maxWidth = 360, showSimplify = true }: Props) {
-  const { slapToBasic } = useSettings();
+  const { slapToBasic, expandModes } = useSettings();
+  const viewMode = useViewMode();
+  const isSimple = viewMode === "simple";
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
