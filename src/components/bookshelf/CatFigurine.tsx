@@ -40,7 +40,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ConfirmSheet, SheetButton, SHEET_FG } from "./ConfirmSheet";
-import { PETS, useSettings, type PetConfig } from "./useSettings";
+import { PETS, useSettings, useViewMode, type PetConfig } from "./useSettings";
 
 /* ========================================================================
    CatFigurine — high-fidelity SVG cat
@@ -1973,7 +1973,9 @@ export const SUGGESTED = [
 const ASSURANCE = "You can change anything anytime.";
 
 export function PetPopup({ open, onClose }: PetPopupProps) {
-  const { petsConfig, setPetConfig, deletePet, slapToBasic, sendPetAway, recallPet } = useSettings();
+  const { petsConfig, setPetConfig, deletePet, slapToBasic, expandModes, sendPetAway, recallPet } = useSettings();
+  const viewMode = useViewMode();
+  const isSimple = viewMode === "simple";
   const existing = petsConfig[SHELF_KEY];
   const [phase, setPhase] = useState<"ask" | "configure">("ask");
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -2028,7 +2030,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
           </p>
           <button
             onClick={() => {
-              slapToBasic();
+              if (isSimple) expandModes(); else slapToBasic();
               onClose();
             }}
             className="mb-4 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
@@ -2039,9 +2041,9 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               backgroundColor: "transparent",
               fontFamily: '"Fraunces", Georgia, serif',
             }}
-            title="Take everything to simple mode"
+            title={isSimple ? "Re-enable expanded modes everywhere" : "Take everything to simple mode"}
           >
-            [ SIMPLE MODE NOW ]
+            {isSimple ? "[ EXPANDED MODE NOW ]" : "[ SIMPLE MODE NOW ]"}
           </button>
           <div className="flex items-center justify-center gap-2">
             <button
@@ -2108,7 +2110,7 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
           </p>
           <button
             onClick={() => {
-              slapToBasic();
+              if (isSimple) expandModes(); else slapToBasic();
               onClose();
             }}
             className="w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
@@ -2119,9 +2121,9 @@ export function PetPopup({ open, onClose }: PetPopupProps) {
               backgroundColor: "transparent",
               fontFamily: '"Fraunces", Georgia, serif',
             }}
-            title="Take everything to simple mode"
+            title={isSimple ? "Re-enable expanded modes everywhere" : "Take everything to simple mode"}
           >
-            [ SIMPLE MODE NOW ]
+            {isSimple ? "[ EXPANDED MODE NOW ]" : "[ SIMPLE MODE NOW ]"}
           </button>
           {(() => {
             const currentIdx = Math.max(

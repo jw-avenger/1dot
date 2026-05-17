@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSettings } from "./useSettings";
+import { useSettings, useViewMode } from "./useSettings";
 
 type Props = {
   open: boolean;
@@ -14,7 +14,9 @@ export const SHEET_BG = "#2b2b30";
 export const SHEET_FG = "#e6e3da";
 
 export function ConfirmSheet({ open, onClose, title, children, maxWidth = 360, showSimplify = true }: Props) {
-  const { slapToBasic } = useSettings();
+  const { slapToBasic, expandModes } = useSettings();
+  const viewMode = useViewMode();
+  const isSimple = viewMode === "simple";
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -42,7 +44,7 @@ export function ConfirmSheet({ open, onClose, title, children, maxWidth = 360, s
         {children}
         {showSimplify && (
           <button
-            onClick={() => { slapToBasic(); onClose(); }}
+            onClick={() => { if (isSimple) expandModes(); else slapToBasic(); onClose(); }}
             className="mt-4 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
             style={{
               color: SHEET_FG,
@@ -50,9 +52,9 @@ export function ConfirmSheet({ open, onClose, title, children, maxWidth = 360, s
               border: "1px solid rgba(255,255,255,0.12)",
               backgroundColor: "transparent",
             }}
-            title="Take everything to simple mode"
+            title={isSimple ? "Re-enable expanded modes everywhere" : "Take everything to simple mode"}
           >
-            [ SIMPLE MODE NOW ]
+            {isSimple ? "[ EXPANDED MODE NOW ]" : "[ SIMPLE MODE NOW ]"}
           </button>
         )}
       </div>
