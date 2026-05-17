@@ -397,10 +397,39 @@ export function useSettings() {
         // ignore
       }
     },
+    expandModes: () => {
+      try {
+        localStorage.setItem("shelf:viewMode", "shelf");
+        window.dispatchEvent(new CustomEvent("shelf:viewMode", { detail: "shelf" }));
+      } catch {
+        // ignore
+      }
+    },
     shutIt: () => patch({ sfxEnabled: false, mice: state.mice }), // sound off only
     undo,
     canUndo: history.length > 0,
   };
+}
+
+// Reads/listens to the current viewMode ("shelf" expanded vs "simple").
+export function useViewMode(): "shelf" | "simple" {
+  const [mode, setMode] = useState<"shelf" | "simple">(() => {
+    if (typeof window === "undefined") return "shelf";
+    try {
+      return (localStorage.getItem("shelf:viewMode") as "shelf" | "simple") || "shelf";
+    } catch {
+      return "shelf";
+    }
+  });
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail === "shelf" || detail === "simple") setMode(detail);
+    };
+    window.addEventListener("shelf:viewMode", handler as EventListener);
+    return () => window.removeEventListener("shelf:viewMode", handler as EventListener);
+  }, []);
+  return mode;
 }
 
 export function bionicize(text: string, on: boolean): React.ReactNode {
