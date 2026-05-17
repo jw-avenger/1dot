@@ -200,6 +200,23 @@ export function SidePanel(props: Props) {
         >
           [ TALK TO ME{s.talkToMe ? " · ON" : ""} ]
         </button>
+        <button
+          onClick={() => s.togglePersistMode()}
+          className="mb-3 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
+          style={{
+            color: PANEL_FG,
+            opacity: s.persistMode === "24h" ? 1 : 0.7,
+            border: s.persistMode === "24h" ? "1px solid rgba(255,255,255,0.55)" : "1px solid rgba(255,255,255,0.18)",
+            backgroundColor: "transparent",
+          }}
+          title={
+            s.persistMode === "24h"
+              ? "Settings will reset to defaults after 24h of no changes. Tap to save indefinitely."
+              : "Settings are saved indefinitely. Tap to switch to 24h default mode."
+          }
+        >
+          {s.persistMode === "24h" ? "[ 24H DEFAULT · ON ]" : "[ SAVE INDEFINITELY ]"}
+        </button>
 
         {/* Expanded/Simple mode toggle is unified into the top [ SIMPLE MODE NOW ] / [ EXPANDED MODE NOW ] button above. */}
         <Row>
@@ -281,6 +298,81 @@ export function SidePanel(props: Props) {
               className="mt-1.5 h-7 w-full rounded"
             />
           )}
+          {s.bgMode === "custom" && (
+            <div className="mt-2 space-y-1.5">
+              <Label>Wallpaper image (optional)</Label>
+              <div className="flex items-center gap-1.5">
+                <label
+                  className="flex-1 cursor-pointer truncate rounded-md px-2 py-1.5 text-center text-[11px]"
+                  style={{
+                    backgroundColor: "#1f1f24",
+                    border: "1px solid rgba(255,255,255,0.14)",
+                  }}
+                >
+                  {s.bgImage ? "Replace image" : "Upload image"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      const r = new FileReader();
+                      r.onload = () => {
+                        const v = typeof r.result === "string" ? r.result : null;
+                        if (v) s.setBgImage(v);
+                      };
+                      r.readAsDataURL(f);
+                      e.currentTarget.value = "";
+                    }}
+                  />
+                </label>
+                {s.bgImage && (
+                  <button
+                    onClick={() => s.setBgImage(null)}
+                    className="rounded-md px-2 py-1.5 text-[11px]"
+                    style={{ backgroundColor: "#1f1f24", border: "1px solid rgba(255,255,255,0.14)" }}
+                    title="Remove wallpaper"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+              <input
+                type="url"
+                placeholder="…or paste image URL"
+                defaultValue={s.bgImage && s.bgImage.startsWith("http") ? s.bgImage : ""}
+                onBlur={(e) => {
+                  const v = e.target.value.trim();
+                  if (v && /^https?:\/\//.test(v)) s.setBgImage(v);
+                }}
+                className="w-full rounded-md px-2 py-1.5 text-[11px]"
+                style={{ backgroundColor: "#1f1f24", color: PANEL_FG, border: "1px solid rgba(255,255,255,0.14)" }}
+              />
+            </div>
+          )}
+        </Row>
+        <Row>
+          <Label>Shelf color</Label>
+          <Dropdown
+            options={[
+              { id: "default", label: theme === "dark" ? "Dark (default)" : "Light (default)" },
+              { id: "custom", label: "Custom" },
+            ]}
+            current={s.shelfColor ? "custom" : "default"}
+            onPick={(v: string) => {
+              if (v === "default") s.setShelfColor(null);
+              else s.setShelfColor(s.shelfColor ?? "#6b4423");
+            }}
+          />
+          {s.shelfColor && (
+            <input
+              type="color"
+              value={s.shelfColor}
+              onChange={(e) => s.setShelfColor(e.target.value)}
+              className="mt-1.5 h-7 w-full rounded"
+            />
+          )}
         </Row>
         <Row>
           <Label>Text color</Label>
@@ -319,14 +411,8 @@ export function SidePanel(props: Props) {
           />
         </Row>
 
-        <Row>
-          <Toggle label="Notifications" on={false} onChange={() => {}} />
-          <div className="text-[11px]" style={{ color: DIM }}>soon</div>
-        </Row>
-        <Row>
-          <Toggle label="Social" on={false} onChange={() => {}} />
-          <div className="text-[11px]" style={{ color: DIM }}>soon</div>
-        </Row>
+        {/* Notifications and Social now live as their own books on the shelf —
+            see books.ts. The old placeholder rows have been removed. */}
 
         <div className="flex-1" />
 
@@ -344,17 +430,34 @@ export function SidePanel(props: Props) {
           </button>
         )}
 
-        <button
-          onClick={() => s.setHideSettingsBook(!s.hideSettingsBook)}
-          className="mt-3 w-full rounded-lg py-2 text-[12px]"
-          style={{
-            backgroundColor: "transparent",
-            color: PANEL_FG,
-            border: "1px solid rgba(255,255,255,0.18)",
-          }}
-        >
-          {s.hideSettingsBook ? "Add Settings book to shelf" : "Remove Settings book from shelf"}
-        </button>
+        <div className="mt-3 flex items-center gap-1.5">
+          <button
+            onClick={() => s.setHideSettingsBook(!s.hideSettingsBook)}
+            className="flex-1 rounded-lg py-2 text-[12px]"
+            style={{
+              backgroundColor: "transparent",
+              color: PANEL_FG,
+              border: "1px solid rgba(255,255,255,0.18)",
+            }}
+          >
+            {s.hideSettingsBook ? "Replace Settings book on shelf" : "Remove Settings book from shelf"}
+          </button>
+          {s.hideSettingsBook && (
+            <button
+              onClick={() => s.trashSettingsBook()}
+              aria-label="Send Settings book to trash"
+              title="Send Settings book to trash — restore from Dashboard › Trash"
+              className="rounded-lg px-2 py-2 text-[12px]"
+              style={{
+                backgroundColor: "transparent",
+                color: DIM,
+                border: "1px solid rgba(255,255,255,0.12)",
+              }}
+            >
+              ×
+            </button>
+          )}
+        </div>
 
         <button
           onClick={() => s.undo()}

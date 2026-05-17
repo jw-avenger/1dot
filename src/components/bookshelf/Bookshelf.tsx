@@ -71,10 +71,22 @@ export function Bookshelf() {
     root.style.setProperty("--ink", fg);
     root.style.setProperty("--lamp-glow", lamp);
     root.style.fontSize = `${settings.textSize}px`;
+    // Custom shelf color: override the whole wood family so spine, edge,
+    // and feet all read as one finish. We derive light/dark by mixing.
+    if (settings.shelfColor) {
+      const c = settings.shelfColor;
+      root.style.setProperty("--wood", c);
+      root.style.setProperty("--wood-light", `color-mix(in oklab, ${c} 75%, white)`);
+      root.style.setProperty("--wood-dark", `color-mix(in oklab, ${c} 75%, black)`);
+    } else {
+      root.style.removeProperty("--wood");
+      root.style.removeProperty("--wood-light");
+      root.style.removeProperty("--wood-dark");
+    }
     return () => {
       root.style.removeProperty("font-size");
     };
-  }, [settings.bgMode, settings.bgCustom, settings.textColorMode, settings.textCustom, settings.lighting, settings.lightingCustom, settings.textSize]);
+  }, [settings.bgMode, settings.bgCustom, settings.textColorMode, settings.textCustom, settings.lighting, settings.lightingCustom, settings.textSize, settings.shelfColor]);
 
   // Filter out hidden books (e.g. Settings removed from library)
   const visibleBooks = BOOKS.filter((b) => !(settings.hideSettingsBook && b.id === "settings"));
@@ -105,9 +117,24 @@ export function Bookshelf() {
     setEditMode,
   };
 
+  const wallpaperStyle: React.CSSProperties = settings.bgImage
+    ? {
+        backgroundImage: `url("${settings.bgImage}"), radial-gradient(ellipse 80% 50% at 50% 20%, var(--lamp-glow) 0%, transparent 60%)`,
+        backgroundSize: "cover, auto",
+        backgroundPosition: "center, top",
+        backgroundRepeat: "no-repeat, no-repeat",
+      }
+    : {
+        backgroundImage:
+          "radial-gradient(ellipse 80% 50% at 50% 20%, var(--lamp-glow) 0%, transparent 60%), repeating-linear-gradient(135deg, rgba(0,0,0,0.015) 0 2px, transparent 2px 6px)",
+      };
+  const simpleBgStyle: React.CSSProperties = settings.bgImage
+    ? { backgroundColor: "var(--background)", backgroundImage: `url("${settings.bgImage}")`, backgroundSize: "cover", backgroundPosition: "center" }
+    : { backgroundColor: "var(--background)" };
+
   if (viewMode === "simple") {
     return (
-      <div style={{ backgroundColor: "var(--background)" }} className="min-h-screen">
+      <div style={simpleBgStyle} className="min-h-screen">
         <header className="px-6 pt-8 md:px-12">
           <p className="font-serif text-lg font-semibold" style={{ color: "var(--foreground)" }}>Library</p>
         </header>
@@ -125,12 +152,9 @@ export function Bookshelf() {
   return (
     <div
       className="relative min-h-screen overflow-hidden font-sans"
-      style={{
-        backgroundColor: "var(--wall)",
-        backgroundImage:
-          "radial-gradient(ellipse 80% 50% at 50% 20%, var(--lamp-glow) 0%, transparent 60%), repeating-linear-gradient(135deg, rgba(0,0,0,0.015) 0 2px, transparent 2px 6px)",
-      }}
+      style={{ backgroundColor: "var(--wall)", ...wallpaperStyle }}
     >
+
       <header className="relative z-10 px-6 pt-8 md:px-12">
         <h1 className="font-serif text-2xl font-semibold" style={{ color: "var(--ink)" }}>Library</h1>
       </header>
@@ -153,6 +177,7 @@ export function Bookshelf() {
                   book={book}
                   onShelf
                   editMode={editMode}
+                  sparkle={panelOpen && book.id === "settings"}
                   onClick={() => handleOpenBook(book.id)}
                   onToggle={() => toggle(book.id)}
                 />

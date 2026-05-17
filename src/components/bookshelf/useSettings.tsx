@@ -105,11 +105,13 @@ function normalizePetsConfig(config: Record<string, PetConfig> | undefined): Rec
 
 export type TrashItem = {
   id: string;
-  kind: "pet" | "plant";
+  kind: "pet" | "plant" | "book";
   label: string;
   data: any;
   deletedAt: number;
 };
+
+export type PersistMode = "indefinite" | "24h";
 
 type State = {
   spineFont: SpineFont;
@@ -141,6 +143,14 @@ type State = {
   petDismissed: boolean; // user said No / deleted pet — hide slot until restored
   plantDismissed: boolean; // hide plant widget until restored
   trash: TrashItem[];
+  /** Custom shelf wood color override — when set, overrides --wood family. */
+  shelfColor: string | null;
+  /** Optional wallpaper image (data URL or http URL) layered on the wall. */
+  bgImage: string | null;
+  /** How long to retain settings without user activity. */
+  persistMode: PersistMode;
+  /** Epoch ms of last settings edit, used by 24h reset mode. */
+  lastEditAt: number;
 };
 
 const defaults: State = {
@@ -172,6 +182,10 @@ const defaults: State = {
   petDismissed: false,
   plantDismissed: false,
   trash: [],
+  shelfColor: null,
+  bgImage: null,
+  persistMode: "indefinite",
+  lastEditAt: 0,
 };
 
 let state: State = { ...defaults };
@@ -193,7 +207,17 @@ function load() {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      state = { ...defaults, ...parsed, petsConfig: normalizePetsConfig(parsed.petsConfig) };
+      // 24-hour reset: if user opted into the timed mode and no activity has
+      // happened for >24h, snap environment back to defaults but PRESERVE
+      // the persistMode choice itself so the door stays where they left it.
+      const mode: PersistMode = parsed.persistMode === "24h" ? "24h" : "indefinite";
+      const last = typeof parsed.lastEditAt === "number" ? parsed.lastEditAt : 0;
+      const expired = mode === "24h" && last > 0 && Date.now() - last > 24 * 60 * 60 * 1000;
+      if (expired) {
+        state = { ...defaults, persistMode: mode, lastEditAt: Date.now() };
+      } else {
+        state = { ...defaults, ...parsed, petsConfig: normalizePetsConfig(parsed.petsConfig) };
+      }
     }
     if (!state.petDismissed && !state.petsConfig.shelf) {
       state = { ...state, petsConfig: { ...state.petsConfig, shelf: freshCatConfig() } };
@@ -233,14 +257,14 @@ function save() {
 
 function set<K extends keyof State>(key: K, value: State[K]) {
   snapshot();
-  state = { ...state, [key]: value };
+  state = { ...state, [key]: value, lastEditAt: Date.now() };
   save();
   emit();
 }
 
 function patch(p: Partial<State>) {
   snapshot();
-  state = { ...state, ...p };
+  state = { ...state, ...p, lastEditAt: Date.now() };
   save();
   emit();
 }
@@ -346,6 +370,14 @@ export function useSettings() {
         });
       } else if (item.kind === "plant") {
         patch({ trash: nextTrash, plantDismissed: false });
+      } else if (item.kind === "book") {
+        // Restoring the Settings book brings it back to the shelf with all
+        // its original linked content/behavior — we simply un-hide it.
+        if (item.data?.bookId === "settings") {
+          patch({ trash: nextTrash, hideSettingsBook: false });
+        } else {
+          patch({ trash: nextTrash });
+        }
       } else {
         patch({ trash: nextTrash });
       }
@@ -375,6 +407,29 @@ export function useSettings() {
     setRomanticColor: (v: string) => set("romanticColor", v),
     setArrowHidden: (v: boolean) => set("arrowHidden", v),
     setHideSettingsBook: (v: boolean) => set("hideSettingsBook", v),
+    setShelfColor: (v: string | null) => set("shelfColor", v),
+    setBgImage: (v: string | null) => set("bgImage", v),
+    setPersistMode: (v: PersistMode) => set("persistMode", v),
+    togglePersistMode: () =>
+      set("persistMode", state.persistMode === "24h" ? "indefinite" : "24h"),
+    /** Send the Settings book to the trash. Keeps a "book" trash item so it
+     *  can be fully restored later with all linked behavior intact. */
+    trashSettingsBook: () => {
+      const alreadyInTrash = state.trash.some((t) => t.kind === "book" && t.data?.bookId === "settings");
+      const nextTrash = alreadyInTrash
+        ? state.trash
+        : [
+            {
+              id: `book-settings-${Date.now()}`,
+              kind: "book" as const,
+              label: "📘 Mood Settings book",
+              data: { bookId: "settings" },
+              deletedAt: Date.now(),
+            },
+            ...state.trash,
+          ];
+      patch({ hideSettingsBook: true, trash: nextTrash });
+    },
 
     // High-level resets
     slapToBasic: () => {
