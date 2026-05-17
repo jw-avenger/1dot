@@ -117,9 +117,24 @@ export function Bookshelf() {
     setEditMode,
   };
 
+  const wallpaperStyle: React.CSSProperties = settings.bgImage
+    ? {
+        backgroundImage: `url("${settings.bgImage}"), radial-gradient(ellipse 80% 50% at 50% 20%, var(--lamp-glow) 0%, transparent 60%)`,
+        backgroundSize: "cover, auto",
+        backgroundPosition: "center, top",
+        backgroundRepeat: "no-repeat, no-repeat",
+      }
+    : {
+        backgroundImage:
+          "radial-gradient(ellipse 80% 50% at 50% 20%, var(--lamp-glow) 0%, transparent 60%), repeating-linear-gradient(135deg, rgba(0,0,0,0.015) 0 2px, transparent 2px 6px)",
+      };
+  const simpleBgStyle: React.CSSProperties = settings.bgImage
+    ? { backgroundColor: "var(--background)", backgroundImage: `url("${settings.bgImage}")`, backgroundSize: "cover", backgroundPosition: "center" }
+    : { backgroundColor: "var(--background)" };
+
   if (viewMode === "simple") {
     return (
-      <div style={{ backgroundColor: "var(--background)" }} className="min-h-screen">
+      <div style={simpleBgStyle} className="min-h-screen">
         <header className="px-6 pt-8 md:px-12">
           <p className="font-serif text-lg font-semibold" style={{ color: "var(--foreground)" }}>Library</p>
         </header>
