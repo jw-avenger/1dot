@@ -207,7 +207,17 @@ function load() {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      state = { ...defaults, ...parsed, petsConfig: normalizePetsConfig(parsed.petsConfig) };
+      // 24-hour reset: if user opted into the timed mode and no activity has
+      // happened for >24h, snap environment back to defaults but PRESERVE
+      // the persistMode choice itself so the door stays where they left it.
+      const mode: PersistMode = parsed.persistMode === "24h" ? "24h" : "indefinite";
+      const last = typeof parsed.lastEditAt === "number" ? parsed.lastEditAt : 0;
+      const expired = mode === "24h" && last > 0 && Date.now() - last > 24 * 60 * 60 * 1000;
+      if (expired) {
+        state = { ...defaults, persistMode: mode, lastEditAt: Date.now() };
+      } else {
+        state = { ...defaults, ...parsed, petsConfig: normalizePetsConfig(parsed.petsConfig) };
+      }
     }
     if (!state.petDismissed && !state.petsConfig.shelf) {
       state = { ...state, petsConfig: { ...state.petsConfig, shelf: freshCatConfig() } };
@@ -247,14 +257,14 @@ function save() {
 
 function set<K extends keyof State>(key: K, value: State[K]) {
   snapshot();
-  state = { ...state, [key]: value };
+  state = { ...state, [key]: value, lastEditAt: Date.now() };
   save();
   emit();
 }
 
 function patch(p: Partial<State>) {
   snapshot();
-  state = { ...state, ...p };
+  state = { ...state, ...p, lastEditAt: Date.now() };
   save();
   emit();
 }
