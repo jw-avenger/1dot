@@ -105,11 +105,13 @@ function normalizePetsConfig(config: Record<string, PetConfig> | undefined): Rec
 
 export type TrashItem = {
   id: string;
-  kind: "pet" | "plant";
+  kind: "pet" | "plant" | "book";
   label: string;
   data: any;
   deletedAt: number;
 };
+
+export type PersistMode = "indefinite" | "24h";
 
 type State = {
   spineFont: SpineFont;
@@ -141,6 +143,14 @@ type State = {
   petDismissed: boolean; // user said No / deleted pet — hide slot until restored
   plantDismissed: boolean; // hide plant widget until restored
   trash: TrashItem[];
+  /** Custom shelf wood color override — when set, overrides --wood family. */
+  shelfColor: string | null;
+  /** Optional wallpaper image (data URL or http URL) layered on the wall. */
+  bgImage: string | null;
+  /** How long to retain settings without user activity. */
+  persistMode: PersistMode;
+  /** Epoch ms of last settings edit, used by 24h reset mode. */
+  lastEditAt: number;
 };
 
 const defaults: State = {
@@ -172,6 +182,10 @@ const defaults: State = {
   petDismissed: false,
   plantDismissed: false,
   trash: [],
+  shelfColor: null,
+  bgImage: null,
+  persistMode: "indefinite",
+  lastEditAt: 0,
 };
 
 let state: State = { ...defaults };
