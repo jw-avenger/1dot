@@ -40,7 +40,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ConfirmSheet, SheetButton, SHEET_FG } from "./ConfirmSheet";
-import { PETS, useSettings, type PetConfig } from "./useSettings";
+import { PETS, useSettings, useViewMode, type PetConfig } from "./useSettings";
 
 /* ========================================================================
    CatFigurine — high-fidelity SVG cat
