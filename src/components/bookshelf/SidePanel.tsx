@@ -281,6 +281,81 @@ export function SidePanel(props: Props) {
               className="mt-1.5 h-7 w-full rounded"
             />
           )}
+          {s.bgMode === "custom" && (
+            <div className="mt-2 space-y-1.5">
+              <Label>Wallpaper image (optional)</Label>
+              <div className="flex items-center gap-1.5">
+                <label
+                  className="flex-1 cursor-pointer truncate rounded-md px-2 py-1.5 text-center text-[11px]"
+                  style={{
+                    backgroundColor: "#1f1f24",
+                    border: "1px solid rgba(255,255,255,0.14)",
+                  }}
+                >
+                  {s.bgImage ? "Replace image" : "Upload image"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      const r = new FileReader();
+                      r.onload = () => {
+                        const v = typeof r.result === "string" ? r.result : null;
+                        if (v) s.setBgImage(v);
+                      };
+                      r.readAsDataURL(f);
+                      e.currentTarget.value = "";
+                    }}
+                  />
+                </label>
+                {s.bgImage && (
+                  <button
+                    onClick={() => s.setBgImage(null)}
+                    className="rounded-md px-2 py-1.5 text-[11px]"
+                    style={{ backgroundColor: "#1f1f24", border: "1px solid rgba(255,255,255,0.14)" }}
+                    title="Remove wallpaper"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+              <input
+                type="url"
+                placeholder="…or paste image URL"
+                defaultValue={s.bgImage && s.bgImage.startsWith("http") ? s.bgImage : ""}
+                onBlur={(e) => {
+                  const v = e.target.value.trim();
+                  if (v && /^https?:\/\//.test(v)) s.setBgImage(v);
+                }}
+                className="w-full rounded-md px-2 py-1.5 text-[11px]"
+                style={{ backgroundColor: "#1f1f24", color: PANEL_FG, border: "1px solid rgba(255,255,255,0.14)" }}
+              />
+            </div>
+          )}
+        </Row>
+        <Row>
+          <Label>Shelf color</Label>
+          <Dropdown
+            options={[
+              { id: "default", label: theme === "dark" ? "Dark (default)" : "Light (default)" },
+              { id: "custom", label: "Custom" },
+            ]}
+            current={s.shelfColor ? "custom" : "default"}
+            onPick={(v: string) => {
+              if (v === "default") s.setShelfColor(null);
+              else s.setShelfColor(s.shelfColor ?? "#6b4423");
+            }}
+          />
+          {s.shelfColor && (
+            <input
+              type="color"
+              value={s.shelfColor}
+              onChange={(e) => s.setShelfColor(e.target.value)}
+              className="mt-1.5 h-7 w-full rounded"
+            />
+          )}
         </Row>
         <Row>
           <Label>Text color</Label>
@@ -319,14 +394,8 @@ export function SidePanel(props: Props) {
           />
         </Row>
 
-        <Row>
-          <Toggle label="Notifications" on={false} onChange={() => {}} />
-          <div className="text-[11px]" style={{ color: DIM }}>soon</div>
-        </Row>
-        <Row>
-          <Toggle label="Social" on={false} onChange={() => {}} />
-          <div className="text-[11px]" style={{ color: DIM }}>soon</div>
-        </Row>
+        {/* Notifications and Social now live as their own books on the shelf —
+            see books.ts. The old placeholder rows have been removed. */}
 
         <div className="flex-1" />
 
