@@ -70,6 +70,33 @@ function BookSpineImpl({ book, onShelf, editMode, onClick, onToggle, sparkle = f
         </div>
       </div>
 
+      {sparkle && (
+        <div className="pointer-events-none absolute inset-x-0 -top-10 flex h-10 items-end justify-center">
+          <span className="sparkle-cue sparkle-cue-1" aria-hidden>✦</span>
+          <span className="sparkle-cue sparkle-cue-2" aria-hidden>✧</span>
+          <span className="sparkle-cue sparkle-cue-3" aria-hidden>✦</span>
+          <style>{`
+            .sparkle-cue {
+              position: absolute;
+              font-size: 14px;
+              color: var(--spine-gold, #d8b46a);
+              opacity: 0;
+              text-shadow: 0 0 6px rgba(216,180,106,0.6);
+              animation: sparkleFloat 1.8s ease-out infinite;
+            }
+            .sparkle-cue-1 { left: 30%; animation-delay: 0s; }
+            .sparkle-cue-2 { left: 50%; animation-delay: 0.45s; font-size: 11px; }
+            .sparkle-cue-3 { left: 70%; animation-delay: 0.9s; font-size: 12px; }
+            @keyframes sparkleFloat {
+              0%   { opacity: 0; transform: translate(-50%, 8px) scale(0.6); }
+              25%  { opacity: 1; transform: translate(-50%, 0px) scale(1); }
+              80%  { opacity: 0.7; transform: translate(-50%, -22px) scale(0.95); }
+              100% { opacity: 0; transform: translate(-50%, -32px) scale(0.6); }
+            }
+          `}</style>
+        </div>
+      )}
+
       {editMode && (
         <span className="absolute -top-2 -right-2 rounded-full bg-wood-dark px-1.5 py-0.5 text-[9px] font-medium text-paper shadow-md">
           remove
