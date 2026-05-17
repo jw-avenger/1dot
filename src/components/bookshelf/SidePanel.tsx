@@ -201,10 +201,7 @@ export function SidePanel(props: Props) {
           [ TALK TO ME{s.talkToMe ? " · ON" : ""} ]
         </button>
 
-        {/* All options visible inline */}
-        <Row>
-          <Toggle label="Expanded Modes" on={viewMode === "shelf"} onChange={() => setViewMode(viewMode === "shelf" ? "simple" : "shelf")} />
-        </Row>
+        {/* Expanded/Simple mode toggle is unified into the top [ SIMPLE MODE NOW ] / [ EXPANDED MODE NOW ] button above. */}
         <Row>
           <Toggle label="Dark theme" on={theme === "dark"} onChange={() => setTheme(theme === "dark" ? "light" : "dark")} />
         </Row>
