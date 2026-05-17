@@ -162,7 +162,7 @@ export function SidePanel(props: Props) {
       >
         {/* Top three priority buttons — all share the SIMPLE-MODE-NOW pill look */}
         <button
-          onClick={() => s.slapToBasic()}
+          onClick={() => (viewMode === "simple" ? s.expandModes() : s.slapToBasic())}
           className="mb-1.5 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
           style={{
             color: PANEL_FG,
@@ -170,9 +170,9 @@ export function SidePanel(props: Props) {
             border: "1px solid rgba(255,255,255,0.18)",
             backgroundColor: "transparent",
           }}
-          title="Take everything to simple mode"
+          title={viewMode === "simple" ? "Re-enable expanded modes everywhere" : "Take everything to simple mode"}
         >
-          [ SIMPLE MODE NOW ]
+          {viewMode === "simple" ? "[ EXPANDED MODE NOW ]" : "[ SIMPLE MODE NOW ]"}
         </button>
         <button
           onClick={() => s.shutIt()}
