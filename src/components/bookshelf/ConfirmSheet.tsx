@@ -44,7 +44,7 @@ export function ConfirmSheet({ open, onClose, title, children, maxWidth = 360, s
         {children}
         {showSimplify && (
           <button
-            onClick={() => { slapToBasic(); onClose(); }}
+            onClick={() => { if (isSimple) expandModes(); else slapToBasic(); onClose(); }}
             className="mt-4 w-full rounded-full py-1.5 text-[10px] uppercase tracking-[0.2em] transition"
             style={{
               color: SHEET_FG,
@@ -52,9 +52,9 @@ export function ConfirmSheet({ open, onClose, title, children, maxWidth = 360, s
               border: "1px solid rgba(255,255,255,0.12)",
               backgroundColor: "transparent",
             }}
-            title="Take everything to simple mode"
+            title={isSimple ? "Re-enable expanded modes everywhere" : "Take everything to simple mode"}
           >
-            [ SIMPLE MODE NOW ]
+            {isSimple ? "[ EXPANDED MODE NOW ]" : "[ SIMPLE MODE NOW ]"}
           </button>
         )}
       </div>
