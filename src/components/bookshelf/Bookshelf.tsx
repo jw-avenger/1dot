@@ -177,6 +177,7 @@ export function Bookshelf() {
                   book={book}
                   onShelf
                   editMode={editMode}
+                  sparkle={panelOpen && book.id === "settings"}
                   onClick={() => handleOpenBook(book.id)}
                   onToggle={() => toggle(book.id)}
                 />

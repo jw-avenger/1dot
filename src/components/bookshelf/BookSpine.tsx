@@ -8,9 +8,11 @@ type Props = {
   editMode: boolean;
   onClick: () => void;
   onToggle: () => void;
+  /** When true, render a gentle drifting-sparkle cue above the spine. */
+  sparkle?: boolean;
 };
 
-function BookSpineImpl({ book, onShelf, editMode, onClick, onToggle }: Props) {
+function BookSpineImpl({ book, onShelf, editMode, onClick, onToggle, sparkle = false }: Props) {
   const { spineFont, customFont, bionic, colors } = useSettings();
   const fontFamily = resolveSpineFontCss(spineFont, customFont);
   const spineColor = colors[book.id] ?? book.spine;
