@@ -370,19 +370,14 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
               </p>
             )}
             {isDashboard && (
-              <div className="mt-8">
-                <button
-                  onClick={() => setTrashOpen((v) => !v)}
-                  className="flex w-full items-center justify-between rounded-md border border-ink/15 px-3 py-2 font-sans text-xs uppercase tracking-[0.25em] text-ink/70 transition hover:border-ink/40 hover:text-ink"
-                  aria-expanded={trashOpen}
-                >
-                  <span>Trash{trash.length > 0 ? ` · ${trash.length}` : ""}</span>
-                  <span className="text-ink/50">{trashOpen ? "−" : "+"}</span>
-                </button>
+              <div className="mt-4">
                 {trashOpen && (
                   <div className="mt-3 animate-fade-in">
                     {trash.length > 0 && (
-                      <div className="mb-2 flex justify-end">
+                      <div className="mb-2 flex items-center justify-between">
+                        <span className="font-sans text-[10px] uppercase tracking-[0.25em] text-ink/60">
+                          Trash · {trash.length}
+                        </span>
                         <button
                           onClick={clearTrash}
                           className="font-sans text-[10px] uppercase tracking-wider text-ink/50 hover:text-ink"
