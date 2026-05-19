@@ -320,6 +320,10 @@ export function BookOpen({ book, onClose, basicMode = false }: Props) {
               </ul>
             ) : isDonate ? (
               <div className="mt-6"><DonateBook /></div>
+            ) : isDashboard ? (
+              <div className="mt-2">
+                <CozyDashboardRoom onTrashClick={() => setTrashOpen((v) => !v)} />
+              </div>
             ) : (
               <ol className="mt-6 space-y-3">
                 {book.toc.map((item, i) => {
