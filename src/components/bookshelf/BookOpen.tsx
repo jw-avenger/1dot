@@ -4,6 +4,7 @@ import { useSettings, SPINE_FONTS, bionicize } from "./useSettings";
 import { SUGGESTED } from "./CatFigurine";
 import { StickyBoard } from "./StickyBoard";
 import { DonateBook, LETTER_PARAGRAPHS } from "./DonateBook";
+import { CozyDashboardRoom } from "./CozyDashboardRoom";
 
 type Props = {
   book: Book;
